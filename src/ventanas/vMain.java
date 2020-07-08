@@ -1,8 +1,6 @@
 package ventanas;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -14,6 +12,7 @@ import java.awt.event.ActionEvent;
 
 public class vMain extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
 	public static void main(String[] args) {
@@ -53,11 +52,20 @@ public class vMain extends JFrame {
 			}
 		});
 		mnClientes.add(mnVerClientes);
+		
+		JMenu mnPropiedades = new JMenu("Propiedades");
+		menuBar.add(mnPropiedades);
+		
+		JMenuItem mnNuevaPropiedad = new JMenuItem("Nueva propiedad");
+		mnPropiedades.add(mnNuevaPropiedad);
+		
+		JMenuItem mnVerPropiedades = new JMenuItem("Ver propiedades");
+		mnPropiedades.add(mnVerPropiedades);
 	}
 	
 	public vMain() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 700, 218);
+		setBounds(100, 100, 700, 472);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

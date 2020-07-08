@@ -1,26 +1,22 @@
 package ventanas;
 
 import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
-
 import clases.DAOPersona;
 import clases.DAOPersonaImpl;
 import clases.Persona;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 public class vVerClientes extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private DefaultTableModel modelo;
 	private JTable table;
@@ -42,7 +38,7 @@ public class vVerClientes extends JFrame {
             };
 
             @Override
-            public Class getColumnClass(int columnIndex) {
+            public Class<?> getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
 

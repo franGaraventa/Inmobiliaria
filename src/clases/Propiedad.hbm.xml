@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 07-jul-2020 18:40:55 by Hibernate Tools 5.4.14.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+    <class catalog="Inmobiliaria" dynamic-insert="false" dynamic-update="false" mutable="true" name="clases.Propiedad" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="propiedad">
+        <id name="id" type="int">
+            <column name="id"/>
+            <generator class="assigned"/>
+        </id>
+        <property generated="never" lazy="false" name="valor" optimistic-lock="true" type="int" unique="false">
+            <column name="valor" not-null="true" precision="7" scale="0"/>
+        </property>
+        <property generated="never" lazy="false" name="supLote" optimistic-lock="true" type="int" unique="false">
+            <column name="supLote" not-null="true" precision="5" scale="0"/>
+        </property>
+        <property generated="never" lazy="false" name="supCubierta" optimistic-lock="true" type="int" unique="false">
+            <column name="supCubierta" not-null="true" precision="5" scale="0"/>
+        </property>
+        <property generated="never" lazy="false" name="informacion" optimistic-lock="true" type="string" unique="false">
+            <column length="150" name="informacion" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="amoblado" optimistic-lock="true" type="boolean" unique="false">
+            <column name="amoblado" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="alquilado" optimistic-lock="true" type="boolean" unique="false">
+            <column name="alquilado" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="ubicacion" optimistic-lock="true" type="int" unique="false">
+            <column name="ubicacion" not-null="true"/>
+        </property>
+        
+    </class>
+</hibernate-mapping>

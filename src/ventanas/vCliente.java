@@ -1,20 +1,11 @@
 package ventanas;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import org.hibernate.Session;
-
 import clases.DAOPersona;
 import clases.DAOPersonaImpl;
 import clases.Persona;
-import utils.HibernateUtils;
-
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -24,6 +15,7 @@ import java.awt.event.ActionEvent;
 
 public class vCliente extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtDNI;
 	private JTextField txtNombre;
