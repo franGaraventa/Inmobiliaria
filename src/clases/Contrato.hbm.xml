@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 10-jul-2020 15:31:50 by Hibernate Tools 5.4.14.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+    <class catalog="Inmobiliaria" dynamic-insert="false" dynamic-update="false" mutable="true" name="clases.Contrato" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="contrato">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        <property generated="never" lazy="false" name="plazo" optimistic-lock="true" type="int" unique="false">
+            <column name="plazo" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="fechaFirma" optimistic-lock="true" type="date" unique="false">
+            <column length="10" name="fechaFirma" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="fechaInicio" optimistic-lock="true" type="date" unique="false">
+            <column length="10" name="fechaInicio" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="fechaFinalizacion" optimistic-lock="true" type="date" unique="false">
+            <column length="10" name="fechaFinalizacion" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="locador" optimistic-lock="true" type="string" unique="false">
+            <column length="30" name="locador" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="locatario" optimistic-lock="true" type="int" unique="false">
+            <column name="locatario" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="precio" optimistic-lock="true" type="int" unique="false">
+            <column name="precio" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="fechaMaxPago" optimistic-lock="true" type="java.lang.Integer" unique="false">
+            <column name="fechaMaxPago"/>
+        </property>
+        <property generated="never" lazy="false" name="locacion" optimistic-lock="true" type="int" unique="false">
+            <column name="locacion" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="garantia" optimistic-lock="true" type="int" unique="false">
+            <column name="garantia" not-null="true" precision="7" scale="0"/>
+        </property>
+        <property generated="never" lazy="false" name="gastosInmobiliaria" optimistic-lock="true" type="int" unique="false">
+            <column name="gastosInmobiliaria" not-null="true" precision="7" scale="0"/>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,9 +1,6 @@
 package ventanas;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -11,12 +8,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
-import clases.DAOPersona;
-import clases.DAOPersonaImpl;
 import clases.DAOPropiedad;
 import clases.DAOPropiedadImpl;
-import clases.Persona;
 import clases.Propiedad;
 import clases.Tablas;
 
@@ -26,14 +19,18 @@ import java.awt.event.ActionEvent;
 
 public class vVerPropiedades extends JFrame {
 
+	private static final long serialVersionUID = 1L;
+	
 	private JPanel contentPane;
 	private JTable table;
 	private DefaultTableModel modelo;
 
+	@SuppressWarnings("serial")
 	private void crearModelo() {
 		try {
         modelo = (new DefaultTableModel(null, new Object[]{"ID","Valor","Sup Lote","Sup Cubierta","Alquilado"}){
-            Class[] types = new Class[]{
+            @SuppressWarnings("rawtypes")
+			Class[] types = new Class[]{
                 java.lang.Integer.class,
                 java.lang.Double.class,
                 java.lang.Double.class,

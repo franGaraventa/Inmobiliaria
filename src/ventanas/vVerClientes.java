@@ -15,9 +15,7 @@ import clases.Tablas;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.BoxLayout;
 
 public class vVerClientes extends JFrame {
 
@@ -27,10 +25,12 @@ public class vVerClientes extends JFrame {
 	private JTable table;
 	private JButton btnEliminar;
 	
+	@SuppressWarnings("serial")
 	private void crearModelo() {
 		try {
         modelo = (new DefaultTableModel(null, new Object[]{"DNI","Nombre","Apellido","Email","Cod Area","Telefono"}){
-            Class[] types = new Class[]{
+            @SuppressWarnings("rawtypes")
+			Class[] types = new Class[]{
                 java.lang.String.class,
                 java.lang.String.class,
                 java.lang.String.class,

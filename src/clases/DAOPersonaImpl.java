@@ -1,6 +1,5 @@
 package clases;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -11,6 +10,7 @@ import org.hibernate.Transaction;
 
 import utils.HibernateUtils;
 
+@SuppressWarnings("deprecation")
 public class DAOPersonaImpl implements DAOPersona{
 
 	private static Session session;
@@ -19,7 +19,9 @@ public class DAOPersonaImpl implements DAOPersona{
 	public List<Persona> getPersonas() {
 		session = HibernateUtils.getSessionFactory().openSession();
 		session.beginTransaction();
+		@SuppressWarnings("rawtypes")
 		Query query = session.createQuery("SELECT p FROM Persona p");
+		@SuppressWarnings("unchecked")
 		List<Persona> list_persona  = query.list();
 		session.getTransaction().commit();
 		session.close();

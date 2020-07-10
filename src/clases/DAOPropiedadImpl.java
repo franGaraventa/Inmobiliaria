@@ -10,6 +10,7 @@ import org.hibernate.Transaction;
 
 import utils.HibernateUtils;
 
+@SuppressWarnings("deprecation")
 public class DAOPropiedadImpl implements DAOPropiedad{
 
 	private static Session session;
@@ -18,7 +19,9 @@ public class DAOPropiedadImpl implements DAOPropiedad{
 	public List<Propiedad> getPropiedades() {
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
+		@SuppressWarnings("rawtypes")
 		Query query = session.createQuery("from Propiedad"); 
+		@SuppressWarnings("unchecked")
 		List<Propiedad> propiedades = query.list();
 		tx.commit();
 		return propiedades;
@@ -69,9 +72,12 @@ public class DAOPropiedadImpl implements DAOPropiedad{
 	@Override
 	public List<Propiedad> getPropiedad(Ubicacion u) {
 		session = HibernateUtils.getSessionFactory().openSession();
+		@SuppressWarnings("unused")
 		Transaction tx = session.beginTransaction();
+		@SuppressWarnings("rawtypes")
 		Query query = session.createQuery("select propiedad from Propiedad as propiedad inner join Ubicacion as ubicacion where ubicacion.id = :id");
 		query.setParameter("id", u.getId());
+		@SuppressWarnings("unchecked")
 		List<Propiedad> propiedades = query.list();
 		return propiedades;
 	}

@@ -59,9 +59,11 @@ public class DAOImagenImpl implements DAOImagen{
         Transaction tx = session.getTransaction();
         tx.begin();
         try {
-        	Query query = session.createQuery("from Imagen where propiedadId = :id AND pathImg = :path");
+        	@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("from Imagen where propiedadId = :id AND pathImg = :path");
     		query.setParameter("id", p.getId());
     		query.setParameter("path", path);
+			@SuppressWarnings("unchecked")
 			List<Imagen> img = query.list(); 
     		if(img.size() != 0){
 		        return true;
@@ -84,7 +86,8 @@ public class DAOImagenImpl implements DAOImagen{
         Transaction tx = session.getTransaction();
         tx.begin();
         try {
-        	Query query = session.createQuery("delete from Imagen where propiedadId = :id AND pathImg = :path");
+        	@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("delete from Imagen where propiedadId = :id AND pathImg = :path");
     		query.setParameter("id", p.getId());
     		query.setParameter("path", path);
     		query.executeUpdate();
@@ -127,9 +130,11 @@ public class DAOImagenImpl implements DAOImagen{
         Transaction tx = session.getTransaction();
         tx.begin();
         try {
-        	Query query = session.createQuery("from Imagen where propiedadId = :id AND pathImg = :path");
+        	@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("from Imagen where propiedadId = :id AND pathImg = :path");
     		query.setParameter("id", p.getId());
     		query.setParameter("path", path);
+			@SuppressWarnings("unchecked")
 			List<Imagen> img = query.list(); 
     		if(img.size() != 0){
 		        return img.get(0).getId();
