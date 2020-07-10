@@ -4,15 +4,20 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import clases.DAOPersona;
 import clases.DAOPersonaImpl;
 import clases.Persona;
+import clases.Tablas;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import javax.swing.BoxLayout;
 
 public class vVerClientes extends JFrame {
 
@@ -61,29 +66,12 @@ public class vVerClientes extends JFrame {
 			}
 		}
 		table.setModel(modelo);
+		table.getColumnModel().getColumn(3).setPreferredWidth(200);
 	}
 	
-	private Persona getPersona() {
-		int row = table.getSelectedRow();
-		if (row == -1) {
-			JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna persona");
-		}else {
-			DefaultTableModel model =(DefaultTableModel) table.getModel();
-			String dni = (String)model.getValueAt(row, 0);
-			String nombre =(String)model.getValueAt(row, 1);
-			String apellido = (String)model.getValueAt(row, 2);
-			String email = (String)model.getValueAt(row, 3);
-			String codArea = (String)model.getValueAt(row, 4);
-			String Telefono = (String)model.getValueAt(row, 5);
-			Persona p = new Persona(dni,nombre,apellido,email,codArea,Telefono);
-			return p;
-		}
-		return null;
-	}
-	
-	public static boolean isEmpty(JTable jTable) {
-        if (jTable != null && jTable.getModel() != null) {
-            return jTable.getModel().getRowCount()<=0?true:false;
+	public static boolean isEmpty(JTable table) {
+        if (table != null && table.getModel() != null) {
+            return table.getModel().getRowCount()<=0?true:false;
         }
         return false;
     }
@@ -100,46 +88,69 @@ public class vVerClientes extends JFrame {
 		JButton btnModificar = new JButton("MODIFICAR");
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Persona p = getPersona();
-				if (p != null) {
-					vCliente vcliente = new vCliente(p);
-					vcliente.setVisible(true);
-					table.clearSelection();
+				int row = table.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna persona");
+				}else {
+					DAOPersona ipersona = new DAOPersonaImpl();
+					Persona p = ipersona.obtenerPersona((String)modelo.getValueAt(row, 0));
+					if (p != null) {
+						vCliente vcliente = new vCliente(p,table);
+						vcliente.setVisible(true);
+						table.clearSelection();
+					}
 				}
 			}
 		});
-		btnModificar.setBounds(766, 304, 108, 23);
+		contentPane.setLayout(null);
+		btnModificar.setBounds(420, 361, 97, 23);
 		contentPane.add(btnModificar);
 		habilitarButton(btnModificar);
 		
 		btnEliminar = new JButton("ELIMINAR");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DAOPersona ipersona = new DAOPersonaImpl();
-				Persona p = getPersona();
-				if (p != null) {
-					ipersona.eliminar(p);
-					table.clearSelection();
+				int row = table.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna persona");
+				}else {
+					int input = JOptionPane.showConfirmDialog(null, "Desea eliminar el usuario seleccionado?","Elija una opcion",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+					if (input == 0){
+						DAOPersona ipersona = new DAOPersonaImpl();
+						Persona p = ipersona.obtenerPersona((String)modelo.getValueAt(row, 0));
+						if (p != null) {
+							ipersona.eliminar(p);
+							table.clearSelection();	
+							Tablas.actualizarTPersona(table);
+						}
+					}else {
+						table.clearSelection();
+					}
 				}
 			}
 		});
-		btnEliminar.setBounds(648, 304, 108, 23);
+		btnEliminar.setBounds(522, 361, 97, 23);
 		contentPane.add(btnEliminar);
 		habilitarButton(btnEliminar);
 	}
 	
-	public vVerClientes() {
+	public void cargarVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 900, 377);
+		setBounds(100, 100, 657, 430);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
+
 		table = new JTable();
-		table.setBounds(21, 11, 853, 282);
-		contentPane.add(table);
+		JScrollPane scroll = new JScrollPane();
+		scroll.setViewportView(table);
+		scroll.setBounds(31,5,588,345);
+		contentPane.add(scroll);
+	}
+	
+	public vVerClientes() {
+		cargarVentana();
 		crearModelo();
 		cargarTabla();
 		definirButtons();

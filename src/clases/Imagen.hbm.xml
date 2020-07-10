@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 10-jul-2020 15:01:34 by Hibernate Tools 5.4.14.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+    <class catalog="Inmobiliaria" dynamic-insert="false" dynamic-update="false" mutable="true" name="clases.Imagen" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="imagen">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        <property generated="never" lazy="false" name="pathImg" optimistic-lock="true" type="string" unique="false">
+            <column length="30" name="pathImg" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="imagen" optimistic-lock="true" type="binary" unique="false">
+            <column name="imagen" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="propiedadId" optimistic-lock="true" type="java.lang.Integer" unique="false">
+            <column name="propiedadId"/>
+        </property>
+    </class>
+</hibernate-mapping>

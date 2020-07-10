@@ -31,12 +31,26 @@ public class DAOPersonaImpl implements DAOPersona{
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			session.save(p);
-			tx.commit();
-			JOptionPane.showMessageDialog(null,
-			        "Cliente agregado correctamente",
-			        "Cliente agregado",
-			        JOptionPane.INFORMATION_MESSAGE);
+			Persona persona = session.get(Persona.class, p.getDni());
+			if (persona != null) {
+				if (persona.getDni().equals(p.getDni())) {
+					session.save(p);
+					tx.commit();
+					JOptionPane.showMessageDialog(null,
+							"Cliente agregado correctamente",
+							"Cliente agregado",
+							JOptionPane.INFORMATION_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(null, "El DNI ya fue ingresado","DNI Repetido",JOptionPane.WARNING_MESSAGE);
+				}
+			}else {
+				session.save(p);
+				tx.commit();
+				JOptionPane.showMessageDialog(null,
+						"Cliente agregado correctamente",
+						"Cliente agregado",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		}catch(Exception e) {
 			if (tx != null) {
 	            tx.rollback();
@@ -52,7 +66,7 @@ public class DAOPersonaImpl implements DAOPersona{
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			session.update(p);
+			session.merge(p);
 			tx.commit();
 			JOptionPane.showMessageDialog(null,
 			        "Cliente modificado correctamente",
@@ -77,7 +91,10 @@ public class DAOPersonaImpl implements DAOPersona{
 			 Persona persona = session.get(Persona.class, p.getDni());
 			 if(persona != null){
 		        session.delete(persona);
-		        System.out.println("Borrado");
+		        JOptionPane.showMessageDialog(null,
+				        "Cliente eliminado correctamente",
+				        "Cliente eliminado",
+				        JOptionPane.INFORMATION_MESSAGE);
 		     }
 			 tx.commit();
 		}catch(Exception e) {
@@ -88,6 +105,26 @@ public class DAOPersonaImpl implements DAOPersona{
 		}finally {
 			session.close();
 		}
+	}
+
+	@Override
+	public Persona obtenerPersona(String dni) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+			 Persona persona = session.get(Persona.class, dni);
+			 tx.commit();
+			 return persona;
+        }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return null;
 	}
 
 }

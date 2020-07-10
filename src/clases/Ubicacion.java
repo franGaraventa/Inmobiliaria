@@ -1,8 +1,11 @@
 package clases;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
@@ -25,6 +28,10 @@ public class Ubicacion implements java.io.Serializable {
 	@Column(name="direccion")
 	private String direccion;
 
+	@OneToOne(cascade=CascadeType.ALL)
+	@PrimaryKeyJoinColumn
+	private Propiedad propiedad;
+	
 	public Ubicacion() {
 	}
 
@@ -76,4 +83,11 @@ public class Ubicacion implements java.io.Serializable {
 		this.direccion = direccion;
 	}
 
+	public Propiedad getPropiedad() {
+		return this.propiedad;
+	}
+	
+	public void setPropiedad(Propiedad p) {
+		this.propiedad = p;
+	}
 }

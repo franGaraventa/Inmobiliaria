@@ -2,15 +2,21 @@ package ventanas;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
 import clases.DAOPersona;
 import clases.DAOPersonaImpl;
 import clases.Persona;
+import clases.Tablas;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class vCliente extends JFrame {
@@ -25,6 +31,8 @@ public class vCliente extends JFrame {
 	private JTextField txtTelefono;
 	private JButton btnGuardar;
 	private JButton btnModificar;
+	
+	private JTable table;
 
 	public void definirLabels() {
 		JLabel lblNewLabel = new JLabel("DNI");
@@ -98,6 +106,7 @@ public class vCliente extends JFrame {
 				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText());
 				ipersona.guardar(p);
 				limpiarCampos();
+				dispose();
 			}
 		});
 		btnGuardar.setBounds(154, 208, 110, 23);
@@ -109,7 +118,9 @@ public class vCliente extends JFrame {
 				DAOPersona ipersona = new DAOPersonaImpl();
 				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText());
 				ipersona.modificar(p);
+				Tablas.actualizarTPersona(table);
 				limpiarCampos();
+				dispose();
 			}
 		});
 		btnModificar.setBounds(154, 208, 110, 23);
@@ -157,9 +168,11 @@ public class vCliente extends JFrame {
 	}
 	
 	/*CONTRUCTOR PARA MODIFICAR CLIENTE*/
-	public vCliente(Persona p) {
+	public vCliente(Persona p,JTable tabla) {
 		definirVentana();
 		cargarText(p);
+		txtDNI.setEnabled(false);
+		table = tabla;
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(false);
 		btnModificar.setVisible(true);

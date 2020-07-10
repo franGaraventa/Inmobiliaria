@@ -1,11 +1,16 @@
 package clases;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -20,13 +25,13 @@ public class Propiedad implements java.io.Serializable {
 	private int id;
 	
 	@Column(name="valor")
-	private int valor;
+	private double valor;
 	
 	@Column(name="supLote")
-	private int supLote;
+	private double supLote;
 	
 	@Column(name="supCubierta")
-	private int supCubierta;
+	private double supCubierta;
 	
 	@Column(name="informacion")
 	private String informacion;
@@ -41,10 +46,14 @@ public class Propiedad implements java.io.Serializable {
 	@PrimaryKeyJoinColumn
 	private Ubicacion ubicacion;
 
+	@OneToMany(cascade= CascadeType.ALL)
+	@JoinColumn(name="propiedadId")
+	private List<Imagen> imagenes;
+	
 	public Propiedad() {
 	}
 
-	public Propiedad(int id, int valor, int supLote, int supCubierta, String informacion, boolean amoblado,
+	public Propiedad(int id,double valor, double supLote, double supCubierta, String informacion, boolean amoblado,
 			boolean alquilado) {
 		this.id = id;
 		this.valor = valor;
@@ -53,6 +62,7 @@ public class Propiedad implements java.io.Serializable {
 		this.informacion = informacion;
 		this.amoblado = amoblado;
 		this.alquilado = alquilado;
+		this.imagenes = new ArrayList<Imagen>();
 	}
 
 	public int getId() {
@@ -63,7 +73,7 @@ public class Propiedad implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public int getValor() {
+	public double getValor() {
 		return this.valor;
 	}
 
@@ -71,7 +81,7 @@ public class Propiedad implements java.io.Serializable {
 		this.valor = valor;
 	}
 
-	public int getSupLote() {
+	public double getSupLote() {
 		return this.supLote;
 	}
 
@@ -79,7 +89,7 @@ public class Propiedad implements java.io.Serializable {
 		this.supLote = supLote;
 	}
 
-	public int getSupCubierta() {
+	public double getSupCubierta() {
 		return this.supCubierta;
 	}
 
@@ -119,4 +129,11 @@ public class Propiedad implements java.io.Serializable {
 		return this.ubicacion;
 	}
 
+	public List<Imagen> getImagenes(){
+		return this.imagenes;
+	}
+	
+	public void setImagenes(List<Imagen> imagenes) {
+		this.imagenes = imagenes;
+	}
 }

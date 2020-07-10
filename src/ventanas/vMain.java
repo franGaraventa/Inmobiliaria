@@ -57,9 +57,21 @@ public class vMain extends JFrame {
 		menuBar.add(mnPropiedades);
 		
 		JMenuItem mnNuevaPropiedad = new JMenuItem("Nueva propiedad");
+		mnNuevaPropiedad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				vPropiedad vpropiedad = new vPropiedad();
+				vpropiedad.setVisible(true);
+			}
+		});
 		mnPropiedades.add(mnNuevaPropiedad);
 		
 		JMenuItem mnVerPropiedades = new JMenuItem("Ver propiedades");
+		mnVerPropiedades.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				vVerPropiedades vpropiedades = new vVerPropiedades();
+				vpropiedades.setVisible(true);
+			}
+		});
 		mnPropiedades.add(mnVerPropiedades);
 	}
 	

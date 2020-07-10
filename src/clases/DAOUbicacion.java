@@ -8,5 +8,5 @@ public interface DAOUbicacion {
 	public void agregar(Ubicacion u);
 	public void modificar(Ubicacion u);
 	public void eliminar(Ubicacion u);
-	
+	public int cantidadFilas();
 }
