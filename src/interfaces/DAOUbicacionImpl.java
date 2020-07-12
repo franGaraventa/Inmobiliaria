@@ -1,4 +1,4 @@
-package clases;
+package interfaces;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import clases.Ubicacion;
 import utils.HibernateUtils;
 
 @SuppressWarnings("deprecation")

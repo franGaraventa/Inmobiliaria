@@ -1,4 +1,4 @@
-package clases;
+package interfaces;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import clases.Propiedad;
+import clases.Ubicacion;
 import utils.HibernateUtils;
 
 @SuppressWarnings("deprecation")
@@ -143,6 +145,17 @@ public class DAOPropiedadImpl implements DAOPropiedad{
 			session.close();
 		}	
 		return 0;
+	}
+
+	@Override
+	public List<Propiedad> obtenerPropiedades(boolean alquilado) {
+		session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.beginTransaction();
+		Query query = session.createQuery("from Propiedad where alquilado = :alquilado");
+		query.setParameter("alquilado", alquilado);
+		List<Propiedad> propiedades = query.list();
+		tx.commit();
+		return propiedades;
 	}
 
 }

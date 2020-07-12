@@ -1,6 +1,8 @@
-package clases;
+package interfaces;
 
 import java.util.List;
+
+import clases.Ubicacion;
 
 public interface DAOUbicacion {
 

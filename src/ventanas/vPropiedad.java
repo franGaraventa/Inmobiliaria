@@ -5,15 +5,15 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
-import clases.DAOImagen;
-import clases.DAOImagenImpl;
-import clases.DAOPropiedad;
-import clases.DAOPropiedadImpl;
 import clases.Imagen;
 import clases.ImagenPropiedad;
 import clases.Propiedad;
 import clases.Tablas;
 import clases.Ubicacion;
+import interfaces.DAOImagen;
+import interfaces.DAOImagenImpl;
+import interfaces.DAOPropiedad;
+import interfaces.DAOPropiedadImpl;
 import utils.FileTypeFilter;
 
 import javax.swing.JLabel;

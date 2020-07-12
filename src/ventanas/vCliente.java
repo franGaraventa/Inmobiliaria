@@ -4,10 +4,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
-import clases.DAOPersona;
-import clases.DAOPersonaImpl;
+
 import clases.Persona;
 import clases.Tablas;
+import interfaces.DAOPersona;
+import interfaces.DAOPersonaImpl;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;

@@ -1,4 +1,4 @@
-package clases;
+package interfaces;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import clases.Imagen;
+import clases.Propiedad;
 import utils.HibernateUtils;
 
 @SuppressWarnings("deprecation")

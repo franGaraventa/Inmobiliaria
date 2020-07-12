@@ -1,6 +1,8 @@
-package clases;
+package interfaces;
 
 import java.util.List;
+
+import clases.Persona;
 
 public interface DAOPersona {
 	public List<Persona> getPersonas();

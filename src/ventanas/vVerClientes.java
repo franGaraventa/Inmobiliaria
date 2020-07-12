@@ -8,10 +8,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import clases.DAOPersona;
-import clases.DAOPersonaImpl;
+
 import clases.Persona;
 import clases.Tablas;
+import interfaces.DAOPersona;
+import interfaces.DAOPersonaImpl;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;

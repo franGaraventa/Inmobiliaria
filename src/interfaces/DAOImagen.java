@@ -1,6 +1,9 @@
-package clases;
+package interfaces;
 
 import java.util.List;
+
+import clases.Imagen;
+import clases.Propiedad;
 
 public interface DAOImagen {
 

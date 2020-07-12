@@ -5,6 +5,11 @@ import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import interfaces.DAOPersona;
+import interfaces.DAOPersonaImpl;
+import interfaces.DAOPropiedad;
+import interfaces.DAOPropiedadImpl;
+
 public class Tablas {
 
 	public static void actualizarTPersona(JTable tabla) {

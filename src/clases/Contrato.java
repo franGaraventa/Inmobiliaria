@@ -1,11 +1,14 @@
 package clases;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 
@@ -35,18 +38,20 @@ public class Contrato implements java.io.Serializable {
 	@Column(name="locador")
 	private String locador;
 	
-	
+	@OneToOne(cascade=CascadeType.ALL)
+	@PrimaryKeyJoinColumn
 	private Persona locatario;
 	
-	
+	@OneToOne(cascade=CascadeType.ALL)
+	@PrimaryKeyJoinColumn
 	private TipoPrecio precio;
 	
 	@Column(name="fechaMaxPago")
 	private int fechaMaxPago;
 	
-	
+	@OneToOne(cascade=CascadeType.ALL)
+	@PrimaryKeyJoinColumn
 	private Propiedad locacion;
-	
 	
 	@Column(name="garantia")
 	private double garantia;
@@ -57,9 +62,8 @@ public class Contrato implements java.io.Serializable {
 	public Contrato() {
 	}
 
-	public Contrato(int id,int plazo, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, String locador, Persona locatario,
+	public Contrato(int plazo, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, String locador, Persona locatario,
 			TipoPrecio precio, Propiedad locacion, int garantia, int gastosInmobiliaria) {
-		this.id = id;
 		this.plazo = plazo;
 		this.fechaFirma = fechaFirma;
 		this.fechaInicio = fechaInicio;
