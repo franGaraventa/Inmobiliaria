@@ -73,6 +73,27 @@ public class vMain extends JFrame {
 			}
 		});
 		mnPropiedades.add(mnVerPropiedades);
+		
+		JMenu mnContratos = new JMenu("Contratos");
+		menuBar.add(mnContratos);
+		
+		JMenuItem mnNuevoContrato = new JMenuItem("Nuevo Contrato");
+		mnNuevoContrato.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				vContrato vcontrato = new vContrato();
+				vcontrato.setVisible(true);
+			}
+		});
+		mnContratos.add(mnNuevoContrato);
+		
+		JMenuItem mnVerContratos = new JMenuItem("Ver Contratos");
+		mnVerContratos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				vVerContratos vvercontratos = new vVerContratos();
+				vvercontratos.setVisible(true);
+			}
+		});	
+		mnContratos.add(mnVerContratos);
 	}
 	
 	public vMain() {

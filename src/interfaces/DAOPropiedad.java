@@ -12,7 +12,6 @@ public interface DAOPropiedad {
 	public void modificar(Propiedad p);
 	public List<Propiedad> getPropiedad(Ubicacion u);
 	public Propiedad obtenerPropiedad(int id); 
-	public List<Propiedad> obtenerPropiedades(boolean alquilado);
 	public void eliminar(Propiedad p);
 	public int getUltimoIndice();
 	

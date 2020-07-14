@@ -1,6 +1,5 @@
 package ventanas;
 
-import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -13,6 +12,7 @@ import clases.Persona;
 import clases.Tablas;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
+import utils.TableModels;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -25,50 +25,6 @@ public class vVerClientes extends JFrame {
 	private DefaultTableModel modelo;
 	private JTable table;
 	private JButton btnEliminar;
-	
-	@SuppressWarnings("serial")
-	private void crearModelo() {
-		try {
-        modelo = (new DefaultTableModel(null, new Object[]{"DNI","Nombre","Apellido","Email","Cod Area","Telefono"}){
-            @SuppressWarnings("rawtypes")
-			Class[] types = new Class[]{
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class,
-            };
-            boolean[] canEdit = new boolean[]{
-                false, false, false, false, false, false
-            };
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int colIndex) {
-                return canEdit[colIndex];
-            }
-        });
-		}catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.toString());
-    	}
-	}
-	
-	private void cargarTabla() {
-		DAOPersona ipersona = new DAOPersonaImpl();
-		List<Persona> clientes = ipersona.getPersonas();
-		if (!clientes.isEmpty()){
-			for (Persona p : clientes) {
-				modelo.addRow(new Object[] {p.getDni(),p.getNombre(),p.getApellido(),p.getEmail(),p.getCodArea(),p.getTelefono()});
-			}
-		}
-		table.setModel(modelo);
-		table.getColumnModel().getColumn(3).setPreferredWidth(200);
-	}
 	
 	public static boolean isEmpty(JTable table) {
         if (table != null && table.getModel() != null) {
@@ -152,8 +108,13 @@ public class vVerClientes extends JFrame {
 	
 	public vVerClientes() {
 		cargarVentana();
-		crearModelo();
-		cargarTabla();
+		/*CARGO EL MODELO Y LOS DATOS DENTRO DE UNA TABLA*/
+		modelo = TableModels.crearModeloPersona(modelo);
+		table.setModel(modelo);
+		Tablas.actualizarTPersona(table);
+		table.getColumnModel().getColumn(3).setPreferredWidth(200);
+		table.getColumnModel().getColumn(4).setPreferredWidth(75);
+		/*---------------------------------------------------------*/
 		definirButtons();
 	}
 }

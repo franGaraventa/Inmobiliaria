@@ -16,8 +16,8 @@ public class PrecioCompleto extends TipoPrecio implements java.io.Serializable {
 	public PrecioCompleto() {
 	}
 
-	public PrecioCompleto(double precio_base,double expensas,int cantMesesContrato) {
-		super(precio_base,expensas);
+	public PrecioCompleto(int id,double precio_base,double expensas,int cantMesesContrato) {
+		super(id,precio_base,expensas);
 		this.cantMesesContrato = cantMesesContrato;
 	}
 

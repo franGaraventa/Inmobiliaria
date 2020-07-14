@@ -41,9 +41,6 @@ public class Propiedad implements java.io.Serializable {
 	@Column(name="amoblado")
 	private boolean amoblado;
 	
-	@Column(name="alquilado")
-	private boolean alquilado;
-	
 	@OneToOne(cascade=CascadeType.ALL)
 	@PrimaryKeyJoinColumn
 	private Ubicacion ubicacion;
@@ -55,15 +52,13 @@ public class Propiedad implements java.io.Serializable {
 	public Propiedad() {
 	}
 
-	public Propiedad(int id,double valor, double supLote, double supCubierta, String informacion, boolean amoblado,
-			boolean alquilado) {
+	public Propiedad(int id,double valor, double supLote, double supCubierta, String informacion, boolean amoblado) {
 		this.id = id;
 		this.valor = valor;
 		this.supLote = supLote;
 		this.supCubierta = supCubierta;
 		this.informacion = informacion;
 		this.amoblado = amoblado;
-		this.alquilado = alquilado;
 		this.imagenes = new ArrayList<Imagen>();
 	}
 
@@ -79,7 +74,7 @@ public class Propiedad implements java.io.Serializable {
 		return this.valor;
 	}
 
-	public void setValor(int valor) {
+	public void setValor(double valor) {
 		this.valor = valor;
 	}
 
@@ -113,14 +108,6 @@ public class Propiedad implements java.io.Serializable {
 
 	public void setAmoblado(boolean amoblado) {
 		this.amoblado = amoblado;
-	}
-
-	public boolean isAlquilado() {
-		return this.alquilado;
-	}
-
-	public void setAlquilado(boolean alquilado) {
-		this.alquilado = alquilado;
 	}
 
 	public void setUbicacion(Ubicacion u) {

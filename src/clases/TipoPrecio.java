@@ -27,11 +27,11 @@ public abstract class TipoPrecio implements java.io.Serializable {
 	@Column(name="expensas")
 	private double expensas;
 	
-
 	public TipoPrecio() {
 	}
 
-	public TipoPrecio(double precio_base, double expensas) {
+	public TipoPrecio(int id,double precio_base, double expensas) {
+		this.id = id;
 		this.precio_base = precio_base;
 		this.expensas = expensas;
 	}

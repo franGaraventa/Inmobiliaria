@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 
@@ -39,18 +39,18 @@ public class Contrato implements java.io.Serializable {
 	private String locador;
 	
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	@JoinColumn(name = "locatario", referencedColumnName = "dni")
 	private Persona locatario;
 	
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	@JoinColumn(name = "precio", referencedColumnName = "id")
 	private TipoPrecio precio;
 	
 	@Column(name="fechaMaxPago")
 	private int fechaMaxPago;
 	
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	@JoinColumn(name = "locacion", referencedColumnName = "id")
 	private Propiedad locacion;
 	
 	@Column(name="garantia")
@@ -63,7 +63,7 @@ public class Contrato implements java.io.Serializable {
 	}
 
 	public Contrato(int plazo, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, String locador, Persona locatario,
-			TipoPrecio precio, Propiedad locacion, int garantia, int gastosInmobiliaria) {
+			TipoPrecio precio, Propiedad locacion, double garantia, double gastosInmobiliaria) {
 		this.plazo = plazo;
 		this.fechaFirma = fechaFirma;
 		this.fechaInicio = fechaInicio;
@@ -75,12 +75,23 @@ public class Contrato implements java.io.Serializable {
 		this.garantia = garantia;
 		this.gastosInmobiliaria = gastosInmobiliaria;
 	}
+	
+	public Contrato(int plazo,int fechaMaxPago, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, String locador, double garantia, double gastosInmobiliaria) {
+		this.plazo = plazo;
+		this.fechaFirma = fechaFirma;
+		this.fechaInicio = fechaInicio;
+		this.fechaFinalizacion = fechaFinalizacion;
+		this.locador = locador;
+		this.garantia = garantia;
+		this.gastosInmobiliaria = gastosInmobiliaria;
+		this.fechaMaxPago = fechaMaxPago;
+	}
 
-	public Integer getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -140,11 +151,11 @@ public class Contrato implements java.io.Serializable {
 		this.precio = precio;
 	}
 
-	public Integer getFechaMaxPago() {
+	public int getFechaMaxPago() {
 		return this.fechaMaxPago;
 	}
 
-	public void setFechaMaxPago(Integer fechaMaxPago) {
+	public void setFechaMaxPago(int fechaMaxPago) {
 		this.fechaMaxPago = fechaMaxPago;
 	}
 

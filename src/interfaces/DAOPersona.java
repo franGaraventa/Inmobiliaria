@@ -10,4 +10,6 @@ public interface DAOPersona {
 	public void guardar(Persona p);
 	public void modificar(Persona p);
 	public void eliminar(Persona p);
+	public List<Persona> gerPersonas(String condicion);
+	
 }

@@ -10,5 +10,5 @@ public interface DAOTipoPrecio {
 	public void modificar(TipoPrecio tp);
 	public void eliminar(TipoPrecio tp);
 	public List<TipoPrecio> getTipoPrecios();
-	
+	public int getUltimoIndice();
 }

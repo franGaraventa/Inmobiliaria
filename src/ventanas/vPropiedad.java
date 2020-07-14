@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,6 @@ public class vPropiedad extends JFrame {
 	private JLabel lblImagenes;
 	private JTextPane txtInformacion;
 	private JCheckBox chkAmoblado;
-	private JCheckBox chkAlquilado;
 
 	private List<ImagenPropiedad> list_img;
 	private List<Imagen> list_imagenes;
@@ -159,7 +159,7 @@ public class vPropiedad extends JFrame {
 			list_img = new ArrayList<ImagenPropiedad>();
 			for (Imagen img: list_imagenes) {
 				try {
-					SerialBlob blob = (SerialBlob) img.getImagen();
+					Blob blob = (Blob) img.getImagen();
 					InputStream input = blob.getBinaryStream();
 					byte[] imagen = new byte[new Long(blob.length()).intValue()];
 					input.read(imagen);
@@ -237,11 +237,6 @@ public class vPropiedad extends JFrame {
 		chkAmoblado.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		chkAmoblado.setBounds(10, 444, 131, 23);
 		contentPane.add(chkAmoblado);
-		
-		chkAlquilado = new JCheckBox("ALQUILADO");
-		chkAlquilado.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		chkAlquilado.setBounds(143, 444, 131, 23);
-		contentPane.add(chkAlquilado);
 	}
 	
 	public void cargarButtons() {
@@ -321,7 +316,8 @@ public class vPropiedad extends JFrame {
 				}else {
 					id = p.getId();
 				}
-				Propiedad p = new Propiedad(id,valor,supLote,supCub,txtInformacion.getText(),chkAmoblado.isSelected(),chkAlquilado.isSelected());
+				System.out.println("ID: "+id);
+				Propiedad p = new Propiedad(id,valor,supLote,supCub,txtInformacion.getText(),chkAmoblado.isSelected());
 				Ubicacion u = new Ubicacion(id,txtCodPostal.getText(),txtDistrito.getText(),txtCiudad.getText(),txtDireccion.getText());
 				p.setUbicacion(u);
 				u.setPropiedad(p);
@@ -452,7 +448,6 @@ public class vPropiedad extends JFrame {
 		txtDireccion.setText(p.getUbicacion().getDireccion());
 		txtInformacion.setText(p.getInformacion());
 		chkAmoblado.setSelected(p.isAmoblado());
-		chkAlquilado.setSelected(p.isAlquilado());
 		DAOImagen iimagen = new DAOImagenImpl();
 		list_imagenes = iimagen.getImagenes(p);
 		cargarImg();
@@ -468,7 +463,6 @@ public class vPropiedad extends JFrame {
 		txtDireccion.setEnabled(enabled);
 		txtInformacion.setEnabled(enabled);
 		chkAmoblado.setEnabled(enabled);
-		chkAlquilado.setEnabled(enabled);
 		btnEliminar.setEnabled(enabled);
 	}
 	

@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -8,6 +9,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import clases.Contrato;
 import clases.Propiedad;
 import clases.Ubicacion;
 import utils.HibernateUtils;
@@ -22,10 +24,11 @@ public class DAOPropiedadImpl implements DAOPropiedad{
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
 		@SuppressWarnings("rawtypes")
-		Query query = session.createQuery("from Propiedad"); 
+		Query query = session.createQuery("SELECT p FROM Propiedad p"); 
 		@SuppressWarnings("unchecked")
 		List<Propiedad> propiedades = query.list();
 		tx.commit();
+		session.close();
 		return propiedades;
 	}
 
@@ -145,17 +148,6 @@ public class DAOPropiedadImpl implements DAOPropiedad{
 			session.close();
 		}	
 		return 0;
-	}
-
-	@Override
-	public List<Propiedad> obtenerPropiedades(boolean alquilado) {
-		session = HibernateUtils.getSessionFactory().openSession();
-		Transaction tx = session.beginTransaction();
-		Query query = session.createQuery("from Propiedad where alquilado = :alquilado");
-		query.setParameter("alquilado", alquilado);
-		List<Propiedad> propiedades = query.list();
-		tx.commit();
-		return propiedades;
 	}
 
 }

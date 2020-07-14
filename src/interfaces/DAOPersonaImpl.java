@@ -23,7 +23,7 @@ public class DAOPersonaImpl implements DAOPersona{
 		@SuppressWarnings("rawtypes")
 		Query query = session.createQuery("SELECT p FROM Persona p");
 		@SuppressWarnings("unchecked")
-		List<Persona> list_persona  = query.list();
+		List<Persona> list_persona  = query.list();		
 		session.getTransaction().commit();
 		session.close();
 		return list_persona;
@@ -128,6 +128,19 @@ public class DAOPersonaImpl implements DAOPersona{
 			session.close();
 		}
 		return null;
+	}
+
+	@Override
+	public List<Persona> gerPersonas(String condicion) {
+		session = HibernateUtils.getSessionFactory().openSession();
+		session.beginTransaction();
+		@SuppressWarnings("rawtypes")
+		Query query = session.createQuery(condicion);
+		@SuppressWarnings("unchecked")
+		List<Persona> list_persona  = query.list();
+		session.getTransaction().commit();
+		session.close();
+		return list_persona;
 	}
 
 }

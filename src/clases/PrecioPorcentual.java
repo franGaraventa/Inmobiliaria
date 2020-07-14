@@ -21,8 +21,8 @@ public class PrecioPorcentual extends TipoPrecio implements java.io.Serializable
 	public PrecioPorcentual() {
 	}
 
-	public PrecioPorcentual(double precio_base,double expensas) {
-		super(precio_base,expensas);
+	public PrecioPorcentual(int id,double precio_base,double expensas) {
+		super(id,precio_base,expensas);
 		this.fechas = new ArrayList<FechaPautada>();
 	}
 

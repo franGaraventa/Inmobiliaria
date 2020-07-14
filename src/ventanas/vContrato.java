@@ -1,6 +1,5 @@
 package ventanas;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -14,11 +13,20 @@ import com.toedter.calendar.JDateChooser;
 
 import clases.Contrato;
 import clases.FechaPautada;
+import clases.Persona;
 import clases.PrecioCompleto;
 import clases.PrecioPorcentual;
 import clases.Propiedad;
+import interfaces.DAOContrato;
+import interfaces.DAOContratoImpl;
+import interfaces.DAOPersona;
+import interfaces.DAOPersonaImpl;
 import interfaces.DAOPropiedad;
 import interfaces.DAOPropiedadImpl;
+import interfaces.DAOTipoPrecio;
+import interfaces.DAOTipoPrecioImpl;
+import utils.TableModels;
+
 import java.awt.Panel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,10 +39,6 @@ import javax.swing.JTable;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
@@ -54,23 +58,75 @@ public class vContrato extends JFrame {
 	private JComboBox<String> chkFormaPago;
 	private JDateChooser dcFechaInicio;
 	private JDateChooser dcFechaFinalizacion;
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					vContrato frame = new vContrato();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+	private JDateChooser dcFechaFirma;
+	private JComboBox<String> cbLocatario;
+	private JTextField txtExpensas;
+		
+	private boolean existeContrato(List<Contrato> contratos,Persona persona) {
+		for(Contrato c: contratos) {
+			if (c.getLocatario().getDni().equals(persona.getDni()))
+				return true;
+		}
+		return false;
+	}
+	
+	private boolean existeContrato(List<Contrato> contratos,Propiedad propiedad) {
+		for(Contrato c: contratos) {
+			if (c.getLocacion().getId() == propiedad.getId())
+				return true;
+		}
+		return false;
+	}
+	
+	private void cargarLocatarios() {
+		DAOContrato icontrato = new DAOContratoImpl();
+		DAOPersona ipersona = new DAOPersonaImpl();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		List<Contrato> contratos = icontrato.getContratos("from Contrato as c where "+format.format((new Date())) +"< c.fechaFinalizacion");
+		List<Persona> personas = ipersona.getPersonas();
+		List<Persona> p_aux = new ArrayList<Persona>();
+		for(Persona persona: personas) {
+			if (!existeContrato(contratos,persona)) {
+				p_aux.add(persona);
 			}
-		});
+		}
+		DefaultComboBoxModel<String> comboModelo = new DefaultComboBoxModel<String>();
+		if (!p_aux.isEmpty()) {
+			comboModelo.addElement("Seleccione un cliente...");
+			for (Persona p : p_aux) {
+				comboModelo.addElement(p.getDni()+"-"+p.getNombre()+","+p.getApellido());
+			}
+			cbLocatario.setModel(comboModelo);
+		}else {
+			comboModelo.addElement("No existen clientes disponibles");
+			cbLocatario.setModel(comboModelo);
+		}
+	}
+	
+	private void agregarPersona(Contrato c) {
+		String persona = (String) cbLocatario.getSelectedItem();
+		String[] parts = persona.split("-");
+		DAOPersona ipersona = new DAOPersonaImpl();
+		Persona p = ipersona.obtenerPersona(parts[0]);
+		c.setLocatario(p);
+	}
+
+	private void agregarLocacion(Contrato c) {
+		int row = table.getSelectedRow();
+		if (row == -1) {
+			JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna propiedad");
+		}else {
+			DAOPropiedad ipropiedad = new DAOPropiedadImpl();
+			Propiedad p = ipropiedad.obtenerPropiedad((Integer)modelo.getValueAt(row, 0));
+			c.setLocacion(p);
+		}
 	}
 	
 	/*FORMA DE PAGO DEL CONTRATO*/
-	private void agregarTipoPago(Contrato c,double expensas) {
+	private void agregarTipoPago(Contrato c) {
 		int seleccionado = chkFormaPago.getSelectedIndex();
+		DAOTipoPrecio iprecio = new DAOTipoPrecioImpl();
+		int id = iprecio.getUltimoIndice()+1;
 		if (seleccionado != -1) {
 			if (seleccionado == 1) {
 				Date fechaInicio = dcFechaInicio.getDate();
@@ -86,7 +142,7 @@ public class vContrato extends JFrame {
 					}
 				}
 				Double precio = c.getLocacion().getValor() / c.getPlazo();
-				PrecioPorcentual pp = new PrecioPorcentual(precio,expensas);
+				PrecioPorcentual pp = new PrecioPorcentual(id,precio,Double.valueOf(txtExpensas.getText()));
 				if (fechas.size() > 0) {
 					for(Date fecha: fechas){
 						String dato = JOptionPane.showInputDialog("Introduzca un porcentaje para la fecha: "+new SimpleDateFormat("dd/MM/yyyy").format(fecha));
@@ -96,12 +152,50 @@ public class vContrato extends JFrame {
 						pp.addFecha(fp);
 					}
 				}
+				iprecio.agregar(pp);
 				c.setPrecio(pp);
 			}else {
 				if (seleccionado == 2) {
-					PrecioCompleto pc = new PrecioCompleto(c.getLocacion().getValor(),expensas,Integer.parseInt(txtPlazo.getText()));
+					PrecioCompleto pc = new PrecioCompleto(id,c.getLocacion().getValor(),Double.valueOf(txtExpensas.getText()),Integer.parseInt(txtPlazo.getText()));
+					iprecio.agregar(pc);
 					c.setPrecio(pc);
 				}
+			}
+		}
+	}
+	
+	/*CREACION DE MODELO Y CARGADO DE ELEMENTOS A LA TABLA DE PROPIEDADES DISPONIBLES*/
+	
+	private void cargarTabla() {
+		DAOPropiedad ipropiedad = new DAOPropiedadImpl();
+		DAOContrato icontrato = new DAOContratoImpl();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		List<Contrato> contratos = icontrato.getContratos("from Contrato as c where "+format.format((new Date())) +"< c.fechaFinalizacion");
+		List<Propiedad> propiedades = ipropiedad.getPropiedades();
+		List<Propiedad> p_aux = new ArrayList<Propiedad>();
+		for(Propiedad propiedad: propiedades) {
+			if (!existeContrato(contratos,propiedad)) {
+				p_aux.add(propiedad);
+			}
+		}
+		if(!p_aux.isEmpty()) {
+			for (Propiedad p : p_aux) {
+				modelo.addRow(new Object[] {p.getId(),p.getValor(),p.getSupLote(),p.getSupCubierta(),p.getInformacion()});
+			}
+			table.setModel(modelo);
+		}
+	}
+	/*-------------------------------------------------------------------------------*/
+	
+	/*CALCULA LA CONDICION PARA CAMBIAR EL VALOR DEL DATECHOOSER FECHA FINALIZACION*/
+	private void calcularCondicion() {
+		Date fechaInicio = dcFechaInicio.getDate();
+		Date fechaFirma = dcFechaFirma.getDate();
+		if ((fechaInicio != null) && (fechaFirma != null)){
+			if ((fechaFirma.before(fechaInicio)) && (!txtPlazo.getText().isEmpty())){
+				calcularFechaFinalizacion(Integer.parseInt(txtPlazo.getText()));
+			}else {
+				dcFechaFinalizacion.setDate(null);
 			}
 		}
 	}
@@ -112,48 +206,7 @@ public class vContrato extends JFrame {
 		calendar.add(Calendar.MONTH, meses);
 		dcFechaFinalizacion.setDate(calendar.getTime());
 	}
-	
-	@SuppressWarnings("serial")
-	private void crearModelo() {
-		try {
-        modelo = (new DefaultTableModel(null, new Object[]{"ID","Valor","Sup Lote","Sup Cubierta","Informacion"}){
-            @SuppressWarnings("rawtypes")
-			Class[] types = new Class[]{
-                java.lang.Integer.class,
-                java.lang.Double.class,
-                java.lang.Double.class,
-                java.lang.Double.class,
-                java.lang.String.class,
-            };
-            boolean[] canEdit = new boolean[]{
-                false, false, false, false, false
-            };
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int colIndex) {
-                return canEdit[colIndex];
-            }
-        });
-		}catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.toString());
-    	}
-	}
-	
-	private void cargarTabla() {
-		DAOPropiedad ipropiedad = new DAOPropiedadImpl();
-		List<Propiedad> propiedades = ipropiedad.obtenerPropiedades(false);
-		if (!propiedades.isEmpty()){
-			for (Propiedad p : propiedades) {
-				modelo.addRow(new Object[] {p.getId(),p.getValor(),p.getSupLote(),p.getSupCubierta(),p.getInformacion()});
-			}
-		}
-		table.setModel(modelo);
-	}
+	/*-------------------------------------------------------------------------------*/
 	
 	private void cargarLabels() {
 		JLabel lblNewLabel = new JLabel("PLAZO");
@@ -216,6 +269,11 @@ public class vContrato extends JFrame {
 	private void cargarComponentes() {
 		txtPlazo = new JTextField();
 		txtPlazo.setBounds(84, 21, 86, 20);
+		txtPlazo.addActionListener(new ActionListener() {
+		      public void actionPerformed(ActionEvent e) {
+		    	  calcularCondicion();
+		      }
+		    });
 		contentPane.add(txtPlazo);
 		txtPlazo.setColumns(10);
 		
@@ -224,20 +282,24 @@ public class vContrato extends JFrame {
 		contentPane.add(pnlFechas);
 		pnlFechas.setLayout(null);
 		
-		JDateChooser dcFechaFirma = new JDateChooser();
+		dcFechaFirma = new JDateChooser();
 		dcFechaFirma.setBounds(173, 11, 139, 20);
 		pnlFechas.add(dcFechaFirma);
 		
 		dcFechaInicio = new JDateChooser();
-		dcFechaInicio.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-				calcularFechaFinalizacion(Integer.valueOf(txtPlazo.getText()));
-			}
-		});
 		dcFechaInicio.setBounds(175, 41, 139, 20);
 		pnlFechas.add(dcFechaInicio);
 		
 		dcFechaFinalizacion = new JDateChooser();
+		dcFechaInicio.getDateEditor().addPropertyChangeListener(
+				new PropertyChangeListener() {
+					@Override
+			        public void propertyChange(PropertyChangeEvent e) {
+						if ("date".equals(e.getPropertyName())){
+							calcularCondicion();
+						}
+			        }
+		});
 		dcFechaFinalizacion.setBounds(235, 70, 139, 20);
 		dcFechaFinalizacion.setEnabled(false);
 		pnlFechas.add(dcFechaFinalizacion);
@@ -247,8 +309,8 @@ public class vContrato extends JFrame {
 		txtLocador.setBounds(108, 160, 188, 20);
 		contentPane.add(txtLocador);
 		
-		JComboBox<String> cbLocatario = new JComboBox<String>();
-		cbLocatario.setBounds(118, 191, 178, 20);
+		cbLocatario = new JComboBox<String>();
+		cbLocatario.setBounds(118, 191, 253, 20);
 		contentPane.add(cbLocatario);
 		
 		chkFormaPago = new JComboBox<String>();
@@ -281,24 +343,46 @@ public class vContrato extends JFrame {
 		txtGastosInmobiliaria.setColumns(10);
 		txtGastosInmobiliaria.setBounds(213, 558, 97, 20);
 		contentPane.add(txtGastosInmobiliaria);
-		crearModelo();
-		cargarTabla();
 		
+		modelo = TableModels.crearModeloPropiedades(modelo);
+		cargarTabla();
+		cargarLocatarios();
 	}
 
 	private void cargarButtons() {
 		JButton btnGuardar = new JButton("GUARDAR");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				calcularFechaFinalizacion(Integer.valueOf(txtPlazo.getText()));
+				int plazo = Integer.parseInt(txtPlazo.getText());
+				double garantia = Double.valueOf(txtGarantia.getText());
+				double gastosInmobiliaria = Double.valueOf(txtGastosInmobiliaria.getText());
+				int fechaMaxPago = Integer.parseInt(txtMaxPago.getText());
+				Contrato c = new Contrato(plazo,fechaMaxPago,dcFechaFirma.getDate(),dcFechaInicio.getDate(),dcFechaFinalizacion.getDate(),txtLocador.getText(),
+						garantia,gastosInmobiliaria);
+				agregarLocacion(c);
+				agregarPersona(c);
+				agregarTipoPago(c);
+				DAOContrato icontrato = new DAOContratoImpl();
+				icontrato.agregar(c);
+				dispose();
 			}
 		});
-		btnGuardar.setBounds(544, 557, 89, 23);
+		btnGuardar.setBounds(536, 557, 97, 23);
 		contentPane.add(btnGuardar);
+		
+		JLabel lblExpensas = new JLabel("EXPENSAS");
+		lblExpensas.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblExpensas.setBounds(391, 224, 105, 22);
+		contentPane.add(lblExpensas);
+		
+		txtExpensas = new JTextField();
+		txtExpensas.setColumns(10);
+		txtExpensas.setBounds(485, 226, 86, 20);
+		contentPane.add(txtExpensas);
 	}
 	
 	private void cargarVentana() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 659, 628);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -308,7 +392,7 @@ public class vContrato extends JFrame {
 		cargarComponentes();
 		cargarLabels();
 		cargarButtons();
-
+		
 	}
 	
 	public vContrato() {
