@@ -316,17 +316,18 @@ public class vPropiedad extends JFrame {
 				}else {
 					id = p.getId();
 				}
-				System.out.println("ID: "+id);
 				Propiedad p = new Propiedad(id,valor,supLote,supCub,txtInformacion.getText(),chkAmoblado.isSelected());
 				Ubicacion u = new Ubicacion(id,txtCodPostal.getText(),txtDistrito.getText(),txtCiudad.getText(),txtDireccion.getText());
 				p.setUbicacion(u);
 				u.setPropiedad(p);
 				try {
-					insertar(p);
+					if (list_img != null) {
+						insertar(p);
+						p.setImagenes(list_imagenes);
+					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				p.setImagenes(list_imagenes);
 				if (!editable) {
 					ipropiedad.agregar(p);
 					dispose();

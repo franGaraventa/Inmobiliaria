@@ -28,6 +28,18 @@ public class Tablas {
 		tabla.setModel(modelo);
 	}
 	
+	public static void actualizarTPersona(JTable tabla, List<Persona> personas) {
+		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
+		modelo.fireTableDataChanged();
+		if (!personas.isEmpty()){
+			for (Persona p : personas) {
+				modelo.addRow(new Object[] {p.getDni(),p.getNombre(),p.getApellido(),p.getEmail(),p.getCodArea(),p.getTelefono()});
+			}
+		}
+		tabla.setModel(modelo);
+	}
+	
 	public static void actualizarTPropiedad(JTable tabla) {
 		DAOPropiedad ipropiedad = new DAOPropiedadImpl();
 		List<Propiedad> propiedades = ipropiedad.getPropiedades();

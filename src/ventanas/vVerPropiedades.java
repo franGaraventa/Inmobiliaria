@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import Pruebas.FPropSupLote;
 import Pruebas.FPropValor;
 import Pruebas.FPropiedad;
+import Pruebas.GeneradorTexto;
 import Pruebas.TextoBusqueda;
 import Pruebas.FPropAND;
 import Pruebas.FPropAmoblado;
@@ -39,7 +40,6 @@ import javax.swing.JCheckBox;
 public class vVerPropiedades extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private static final int par = 2;
 	private JPanel contentPane;
 	private JTable table;
 	private DefaultTableModel modelo;
@@ -53,46 +53,6 @@ public class vVerPropiedades extends JFrame {
 	private List<String> conectores;
 	private JTextPane txtBusqueda;
 	private JCheckBox chkNegar;
-	
-	/*GENERADOR DE TEXTO DE BUSQUEDA*/
-	private String generarTexto() {
-		String texto = "";
-		if ((busqueda.size() == 1) && (conectores.isEmpty())) {
-			if (busqueda.get(0).isNegado()) {
-				texto = "¬("+busqueda.get(0).getTexto()+")";
-			}else {
-				texto = busqueda.get(0).getTexto()+" ";
-			}
-		}else {
-			int index = 0;
-			for(String conector: conectores) {
-				if (index < par) {
-					if (busqueda.get(index).isNegado()) {
-						texto = texto +" ¬("+busqueda.get(index).getTexto() + ") ";
-					}else {
-						texto = texto + busqueda.get(index).getTexto() + " ";
-					}
-					index++;
-					texto = texto + conector + " ";
-					if (busqueda.get(index).isNegado()) {
-						texto = texto +" ¬("+ busqueda.get(index).getTexto() + ") ";
-					}else {
-						texto = texto + busqueda.get(index).getTexto() + " ";
-					}
-					index++;
-				}else {
-					texto = texto + conector + " ";
-					if (busqueda.get(index).isNegado()) {
-						texto = texto +" ¬("+ busqueda.get(index).getTexto()+ ") ";
-					}else {
-						texto = texto + busqueda.get(index).getTexto()+ " ";
-					}
-					index++;
-				}
-			}
-		}
-		return texto;
-	}
 	
 	private Propiedad getPropiedad() {
 		int row = table.getSelectedRow();
@@ -134,7 +94,7 @@ public class vVerPropiedades extends JFrame {
 	}
 	
 	private FPropiedad agregarFiltroLogica(int logica,FPropiedad filtro2) {
-		/*1 - y, 2 - o, 3 - no*/
+		/*1 - y, 2 - o*/
 		switch(logica) {
 			case (1): {
 				conectores.add("y");
@@ -315,7 +275,7 @@ public class vVerPropiedades extends JFrame {
 							}
 							cbLogica.setEnabled(true);
 							setear();
-							txtBusqueda.setText(generarTexto());
+							txtBusqueda.setText(GeneradorTexto.generarTexto(busqueda, conectores));
 						}else {
 							JOptionPane.showMessageDialog(null, "Datos invalidos");
 						}
@@ -333,7 +293,7 @@ public class vVerPropiedades extends JFrame {
 								filtro = agregarFiltroLogica(logica,agregarFiltro(seleccionado,txtValor.getText(),txtOperador.getText()));
 							}
 							setear();
-							txtBusqueda.setText(generarTexto());
+							txtBusqueda.setText(GeneradorTexto.generarTexto(busqueda, conectores));
 						}else {
 							JOptionPane.showMessageDialog(null, "Datos invalidos");
 						}
