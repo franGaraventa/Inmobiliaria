@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import clases.Contrato;
+import clases.Pagos;
 import clases.Persona;
 import clases.Propiedad;
 import utils.HibernateUtils;
@@ -60,13 +61,6 @@ public class DAOContratoImpl implements DAOContrato{
 	@Override
 	public void eliminar(Contrato c) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<Contrato> getContratos(Persona p) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -80,6 +74,48 @@ public class DAOContratoImpl implements DAOContrato{
 		tx.commit();
 		session.close();
 		return contratos;
+	}
+
+	@Override
+	public Contrato getContrato(int id) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+			 Contrato contrato = session.get(Contrato.class, id);
+			 tx.commit();
+			 return contrato;
+        }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Pagos> getPagos(int id) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+			 Query query = session.createQuery("select p from Contrato as c join Pagos as p on (p.cid = c.id) where c.id = :id");
+			 query.setParameter("id", id);
+			 List<Pagos> pagos = query.list();
+			 tx.commit();
+			 return pagos;
+        }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return null;
 	}
 
 }

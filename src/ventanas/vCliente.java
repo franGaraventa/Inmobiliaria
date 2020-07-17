@@ -116,7 +116,8 @@ public class vCliente extends JFrame {
 				DAOPersona ipersona = new DAOPersonaImpl();
 				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText());
 				ipersona.modificar(p);
-				Tablas.actualizarTPersona(table);
+				if (table != null)
+					Tablas.actualizarTPersona(table);
 				limpiarCampos();
 				dispose();
 			}
@@ -171,6 +172,16 @@ public class vCliente extends JFrame {
 		cargarText(p);
 		txtDNI.setEnabled(false);
 		table = tabla;
+		/*ACTIVO LOS BOTONES NECESARIOS*/
+		btnGuardar.setVisible(false);
+		btnModificar.setVisible(true);
+	}
+	
+	public vCliente(Persona p) {
+		definirVentana();
+		cargarText(p);
+		txtDNI.setEnabled(false);
+		table = null;
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(false);
 		btnModificar.setVisible(true);

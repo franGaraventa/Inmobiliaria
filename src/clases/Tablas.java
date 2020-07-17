@@ -7,6 +7,8 @@ import javax.swing.table.DefaultTableModel;
 
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
+import interfaces.DAOPagos;
+import interfaces.DAOPagosImpl;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
 import interfaces.DAOPropiedad;
@@ -54,18 +56,6 @@ public class Tablas {
 		tabla.setModel(modelo);
 	}
 	
-	public static void actualizarTPropiedad(JTable tabla,List<Propiedad> propiedades) {
-		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
-		modelo.fireTableDataChanged();
-		if (!propiedades.isEmpty()){
-			for (Propiedad p : propiedades) {
-				modelo.addRow(new Object[] {p.getId(),p.getValor(),p.getSupLote(),p.getSupCubierta(),p.getInformacion()});
-			}
-		}
-		tabla.setModel(modelo);
-	}
-	
 	public static void actualizarTContratos(JTable tabla) {
 		DAOContrato icontrato = new DAOContratoImpl();
 		List<Contrato> contratos = icontrato.getContratos();
@@ -80,4 +70,29 @@ public class Tablas {
 		tabla.setModel(modelo);
 	}
 	
+	public static void actualizarTPropiedad(JTable tabla,List<Propiedad> propiedades) {
+		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
+		modelo.fireTableDataChanged();
+		if (!propiedades.isEmpty()){
+			for (Propiedad p : propiedades) {
+				modelo.addRow(new Object[] {p.getId(),p.getValor(),p.getSupLote(),p.getSupCubierta(),p.getInformacion()});
+			}
+		}
+		tabla.setModel(modelo);
+	}
+	
+	public static void actualizarTPagos(JTable tabla,int id) {
+		DAOPagos ipagos = new DAOPagosImpl();
+		List<Pagos> pagos = ipagos.getPagos(id);
+		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
+		modelo.fireTableDataChanged();
+		if (!pagos.isEmpty()){
+			for (Pagos p : pagos) {
+				modelo.addRow(new Object[] {p.getFecha(),p.getMonto(),p.getRecargo()});
+			}
+		}
+		tabla.setModel(modelo);
+	}
 }

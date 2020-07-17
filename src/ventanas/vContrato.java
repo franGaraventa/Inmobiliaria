@@ -68,6 +68,7 @@ public class vContrato extends JFrame {
 				return true;
 		}
 		return false;
+		
 	}
 	
 	private boolean existeContrato(List<Contrato> contratos,Propiedad propiedad) {
@@ -78,6 +79,7 @@ public class vContrato extends JFrame {
 		return false;
 	}
 	
+	/*CARGAR LOCATARIOS DISPONIBLES PARA CONTRATO*/
 	private void cargarLocatarios() {
 		DAOContrato icontrato = new DAOContratoImpl();
 		DAOPersona ipersona = new DAOPersonaImpl();
@@ -165,7 +167,6 @@ public class vContrato extends JFrame {
 	}
 	
 	/*CREACION DE MODELO Y CARGADO DE ELEMENTOS A LA TABLA DE PROPIEDADES DISPONIBLES*/
-	
 	private void cargarTabla() {
 		DAOPropiedad ipropiedad = new DAOPropiedadImpl();
 		DAOContrato icontrato = new DAOContratoImpl();
@@ -178,6 +179,7 @@ public class vContrato extends JFrame {
 				p_aux.add(propiedad);
 			}
 		}
+		/*NO SE POR QUE DESDE LA CLASE TABLE NO LO CARGA*/
 		if(!p_aux.isEmpty()) {
 			for (Propiedad p : p_aux) {
 				modelo.addRow(new Object[] {p.getId(),p.getValor(),p.getSupLote(),p.getSupCubierta(),p.getInformacion()});
@@ -349,22 +351,57 @@ public class vContrato extends JFrame {
 		cargarLocatarios();
 	}
 
+	/*VALIDACION DE CAMPOS PARA INSERCION DE CONTRATO*/
+	private boolean camposVacios() {
+		return (txtPlazo.getText().isEmpty() && txtLocador.getText().isEmpty() && txtMaxPago.getText().isEmpty() && txtGarantia.getText().isEmpty() 
+				&& txtGastosInmobiliaria.getText().isEmpty() && txtExpensas.getText().isEmpty());
+	}
+	
+	private boolean fechasVacias() {
+		Date fechaInicio = dcFechaInicio.getDate();
+		Date fechaFirma = dcFechaFirma.getDate();
+		return ((fechaInicio != null) && (fechaFirma != null));
+	}
+	
+	private boolean fechasValidas() {
+		if (fechasVacias()) {
+			return ((dcFechaFirma.getDate().before(dcFechaInicio.getDate())) || (dcFechaFirma.getDate().equals(dcFechaInicio.getDate())));
+		}
+		return false;
+	}
+	
+	private boolean camposValidos() {
+		System.out.println(!camposVacios());
+		System.out.println(!fechasVacias());
+		System.out.println(cbLocatario.getSelectedIndex());
+		System.out.println(chkFormaPago.getSelectedIndex());
+		System.out.println(fechasValidas());
+		System.out.print(table.getSelectedRow());
+		return ((!camposVacios()) && (fechasVacias()) && (cbLocatario.getSelectedIndex() > 0) && (chkFormaPago.getSelectedIndex() > 0) && (fechasValidas()) && (table.getSelectedRow() != -1)); 
+	}
+	
+	/*-----------------------------------------------------------------------------------*/
+	
 	private void cargarButtons() {
 		JButton btnGuardar = new JButton("GUARDAR");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int plazo = Integer.parseInt(txtPlazo.getText());
-				double garantia = Double.valueOf(txtGarantia.getText());
-				double gastosInmobiliaria = Double.valueOf(txtGastosInmobiliaria.getText());
-				int fechaMaxPago = Integer.parseInt(txtMaxPago.getText());
-				Contrato c = new Contrato(plazo,fechaMaxPago,dcFechaFirma.getDate(),dcFechaInicio.getDate(),dcFechaFinalizacion.getDate(),txtLocador.getText(),
-						garantia,gastosInmobiliaria);
-				agregarLocacion(c);
-				agregarPersona(c);
-				agregarTipoPago(c);
-				DAOContrato icontrato = new DAOContratoImpl();
-				icontrato.agregar(c);
-				dispose();
+				if (camposValidos()) {
+					int plazo = Integer.parseInt(txtPlazo.getText());
+					double garantia = Double.valueOf(txtGarantia.getText());
+					double gastosInmobiliaria = Double.valueOf(txtGastosInmobiliaria.getText());
+					int fechaMaxPago = Integer.parseInt(txtMaxPago.getText());
+					Contrato c = new Contrato(plazo,fechaMaxPago,dcFechaFirma.getDate(),dcFechaInicio.getDate(),dcFechaFinalizacion.getDate(),txtLocador.getText(),
+							garantia,gastosInmobiliaria);
+					agregarLocacion(c);
+					agregarPersona(c);
+					agregarTipoPago(c);
+					DAOContrato icontrato = new DAOContratoImpl();
+					icontrato.agregar(c);
+					dispose();
+				}else {
+					JOptionPane.showMessageDialog(null,"Campos invalidos");
+				}
 			}
 		});
 		btnGuardar.setBounds(536, 557, 97, 23);
@@ -398,4 +435,5 @@ public class vContrato extends JFrame {
 	public vContrato() {
 		cargarVentana();
 	}
+	
 }

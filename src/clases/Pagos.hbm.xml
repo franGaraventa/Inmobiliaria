@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 15-jul-2020 15:14:54 by Hibernate Tools 5.4.14.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+    <class catalog="Inmobiliaria" dynamic-insert="false" dynamic-update="false" mutable="true" name="clases.Pagos" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="pagos">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        <property generated="never" lazy="false" name="cid" optimistic-lock="true" type="int" unique="false">
+            <column name="cid" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="orden" optimistic-lock="true" type="int" unique="false">
+            <column name="orden" not-null="true"/>
+        </property>
+        <property generated="never" lazy="false" name="fecha" optimistic-lock="true" type="date" unique="false">
+            <column length="10" name="fecha" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

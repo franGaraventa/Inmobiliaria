@@ -12,7 +12,7 @@ public class FPersEmail implements FPersona{
 	
 	@Override
 	public boolean cumple(Persona p) {
-		return ((this.email.equals(p.getEmail())) || (p.getEmail().contains(this.email)));
+		return ((this.email.toLowerCase().equals(p.getEmail().toLowerCase())) || (p.getEmail().toLowerCase().contains(this.email.toLowerCase())));
 	}
 
 }

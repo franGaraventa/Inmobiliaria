@@ -1,5 +1,7 @@
 package clases;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -59,6 +62,10 @@ public class Contrato implements java.io.Serializable {
 	@Column(name="gastosInmobiliaria")
 	private double gastosInmobiliaria;
 
+	@OneToMany(cascade= CascadeType.ALL)
+	@JoinColumn(name="cid")
+	private List<Pagos> pagos;
+	
 	public Contrato() {
 	}
 
@@ -74,6 +81,7 @@ public class Contrato implements java.io.Serializable {
 		this.locacion = locacion;
 		this.garantia = garantia;
 		this.gastosInmobiliaria = gastosInmobiliaria;
+		this.pagos = new ArrayList<Pagos>();
 	}
 	
 	public Contrato(int plazo,int fechaMaxPago, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, String locador, double garantia, double gastosInmobiliaria) {
@@ -85,6 +93,7 @@ public class Contrato implements java.io.Serializable {
 		this.garantia = garantia;
 		this.gastosInmobiliaria = gastosInmobiliaria;
 		this.fechaMaxPago = fechaMaxPago;
+		this.pagos = new ArrayList<Pagos>();
 	}
 
 	public int getId() {
@@ -183,4 +192,12 @@ public class Contrato implements java.io.Serializable {
 		this.gastosInmobiliaria = gastosInmobiliaria;
 	}
 
+	public List<Pagos> getPagos() {
+		return pagos;
+	}
+
+	public void setPagos(List<Pagos> pagos) {
+		this.pagos = pagos;
+	}
+	
 }

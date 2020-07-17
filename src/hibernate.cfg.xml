@@ -20,5 +20,6 @@
         <mapping class="clases.PrecioCompleto" package="clases" resource="/clases.PrecioCompleto.hbm.xml"></mapping>
         <mapping class="clases.PrecioPorcentual" package="clases" resource="/clases.PrecioPorcentual.hbm.xml"></mapping>
         <mapping class="clases.FechaPautada" package="clases" resource="/clases.FechaPautada.hbm.xml"></mapping>
+        <mapping class="clases.Pagos" package="clases" resource="/clases.Pagos.hbm.xml"></mapping>
     </session-factory>
 </hibernate-configuration>

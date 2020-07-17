@@ -12,6 +12,8 @@ import javax.persistence.Table;
 @Table(name="ubicacion")
 public class Ubicacion implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name="id")
 	private int id;

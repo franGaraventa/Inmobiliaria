@@ -103,4 +103,34 @@ public class TableModels {
 	    	}
 		return modelo;
 	}
+	
+	public static DefaultTableModel crearModeloPagos(DefaultTableModel modelo) {
+		try {
+	        modelo = (new DefaultTableModel(null, new Object[]{"Fecha","Monto","Recargo"}){
+				private static final long serialVersionUID = 1L;
+				@SuppressWarnings("rawtypes")
+				Class[] types = new Class[]{
+	                java.util.Date.class,
+	                java.lang.Double.class,
+	                java.lang.Double.class
+	            };
+	            boolean[] canEdit = new boolean[]{
+	                false, false, false
+	            };
+
+	            @Override
+	            public Class<?> getColumnClass(int columnIndex) {
+	                return types[columnIndex];
+	            }
+
+	            @Override
+	            public boolean isCellEditable(int rowIndex, int colIndex) {
+	                return canEdit[colIndex];
+	            }
+	        });
+			}catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+	    	}
+		return modelo;
+	}
 }

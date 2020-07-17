@@ -333,7 +333,8 @@ public class vPropiedad extends JFrame {
 					dispose();
 				}else {
 					ipropiedad.modificar(p);
-					Tablas.actualizarTPropiedad(table);
+					if (table != null)
+						Tablas.actualizarTPropiedad(table);
 					dispose();
 				}
 			}
@@ -507,5 +508,36 @@ public class vPropiedad extends JFrame {
 		habilitarBtn();
 		btnGuardar.setVisible(false);
 		btnCargarImg.setVisible(false);
+	}
+	
+	public vPropiedad(Propiedad p) {
+		this.p = p;
+		this.editable = true;
+		this.table = null;
+		cargarVentana();
+		cargarLabels();
+		cargarCheckBoxs();
+		cargarButtons();
+		cargarTextBox();
+		cargarDatos();
+		habilitarCampos(false);
+		habilitarBtn();
+		btnGuardar.setVisible(false);
+		btnCargarImg.setVisible(false);
+	}
+
+	public vPropiedad(Propiedad p,boolean visible) {
+		this.p = p;
+		cargarVentana();
+		cargarLabels();
+		cargarCheckBoxs();
+		cargarButtons();
+		cargarTextBox();
+		cargarDatos();
+		habilitarCampos(visible);
+		btnCargarImg.setVisible(visible);
+		btnGuardar.setVisible(visible);
+		btnEliminar.setVisible(visible);
+		btnModificar.setVisible(visible);
 	}
 }

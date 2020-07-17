@@ -12,7 +12,7 @@ public class FPersApell implements FPersona{
 	
 	@Override
 	public boolean cumple(Persona p) {
-		return ((this.apellido.equals(p.getApellido())) || (p.getApellido().contains(this.apellido)));
+		return ((this.apellido.toLowerCase().equals(p.getApellido().toLowerCase())) || (p.getApellido().toLowerCase().contains(this.apellido.toLowerCase())));
 	}
 
 }

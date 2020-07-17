@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -15,7 +16,7 @@ public class PrecioPorcentual extends TipoPrecio implements java.io.Serializable
 
 	private static final long serialVersionUID = 1L;
 	
-	@OneToMany(mappedBy="ppid",cascade= CascadeType.ALL)
+	@OneToMany(mappedBy="ppid",cascade= CascadeType.ALL,fetch=FetchType.EAGER)
 	private List<FechaPautada> fechas;
 
 	public PrecioPorcentual() {

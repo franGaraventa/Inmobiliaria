@@ -17,23 +17,12 @@ import Pruebas.FPersNOT;
 import Pruebas.FPersNom;
 import Pruebas.FPersOR;
 import Pruebas.FPersona;
-import Pruebas.FPropAND;
-import Pruebas.FPropAmoblado;
-import Pruebas.FPropNOT;
-import Pruebas.FPropOR;
-import Pruebas.FPropSupCubierta;
-import Pruebas.FPropSupLote;
-import Pruebas.FPropValor;
-import Pruebas.FPropiedad;
 import Pruebas.GeneradorTexto;
 import Pruebas.TextoBusqueda;
 import clases.Persona;
-import clases.Propiedad;
 import clases.Tablas;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
-import interfaces.DAOPropiedad;
-import interfaces.DAOPropiedadImpl;
 import utils.TableModels;
 
 import javax.swing.JButton;
@@ -117,6 +106,30 @@ public class vVerClientes extends JFrame {
 	
 	/*------------------------------------------------------------------------------------------------*/
 	
+	/*DATOS VALIDOS*/
+	private boolean datosValidos(int seleccionado) {
+		if (txtValor.getText() != ""){
+			if (seleccionado == 5) {
+				if (txtValor.getText().contains("-")) {
+					String[] parts = txtValor.getText().split("-");
+					if (parts.length == 2) {
+						return true;
+					}else {
+						JOptionPane.showMessageDialog(null, "Codigo de area o telefono no ingresado");
+						return false;
+					}
+				}else {
+					JOptionPane.showMessageDialog(null, "Debe ingresar codigoDeArea-Telefono");
+					return false;
+				}
+			}else {
+				return true;
+			}
+		}else {
+			JOptionPane.showMessageDialog(null, "Ingrese un valor al campo seleccionado");
+			return false;
+		}
+	}
 	
 	/*RESETEAR CAMPOS*/
 	private void resetearCampos() {
@@ -129,6 +142,15 @@ public class vVerClientes extends JFrame {
 		filtro = null;
 		busqueda.clear();
 		conectores.clear();
+		cParametros = 0;
+	}
+	
+	/*SETEAR CAMPOS*/
+	private void setear() {
+		chkNegar.setSelected(false);
+		cbBuscador.setSelectedIndex(0);
+		cbLogica.setSelectedIndex(0);
+		txtValor.setText("");
 	}
 	
 	private void habilitarButton(JButton btn) {
@@ -208,25 +230,32 @@ public class vVerClientes extends JFrame {
 				int seleccionado = cbBuscador.getSelectedIndex();
 				if (cParametros == 0) {
 					if (seleccionado > 0) {
-						if (chkNegar.isSelected()) {
-							filtro = agregarFiltro(seleccionado,txtValor.getText());
-							filtro = new FPersNOT(filtro);
-							busqueda.get(busqueda.size()-1).setNegado(true);
-						}else {
-							filtro = agregarFiltro(seleccionado,txtValor.getText());
+						if (datosValidos(seleccionado)) {
+							if (chkNegar.isSelected()) {
+								filtro = agregarFiltro(seleccionado,txtValor.getText());
+								filtro = new FPersNOT(filtro);
+								busqueda.get(busqueda.size()-1).setNegado(true);
+							}else {
+								filtro = agregarFiltro(seleccionado,txtValor.getText());
+							}
+							cbLogica.setEnabled(true);
+							setear();
+							txtBusqueda.setText(GeneradorTexto.generarTexto(busqueda, conectores));
+							cParametros++;
 						}
-						cbLogica.setEnabled(true);
-						/*RESETEAR CAMPOS*/
-						txtBusqueda.setText(GeneradorTexto.generarTexto(busqueda, conectores));
-						cParametros++;
 					}
 				}else {
 					int logica = cbLogica.getSelectedIndex();
-					if (GeneradorTexto.comprobarCampos(seleccionado, logica)){
-						if (chkNegar.isSelected()) {
-							filtro = agregarFiltroLogica(logica,new FPersNOT(agregarFiltro(seleccionado,txtValor.getText())));
-						}else {
-							
+					if (datosValidos(seleccionado)) {
+						if (GeneradorTexto.comprobarCampos(seleccionado, logica)){
+							if (chkNegar.isSelected()) {
+								filtro = agregarFiltroLogica(logica,new FPersNOT(agregarFiltro(seleccionado,txtValor.getText())));
+								busqueda.get(busqueda.size()-1).setNegado(true);
+							}else {
+								filtro = agregarFiltroLogica(logica,agregarFiltro(seleccionado,txtValor.getText()));
+							}
+							setear();
+							txtBusqueda.setText(GeneradorTexto.generarTexto(busqueda, conectores));
 						}
 					}
 				}
@@ -272,7 +301,7 @@ public class vVerClientes extends JFrame {
 		pnlBusqueda.add(btnReestablecer);
 		
 		cbLogica = new JComboBox<String>();
-		cbLogica.setModel(new DefaultComboBoxModel(new String[] {"Ingrese la combinacion logica", "y", "o"}));
+		cbLogica.setModel(new DefaultComboBoxModel<String>(new String[] {"Ingrese la combinacion logica", "y", "o"}));
 		cbLogica.setBounds(288, 10, 180, 20);
 		pnlBusqueda.add(cbLogica);
 		cbLogica.setEnabled(false);

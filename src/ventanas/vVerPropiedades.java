@@ -131,20 +131,6 @@ public class vVerPropiedades extends JFrame {
 		cbBuscador.setSelectedIndex(0);
 	}
 	
-	private boolean comprobarCampos(int seleccionado,int logica) {
-		if ((seleccionado <= 0) && (logica > 0)) {
-			JOptionPane.showMessageDialog(null, "Debe seleccionar un campo a buscar");
-			return false;
-		}else if ((seleccionado > 0) && (logica <= 0)) {
-			JOptionPane.showMessageDialog(null, "Debe seleccionar un conector");
-			return false;
-		}else if ((seleccionado == 0) && (logica == 0)) {
-			JOptionPane.showMessageDialog(null, "Debe seleccionar un campo a buscar y un conector");
-			return false;
-		}
-		return true;
-	}
-	
 	/*VALIDA LOS DATOS INGRESADOR EN LOS CAMPOS VALOR Y CONDICIONAL*/
 	public static boolean isNumeric(String str){
 	    try{
@@ -284,7 +270,7 @@ public class vVerPropiedades extends JFrame {
 					}
 				}else {
 					int logica = cbLogica.getSelectedIndex();
-					if (comprobarCampos(seleccionado,logica)){
+					if (GeneradorTexto.comprobarCampos(seleccionado, logica)){
 						if (datosValidos()) {
 							if (chkNegar.isSelected()) {
 								filtro = agregarFiltroLogica(logica,new FPropNOT(agregarFiltro(seleccionado,txtValor.getText(),txtOperador.getText())));
@@ -305,7 +291,7 @@ public class vVerPropiedades extends JFrame {
 		pnlBusqueda.add(btnAgregar);
 		
 		cbLogica = new JComboBox<String>();
-		cbLogica.setModel(new DefaultComboBoxModel(new String[] {"Ingrese la combinacion logica", "y", "o"}));
+		cbLogica.setModel(new DefaultComboBoxModel<String>(new String[] {"Ingrese la combinacion logica", "y", "o"}));
 		cbLogica.setBounds(271, 11, 175, 20);
 		pnlBusqueda.add(cbLogica);
 		
