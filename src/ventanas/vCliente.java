@@ -32,7 +32,7 @@ public class vCliente extends JFrame {
 	
 	private JTable table;
 
-	public void definirLabels() {
+	private void definirLabels() {
 		JLabel lblNewLabel = new JLabel("DNI");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel.setBounds(10, 19, 45, 20);
@@ -64,7 +64,7 @@ public class vCliente extends JFrame {
 		contentPane.add(lblTelefono);
 	}
 	
-	public void definirTextFields() {
+	private void definirTextFields() {
 		txtDNI = new JTextField();
 		txtDNI.setBounds(65, 19, 199, 20);
 		contentPane.add(txtDNI);
@@ -96,7 +96,16 @@ public class vCliente extends JFrame {
 		contentPane.add(txtTelefono);
 	}
 	
-	public void definirButtons(){
+	private void deshabilitarTexts(boolean enabled) {
+		txtDNI.setEnabled(enabled);
+		txtNombre.setEnabled(enabled);
+		txtApellido.setEnabled(enabled);
+		txtEmail.setEnabled(enabled);
+		txtCodArea.setEnabled(enabled);
+		txtTelefono.setEnabled(enabled);
+	}
+	
+	private void definirButtons(){
 		btnGuardar = new JButton("GUARDAR");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -126,7 +135,7 @@ public class vCliente extends JFrame {
 		contentPane.add(btnModificar);
 	}
 	
-	public void definirVentana() {
+	private void definirVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 290, 281);
 		setLocationRelativeTo(null);
@@ -185,5 +194,15 @@ public class vCliente extends JFrame {
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(false);
 		btnModificar.setVisible(true);
+	}
+	
+	public vCliente(Persona p,boolean visible) {
+		definirVentana();
+		cargarText(p);
+		deshabilitarTexts(visible);
+		table = null;
+		/*ACTIVO LOS BOTONES NECESARIOS*/
+		btnGuardar.setVisible(visible);
+		btnModificar.setVisible(visible);
 	}
 }

@@ -4,26 +4,25 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
-
 import clases.Contrato;
 import clases.Pagos;
+import clases.Tablas;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
 import utils.ConvertirNumero;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class vCobro extends JFrame {
 
@@ -41,6 +40,7 @@ public class vCobro extends JFrame {
 	private Contrato contrato;
 	private JLabel lblMes;
 	private JTextField txtRecargo;
+	private JTable table;
 	
 	/*OBTENER MES Y DIA*/
 	private int getMes(String valor) {
@@ -275,8 +275,8 @@ public class vCobro extends JFrame {
 	
 	private void cargarCampos() {
 		lblFechaDelRecibo = new JLabel();
-		lblFechaDelRecibo.setFont(new Font("Verdana", Font.PLAIN, 20));
-		lblFechaDelRecibo.setBounds(512, 52, 514, 26);
+		lblFechaDelRecibo.setFont(new Font("Verdana", Font.PLAIN, 18));
+		lblFechaDelRecibo.setBounds(611, 52, 415, 26);
 		contentPane.add(lblFechaDelRecibo);
 			
 		lblNombreApellido = new JLabel();
@@ -322,7 +322,7 @@ public class vCobro extends JFrame {
 		
 	}
 	
-	
+	@SuppressWarnings("deprecation")
 	private void cargarButtons() {
 		JButton btnGuardar = new JButton("GUARDAR");
 		btnGuardar.addActionListener(new ActionListener() {
@@ -333,6 +333,7 @@ public class vCobro extends JFrame {
 						if ((!txtRecargo.getText().isEmpty())) {
 							Pagos pago = new Pagos(contrato,new Date(),Double.valueOf(lblTotal.getText()),Double.valueOf(txtRecargo.getText()));
 							ipagos.agregar(pago);
+							Tablas.actualizarTPagos(table, contrato.getId());
 							dispose();
 						}else {
 							JOptionPane.showMessageDialog(null, "Ingrese un valor al campo recargo");
@@ -340,6 +341,7 @@ public class vCobro extends JFrame {
 					}else {
 						Pagos pago = new Pagos(contrato,new Date(),Double.valueOf(lblTotal.getText()),0);
 						ipagos.agregar(pago);
+						Tablas.actualizarTPagos(table, contrato.getId());
 						dispose();
 					}
 				}else {
@@ -359,10 +361,33 @@ public class vCobro extends JFrame {
 		lblMes.setText(getMes(fecha.getMonth()));
 		
 		txtRecargo = new JTextField();
+		txtRecargo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char tecla = e.getKeyChar();
+				if (tecla == KeyEvent.VK_ENTER) {
+					if (!txtRecargo.getText().isEmpty()) {
+						double nuevo_valor = Double.valueOf(lblTotal.getText()) + Double.valueOf(txtRecargo.getText());
+						lblTotal.setText(String.valueOf(nuevo_valor));
+						double num = formatearDecimales(nuevo_valor,2);
+						int p_ent= (int)num;
+						double p_dec= num - p_ent;
+						String valor = ConvertirNumero.cantidadConLetra(String.valueOf(num));
+						if (p_dec != 0) {
+							String valor2 = valor +"con "+ConvertirNumero.cantidadConLetra(String.valueOf(p_dec*100));
+							lblPesosVEscrita.setText(valor2.toUpperCase());
+						}else {
+							lblPesosVEscrita.setText(valor.toUpperCase());
+						}
+					}
+				}
+			}
+		});
 		txtRecargo.setFont(new Font("Verdana", Font.PLAIN, 20));
 		txtRecargo.setBounds(408, 311, 125, 27);
 		contentPane.add(txtRecargo);
 		txtRecargo.setColumns(10);
+	
 		
 		JLabel lblRecargo = new JLabel("RECARGO");
 		lblRecargo.setFont(new Font("Verdana", Font.PLAIN, 20));
@@ -385,8 +410,9 @@ public class vCobro extends JFrame {
 		habilitarRecargo();
 	}
 	
-	public vCobro(Contrato c) {
+	public vCobro(Contrato c,JTable tabla) {
 		contrato = c;
+		table = tabla;
 		cargarVentana();
 		cargarCampos(c);
 	}

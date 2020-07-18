@@ -134,7 +134,8 @@ public class vVerPropiedades extends JFrame {
 	/*VALIDA LOS DATOS INGRESADOR EN LOS CAMPOS VALOR Y CONDICIONAL*/
 	public static boolean isNumeric(String str){
 	    try{
-	        double d = Double.parseDouble(str);
+	        @SuppressWarnings("unused")
+			double d = Double.parseDouble(str);
 	    }
 	    catch(NumberFormatException nfe){  
 	        return false;
@@ -242,7 +243,7 @@ public class vVerPropiedades extends JFrame {
 		
 		cbBuscador = new JComboBox<String>();
 		cbBuscador.setModel(new DefaultComboBoxModel<String>(new String[] {"Elija que ingresar a la busqueda", "Valor", "Superficie Lote", "Superficie Cubierta", "Amoblado"}));
-		cbBuscador.setBounds(92, 11, 175, 20);
+		cbBuscador.setBounds(48, 11, 213, 20);
 		pnlBusqueda.add(cbBuscador);
 		
 		JButton btnAgregar = new JButton("AGREGAR");
@@ -319,9 +320,9 @@ public class vVerPropiedades extends JFrame {
 		txtBusqueda.setBounds(10, 70, 541, 62);
 		pnlBusqueda.add(txtBusqueda);
 		
-		chkNegar = new JCheckBox("negar");
+		chkNegar = new JCheckBox("");
 		chkNegar.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		chkNegar.setBounds(10, 10, 86, 23);
+		chkNegar.setBounds(10, 10, 32, 23);
 		pnlBusqueda.add(chkNegar);
 		
 	}

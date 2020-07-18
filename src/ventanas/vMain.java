@@ -4,11 +4,21 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import clases.Contrato;
+import interfaces.DAOContrato;
+import interfaces.DAOContratoImpl;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class vMain extends JFrame {
 
@@ -96,6 +106,17 @@ public class vMain extends JFrame {
 		mnContratos.add(mnVerContratos);
 	}
 	
+	private void verFechasPagos() {
+		DAOContrato icontrato = new DAOContratoImpl();
+		List<Contrato> contratos = icontrato.getContratos();
+		Calendar calendar = Calendar.getInstance();
+		for(Contrato c: contratos) {
+			//Date fechaPago = new Date(calendar.get(Calendar.YEAR)-1900,calendar.get(Calendar.MONTH),contrato.getFechaMaxPago());
+			System.out.println(new Date(calendar.get(Calendar.YEAR)-1900,calendar.get(Calendar.MONTH),c.getFechaMaxPago()));
+		}
+		
+	}
+	
 	public vMain() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 472);
@@ -105,6 +126,12 @@ public class vMain extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		JLabel lblNewLabel = new JLabel("PROXIMOS VENCIMIENTOS");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel.setBounds(10, 28, 228, 14);
+		contentPane.add(lblNewLabel);
+		
 		definirMenu();
+		verFechasPagos();
 	}
 }

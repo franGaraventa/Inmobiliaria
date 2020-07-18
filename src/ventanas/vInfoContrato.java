@@ -5,26 +5,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
 import clases.Contrato;
-import clases.Pagos;
 import clases.Tablas;
-import interfaces.DAOContrato;
-import interfaces.DAOContratoImpl;
-import interfaces.DAOPagos;
-import interfaces.DAOPagosImpl;
 import utils.TableModels;
-
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
-import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextPane;
 import javax.swing.JTable;
 
 public class vInfoContrato extends JFrame {
@@ -99,7 +89,7 @@ public class vInfoContrato extends JFrame {
 		JButton btnCliente = new JButton("CLIENTE");
 		btnCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				vCliente vcliente = new vCliente(contrato.getLocatario());
+				vCliente vcliente = new vCliente(contrato.getLocatario(),false);
 				vcliente.setVisible(true);
 			}
 		});
@@ -109,7 +99,7 @@ public class vInfoContrato extends JFrame {
 		JButton btnCobrar = new JButton("NUEVO PAGO");
 		btnCobrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				vCobro vcobro = new vCobro(contrato);
+				vCobro vcobro = new vCobro(contrato,table);
 				vcobro.setVisible(true);
 			}
 		});
@@ -173,55 +163,6 @@ public class vInfoContrato extends JFrame {
 		
 	}
 	
-	/*GENERAR TEXTO EN PAGOS*/
-	private void inicializar(char[] char_array) {
-		for (int i = 0; i < char_array.length;i++) {
-			char_array[i] = ' ';
-		}
-	}
-	
-	private void copiar(char[] char_array,char[] array,int i) {
-		for(int j = 0; j < char_array.length;j++) {
-			array[i] = char_array[j];
-			i++;
-		}
-	}
-	
-	private String agregarTexto(Pagos pago) {
-		String texto = "";
-		char[] id = new char[5];
-		char[] fecha = new char[12];
-		char[] monto = new char[9];
-		inicializar(id);
-		inicializar(fecha);
-		inicializar(monto);
-		char[] id_pago = String.valueOf(pago.getId()).toCharArray();
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-		char[] fecha_pago = String.valueOf(formato.format(pago.getFecha())).toCharArray();
-		char[] monto_pago = String.valueOf(String.valueOf(pago.getMonto())).toCharArray();
-		copiar(id_pago,id,1);
-		copiar(fecha_pago,fecha,1);
-		copiar(monto_pago,monto,1);
-		texto = String.copyValueOf(id);
-		texto = texto + String.copyValueOf(fecha);
-		texto = texto + String.copyValueOf(monto);
-		return texto;
-	}
-	
-	private void cargarPagos() {
-		DAOContrato icontrato = new DAOContratoImpl();
-		List<Pagos> pagos = icontrato.getPagos(contrato.getId());
-		String cabecera = " id        fecha          monto ";
-		String texto = cabecera+'\n';
-		if (pagos != null) {
-			for(Pagos pago: pagos) {
-				texto+= agregarTexto(pago)+'\n';
-			}
-		}
-	}
-	
-	/*----------------------------------------------------------------------------*/
-	
 	private void cargarCampos(Contrato c) {
 		txtPlazo.setText(String.valueOf(c.getPlazo()));
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -232,7 +173,6 @@ public class vInfoContrato extends JFrame {
 		txtPago.setText(String.valueOf(c.getFechaMaxPago()));
 		txtGarantia.setText(String.valueOf(c.getGarantia()));
 		txtGastos.setText(String.valueOf(c.getGastosInmobiliaria()));
-		cargarPagos();
 	}
 	
 	private void cargarVentana() {

@@ -95,4 +95,5 @@ public class Tablas {
 		}
 		tabla.setModel(modelo);
 	}
+	
 }
