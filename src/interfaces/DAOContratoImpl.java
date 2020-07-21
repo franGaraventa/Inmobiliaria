@@ -8,13 +8,14 @@ import javax.swing.JOptionPane;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.annotations.Parent;
 
 import clases.Contrato;
 import clases.Pagos;
 import clases.Persona;
-import clases.Propiedad;
 import utils.HibernateUtils;
 
+@SuppressWarnings("deprecation")
 public class DAOContratoImpl implements DAOContrato{
 
 	private static Session session;
@@ -56,12 +57,35 @@ public class DAOContratoImpl implements DAOContrato{
 	@Override
 	public void modificar(Contrato c) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void eliminar(Contrato c) {
-		// TODO Auto-generated method stub
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+		try {
+			DAOPagos ipagos = new DAOPagosImpl();
+			List<Pagos> pagos = ipagos.getPagos(c.getId());
+			for (Pagos p: pagos) {
+				session.delete(p);
+				session.flush();
+				session.clear();
+			}
+		    session.delete(c);
+		    JOptionPane.showMessageDialog(null,
+				  "Contrato eliminado correctamente",
+				  "Contrato eliminado",
+				  JOptionPane.INFORMATION_MESSAGE);
+			 tx.commit();
+		}catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
 	}
 
 	@Override
@@ -103,9 +127,11 @@ public class DAOContratoImpl implements DAOContrato{
         Transaction tx = session.getTransaction();
         tx.begin();
         try {
-			 Query query = session.createQuery("select p from Contrato as c join Pagos as p on (p.cid = c.id) where c.id = :id");
+			 @SuppressWarnings("rawtypes")
+			Query query = session.createQuery("select p from Contrato as c join Pagos as p on (p.cid = c.id) where c.id = :id");
 			 query.setParameter("id", id);
-			 List<Pagos> pagos = query.list();
+			 @SuppressWarnings("unchecked")
+			List<Pagos> pagos = query.list();
 			 tx.commit();
 			 return pagos;
         }catch(Exception e) {
@@ -125,9 +151,11 @@ public class DAOContratoImpl implements DAOContrato{
         Transaction tx = session.getTransaction();
         tx.begin();
         try {
-			 Query query = session.createQuery("from Contrato where :fecha < fechaFinalizacion ");
+			 @SuppressWarnings("rawtypes")
+			Query query = session.createQuery("from Contrato where :fecha < fechaFinalizacion ");
 			 query.setParameter("fecha", fecha);
-			 List<Contrato> contratosVigentes = query.list();
+			 @SuppressWarnings("unchecked")
+			List<Contrato> contratosVigentes = query.list();
 			 tx.commit();
 			 return contratosVigentes;
         }catch(Exception e) {

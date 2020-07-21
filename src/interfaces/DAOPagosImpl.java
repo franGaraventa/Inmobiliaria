@@ -10,9 +10,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import clases.Pagos;
-import clases.Persona;
 import utils.HibernateUtils;
 
+@SuppressWarnings("deprecation")
 public class DAOPagosImpl implements DAOPagos{
 
 	private static Session session;
@@ -56,7 +56,8 @@ public class DAOPagosImpl implements DAOPagos{
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
 	    try {
-	    	Query query = session.createQuery("SELECT p.fecha FROM Pagos as p join Contrato as c on (c.id = p.cid) where c.id = :id and MONTH(p.fecha) = :mes and YEAR(p.fecha) = :anio");
+	    	@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("SELECT p.fecha FROM Pagos as p join Contrato as c on (c.id = p.cid) where c.id = :id and MONTH(p.fecha) = :mes and YEAR(p.fecha) = :anio");
 	    	query.setParameter("id", id);
 	    	query.setParameter("mes",mes);
 	    	query.setParameter("anio", anio);
@@ -83,9 +84,11 @@ public class DAOPagosImpl implements DAOPagos{
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
 	    try {
-	    	Query query = session.createQuery("SELECT p FROM Pagos as p join Contrato as c on (c.id = p.cid) where c.id = :id");
+	    	@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("SELECT p FROM Pagos as p join Contrato as c on (c.id = p.cid) where c.id = :id");
 	    	query.setParameter("id", id);
-	    	List<Pagos> pagos = query.list();
+	    	@SuppressWarnings("unchecked")
+			List<Pagos> pagos = query.list();
 	    	tx.commit();
 	    	return pagos;
 		}catch(Exception e) {

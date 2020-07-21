@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,18 +42,18 @@ public class Contrato implements java.io.Serializable {
 	@Column(name="locador")
 	private String locador;
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(orphanRemoval = false)
 	@JoinColumn(name = "locatario", referencedColumnName = "dni")
 	private Persona locatario;
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(orphanRemoval = false)
 	@JoinColumn(name = "precio", referencedColumnName = "id")
 	private TipoPrecio precio;
 	
 	@Column(name="fechaMaxPago")
 	private int fechaMaxPago;
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(orphanRemoval = false)
 	@JoinColumn(name = "locacion", referencedColumnName = "id")
 	private Propiedad locacion;
 	
@@ -62,7 +63,7 @@ public class Contrato implements java.io.Serializable {
 	@Column(name="gastosInmobiliaria")
 	private double gastosInmobiliaria;
 
-	@OneToMany(cascade= CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="cid")
 	private List<Pagos> pagos;
 	

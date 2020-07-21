@@ -153,11 +153,6 @@ public class vMain extends JFrame {
 		/*DEFINO MODELO*/
 		modeloContrato = TableModels.crearModeloContratosConVencimientoProximo(modelo);
 		tableContratos.setModel(modeloContrato);
-		/*PRUEBAS DE FECHAS*/
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String stringFechaConHora = "2020-11-15 15:03:23";
-		Date fechaConHora = sdf.parse(stringFechaConHora);
-		calendar.setTime(fechaConHora);
 		long mlsFActual = calendar.getTimeInMillis();
 		/*-----------------------------------------------------------------*/
 		for(Contrato c: contratos) {

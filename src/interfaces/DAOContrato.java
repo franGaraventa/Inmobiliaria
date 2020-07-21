@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import clases.Contrato;
 import clases.Pagos;
-import clases.Persona;
 
 public interface DAOContrato {
 
