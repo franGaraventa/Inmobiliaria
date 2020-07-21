@@ -9,4 +9,5 @@ public interface DAOPagos {
 	public boolean existePago(int id,int mes,int anio);
 	public void agregar(Pagos p);
 	public List<Pagos> getPagos(int id);	//Obtener los pagos de un contrato
+	public Pagos getPago(int id);
 }

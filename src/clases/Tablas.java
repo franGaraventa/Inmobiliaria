@@ -104,7 +104,7 @@ public class Tablas {
 		modelo.fireTableDataChanged();
 		if (!pagos.isEmpty()){
 			for (Pagos p : pagos) {
-				modelo.addRow(new Object[] {p.getFecha(),p.getMonto(),p.getRecargo()});
+				modelo.addRow(new Object[] {p.getId(),p.getFecha(),p.getMonto(),p.getRecargo()});
 			}
 		}
 		tabla.setModel(modelo);

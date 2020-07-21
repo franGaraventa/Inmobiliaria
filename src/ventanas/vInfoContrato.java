@@ -7,10 +7,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import clases.Contrato;
 import clases.Tablas;
+import interfaces.DAOPagos;
+import interfaces.DAOPagosImpl;
+import utils.ConvertirNumero;
+import utils.GeneradorPDF;
 import utils.TableModels;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -175,6 +182,61 @@ public class vInfoContrato extends JFrame {
 		txtGastos.setText(String.valueOf(c.getGastosInmobiliaria()));
 	}
 	
+	private String getDia(int valor) {
+        String Valor_dia = "";
+		if (valor == 1) {
+            Valor_dia = "Domingo";
+        } else if (valor == 2) {
+            Valor_dia = "Lunes";
+        } else if (valor == 3) {
+            Valor_dia = "Martes";
+        } else if (valor == 4) {
+            Valor_dia = "Miercoles";
+        } else if (valor == 5) {
+            Valor_dia = "Jueves";
+        } else if (valor == 6) {
+            Valor_dia = "Viernes";
+        } else if (valor == 7) {
+            Valor_dia = "Sabado";
+        }
+        return Valor_dia;
+	}
+	
+	private String getMes(int valor) {
+		String mes = "";
+		switch (valor) {
+            case 0:  mes = "Enero";
+                     break;
+            case 1:  mes = "Febrero";
+                     break;
+            case 2:  mes = "Marzo";
+                     break;
+            case 3:  mes = "Abril";
+                     break;
+            case 4:  mes = "Mayo";
+                     break;
+            case 5:  mes = "Junio";
+                     break;
+            case 6:  mes = "Julio";
+                     break;
+            case 7:  mes = "Agosto";
+            		 break;
+            case 8:  mes = "Septiembre";
+            		 break;
+            case 9:  mes = "Octubre";
+            		 break;
+            case 10:  mes = "Noviembre";
+            		 break;
+            case 11:  mes = "Diciembre";
+            	 	 break;
+        } 	 	
+		return mes;
+	}
+	
+	public static Double formatearDecimales(Double numero, Integer numeroDecimales) {
+		return Math.round(numero * Math.pow(10, numeroDecimales)) / Math.pow(10, numeroDecimales);
+	}
+	
 	private void cargarVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 693, 332);
@@ -197,6 +259,22 @@ public class vInfoContrato extends JFrame {
 		modelo = TableModels.crearModeloPagos(modelo);
 		table.setModel(modelo);
 		Tablas.actualizarTPagos(table,contrato.getId());
+		
+		JButton btnGuardarCopia = new JButton("CREAR COPIA");
+		btnGuardarCopia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int row = table.getSelectedRow();
+				if (row == -1) {
+					
+				}else {
+					DAOPagos ipago = new DAOPagosImpl();
+					GeneradorPDF pdf = new GeneradorPDF(contrato,ipago.getPago((Integer)modelo.getValueAt(row, 0)));
+					pdf.generarPDF();
+				}
+			}
+		});
+		btnGuardarCopia.setBounds(522, 261, 141, 23);
+		contentPane.add(btnGuardarCopia);
 	}
 	
 	public vInfoContrato(Contrato c) {

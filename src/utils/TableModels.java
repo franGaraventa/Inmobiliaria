@@ -106,16 +106,17 @@ public class TableModels {
 	
 	public static DefaultTableModel crearModeloPagos(DefaultTableModel modelo) {
 		try {
-	        modelo = (new DefaultTableModel(null, new Object[]{"Fecha","Monto","Recargo"}){
+	        modelo = (new DefaultTableModel(null, new Object[]{"id","Fecha","Monto","Recargo"}){
 				private static final long serialVersionUID = 1L;
 				@SuppressWarnings("rawtypes")
 				Class[] types = new Class[]{
+						java.lang.Integer.class,
 	                java.util.Date.class,
 	                java.lang.Double.class,
 	                java.lang.Double.class
 	            };
 	            boolean[] canEdit = new boolean[]{
-	                false, false, false
+	                false, false, false, false
 	            };
 
 	            @Override

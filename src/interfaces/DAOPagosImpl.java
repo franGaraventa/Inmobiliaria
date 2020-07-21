@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import clases.Pagos;
+import clases.Persona;
 import utils.HibernateUtils;
 
 @SuppressWarnings("deprecation")
@@ -91,6 +92,25 @@ public class DAOPagosImpl implements DAOPagos{
 			List<Pagos> pagos = query.list();
 	    	tx.commit();
 	    	return pagos;
+		}catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally{
+			session.close();
+		}
+		return null;
+	}
+
+	@Override
+	public Pagos getPago(int id) {
+		session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			Pagos pago = session.get(Pagos.class, id);
+			tx.commit();
+			return pago;
 		}catch(Exception e) {
 			if (tx != null) {
 	            tx.rollback();

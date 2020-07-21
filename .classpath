@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.38-bin.jar"/>
 	<classpathentry kind="lib" path="libs/xml-apis-1.3.03.jar"/>
 	<classpathentry kind="lib" path="jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Fran_/Downloads/itextpdf-5.5.13.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
