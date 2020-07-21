@@ -52,13 +52,14 @@ public class DAOPagosImpl implements DAOPagos{
 	}
 
 	@Override
-	public boolean existePago(int id, int mes) {
+	public boolean existePago(int id, int mes,int anio) {
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
 	    try {
-	    	Query query = session.createQuery("SELECT p.fecha FROM Pagos as p join Contrato as c on (c.id = p.cid) where c.id = :id and MONTH(p.fecha) = :mes");
+	    	Query query = session.createQuery("SELECT p.fecha FROM Pagos as p join Contrato as c on (c.id = p.cid) where c.id = :id and MONTH(p.fecha) = :mes and YEAR(p.fecha) = :anio");
 	    	query.setParameter("id", id);
 	    	query.setParameter("mes",mes);
+	    	query.setParameter("anio", anio);
 	    	Date fecha = (Date) query.uniqueResult();
 	    	tx.commit();
 	    	if (fecha != null) {

@@ -1,5 +1,7 @@
 package clases;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JTable;
@@ -70,6 +72,18 @@ public class Tablas {
 		tabla.setModel(modelo);
 	}
 	
+	public static void actualizarTContratos(JTable tabla,List<Contrato> contratos) {
+		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
+		modelo.fireTableDataChanged();
+		if (!contratos.isEmpty()){
+			for (Contrato c : contratos) {
+				modelo.addRow(new Object[] {c.getId(),c.getPlazo(),c.getFechaFirma(),c.getFechaInicio(),c.getFechaFinalizacion(),c.getLocador(),c.getFechaMaxPago()});
+			}
+		}
+		tabla.setModel(modelo);
+	}
+	
 	public static void actualizarTPropiedad(JTable tabla,List<Propiedad> propiedades) {
 		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
 		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
@@ -96,4 +110,50 @@ public class Tablas {
 		tabla.setModel(modelo);
 	}
 	
+	private static int diasExcedido(int fechaMaxPago) {
+		Calendar fecha = Calendar.getInstance();
+		int dias = fechaMaxPago - fecha.get(Calendar.DAY_OF_MONTH);
+		if (dias < 0) {
+			return (-1)*dias;
+		}else {
+			return 0;
+		}
+	}
+	
+	private static int diasRestantes(int fechaMaxPago) {
+		Calendar fecha = Calendar.getInstance();
+		int dias = fechaMaxPago - fecha.get(Calendar.DAY_OF_MONTH);
+		if (dias >= 0) {
+			return dias;
+		}else {
+			return -1;
+		}
+	}
+	
+	public static void actualizarTContratosVencidos(JTable tabla,List<Contrato> contratos) {
+		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
+		modelo.fireTableDataChanged();
+		if (!contratos.isEmpty()){
+			for (Contrato c : contratos) {
+				modelo.addRow(new Object[] {c.getId(),c.getFechaMaxPago(),diasRestantes(c.getFechaMaxPago()),diasExcedido(c.getFechaMaxPago())});
+			}
+		}
+		tabla.setModel(modelo);
+	}
+	
+	public static void actualizarTContratosConVencimientoProximo(JTable tabla,List<Contrato> contratos,List<Long> dias) {
+		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
+		modelo.fireTableDataChanged();
+		if (!contratos.isEmpty()) {
+			int i = 0;
+			while (i < contratos.size()) {
+				Contrato c = contratos.get(i);
+				modelo.addRow(new Object[] {c.getId(),c.getFechaFirma(),c.getFechaInicio(),c.getFechaFinalizacion(),dias.get(i)});
+				i++;
+			}
+		}
+		tabla.setModel(modelo);
+	}
 }

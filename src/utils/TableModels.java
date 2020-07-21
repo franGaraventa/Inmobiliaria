@@ -133,4 +133,67 @@ public class TableModels {
 	    	}
 		return modelo;
 	}
+	
+	public static DefaultTableModel crearModeloPagosVencidos(DefaultTableModel modelo) {
+		try {
+	        modelo = (new DefaultTableModel(null, new Object[]{"id","Fecha maxima de pago","Dias restantes","Dias excedido"}){
+				private static final long serialVersionUID = 1L;
+				@SuppressWarnings("rawtypes")
+				Class[] types = new Class[]{
+	                java.lang.Integer.class,
+	                java.lang.Integer.class,
+	                java.lang.Integer.class,
+	                java.lang.Integer.class
+	            };
+	            boolean[] canEdit = new boolean[]{
+	                false, false, false, false
+	            };
+
+	            @Override
+	            public Class<?> getColumnClass(int columnIndex) {
+	                return types[columnIndex];
+	            }
+
+	            @Override
+	            public boolean isCellEditable(int rowIndex, int colIndex) {
+	                return canEdit[colIndex];
+	            }
+	        });
+			}catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+	    	}
+		return modelo;
+	}
+	
+	public static DefaultTableModel crearModeloContratosConVencimientoProximo(DefaultTableModel modelo) {
+		try {
+	        modelo = (new DefaultTableModel(null, new Object[]{"id","Fecha Firma","Fecha Inicio","Fecha Finalizacion","Dias Restantes"}){
+				private static final long serialVersionUID = 1L;
+				@SuppressWarnings("rawtypes")
+				Class[] types = new Class[]{
+	                java.lang.Integer.class,
+	                java.util.Date.class,
+	                java.util.Date.class,
+	                java.util.Date.class,
+	                java.lang.Integer.class
+	            };
+	            boolean[] canEdit = new boolean[]{
+	                false, false, false, false, false
+	            };
+
+	            @Override
+	            public Class<?> getColumnClass(int columnIndex) {
+	                return types[columnIndex];
+	            }
+
+	            @Override
+	            public boolean isCellEditable(int rowIndex, int colIndex) {
+	                return canEdit[colIndex];
+	            }
+	        });
+			}catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+	    	}
+		return modelo;
+	}
 }

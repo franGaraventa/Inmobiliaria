@@ -3,27 +3,45 @@ package ventanas;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import clases.Contrato;
+import clases.Tablas;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
+import interfaces.DAOPagos;
+import interfaces.DAOPagosImpl;
+import utils.TableModels;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.Font;
+import javax.swing.JTable;
+import javax.swing.JButton;
+
 
 public class vMain extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private static final int dias = 90;
 	private JPanel contentPane;
+	private JTable table;
+	private DefaultTableModel modelo;
+	private DefaultTableModel modeloContrato;
+	private JTable tableContratos;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -107,31 +125,127 @@ public class vMain extends JFrame {
 	}
 	
 	private void verFechasPagos() {
+		Date fecha = new Date();
+		Calendar fcalendar = Calendar.getInstance();
+		fcalendar.setTime(fecha);
 		DAOContrato icontrato = new DAOContratoImpl();
-		List<Contrato> contratos = icontrato.getContratos();
+		List<Contrato> contratos = icontrato.getContratosVigentes(fecha);
 		Calendar calendar = Calendar.getInstance();
+		DAOPagos ipagos = new DAOPagosImpl();
+		modelo = TableModels.crearModeloPagosVencidos(modelo);
+		table.setModel(modelo);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+		List<Contrato> vcontratos = new ArrayList<Contrato>();
 		for(Contrato c: contratos) {
-			//Date fechaPago = new Date(calendar.get(Calendar.YEAR)-1900,calendar.get(Calendar.MONTH),contrato.getFechaMaxPago());
-			System.out.println(new Date(calendar.get(Calendar.YEAR)-1900,calendar.get(Calendar.MONTH),c.getFechaMaxPago()));
+			if (!ipagos.existePago(c.getId(),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR))) {
+				vcontratos.add(c);
+			}
 		}
-		
+		Tablas.actualizarTContratosVencidos(table,vcontratos);
 	}
 	
-	public vMain() {
+	private void verContratosAVencer() throws ParseException {
+		DAOContrato icontrato = new DAOContratoImpl();
+		List<Contrato> contratos = icontrato.getContratosVigentes(new Date());
+		List<Contrato> vcontratos = new ArrayList<Contrato>();
+		List<Long> ldias = new ArrayList<Long>();
+		Calendar calendar = Calendar.getInstance();
+		/*DEFINO MODELO*/
+		modeloContrato = TableModels.crearModeloContratosConVencimientoProximo(modelo);
+		tableContratos.setModel(modeloContrato);
+		/*PRUEBAS DE FECHAS*/
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String stringFechaConHora = "2020-11-15 15:03:23";
+		Date fechaConHora = sdf.parse(stringFechaConHora);
+		calendar.setTime(fechaConHora);
+		long mlsFActual = calendar.getTimeInMillis();
+		/*-----------------------------------------------------------------*/
+		for(Contrato c: contratos) {
+			Calendar calendar2 = Calendar.getInstance();
+			calendar2.setTime(c.getFechaFinalizacion());
+			long mlsFFinalizacion = calendar2.getTimeInMillis();
+			long diferencia_tiempo = mlsFFinalizacion - mlsFActual;
+			long diferencia_dias = diferencia_tiempo / (24 * 60 * 60 * 1000);
+			if (diferencia_dias < dias) {
+				vcontratos.add(c);
+				ldias.add(diferencia_dias);
+			}
+		}
+		Tablas.actualizarTContratosConVencimientoProximo(tableContratos, vcontratos,ldias);
+	}
+	
+	private void definirButtons() {
+		JButton btnPago = new JButton("Nuevo pago");
+		btnPago.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int row = table.getSelectedRow();
+				if (row != -1) {
+					DAOContrato icontrato = new DAOContratoImpl();
+					Contrato c = icontrato.getContrato((Integer) modelo.getValueAt(row, 0));
+					vCobro vcobro = new vCobro(c);
+					vcobro.setVisible(true);
+					table.clearSelection();
+				}else {
+					JOptionPane.showMessageDialog(null, "No selecciono ninguna fila");
+				}
+			}
+		});
+		btnPago.setBounds(407, 221, 118, 23);
+		contentPane.add(btnPago);
+		
+		JButton btnInformacion = new JButton("Informacion");
+		btnInformacion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int row = tableContratos.getSelectedRow();
+				if (row != -1) {
+					DAOContrato icontrato = new DAOContratoImpl();
+					Contrato c = icontrato.getContrato((Integer) modeloContrato.getValueAt(row, 0));
+					vInfoContrato vinfocontrato = new vInfoContrato(c);
+					vinfocontrato.setVisible(true);
+					tableContratos.clearSelection();
+				}else {
+					JOptionPane.showMessageDialog(null, "No selecciono ninguna fila");
+				}
+			}
+		});
+		btnInformacion.setBounds(517, 464, 118, 23);
+		contentPane.add(btnInformacion);
+	}
+	
+	public vMain() throws ParseException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 700, 472);
+		setBounds(100, 100, 661, 558);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("PROXIMOS VENCIMIENTOS");
+		JLabel lblNewLabel = new JLabel("PAGOS POR VENCER");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel.setBounds(10, 28, 228, 14);
+		lblNewLabel.setBounds(122, 11, 185, 14);
 		contentPane.add(lblNewLabel);
 		
+		table = new JTable();
+		JScrollPane scroll = new JScrollPane();
+		scroll.setViewportView(table);
+		scroll.setBounds(122, 36, 403, 183);
+		contentPane.add(scroll);
+		
+		JLabel lblContratosPorVencer = new JLabel("CONTRATOS POR VENCER");
+		lblContratosPorVencer.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblContratosPorVencer.setBounds(10, 265, 229, 14);
+		contentPane.add(lblContratosPorVencer);
+		
+		tableContratos = new JTable();
+		JScrollPane scrollContrato = new JScrollPane();
+		scrollContrato.setViewportView(tableContratos);
+		scrollContrato.setBounds(10, 290, 625, 173);
+		contentPane.add(scrollContrato);
+		
 		definirMenu();
+		definirButtons();
 		verFechasPagos();
+		verContratosAVencer();
 	}
 }

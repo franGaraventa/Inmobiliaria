@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -107,6 +108,28 @@ public class DAOContratoImpl implements DAOContrato{
 			 List<Pagos> pagos = query.list();
 			 tx.commit();
 			 return pagos;
+        }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Contrato> getContratosVigentes(Date fecha) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+			 Query query = session.createQuery("from Contrato where :fecha < fechaFinalizacion ");
+			 query.setParameter("fecha", fecha);
+			 List<Contrato> contratosVigentes = query.list();
+			 tx.commit();
+			 return contratosVigentes;
         }catch(Exception e) {
 			if (tx != null) {
 	            tx.rollback();

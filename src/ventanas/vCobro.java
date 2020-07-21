@@ -126,14 +126,21 @@ public class vCobro extends JFrame {
 	}
 	/*-----------------------------------------------------------------------*/
 	
+	private boolean beforeDate(Calendar fecha1,Calendar fecha2) {
+		return (((fecha1.get(Calendar.DAY_OF_MONTH) - fecha2.get(Calendar.DAY_OF_MONTH)) >= 0) && 
+				(((fecha1.get(Calendar.MONTH) + 1) - (fecha2.get(Calendar.MONTH) + 1)) >= 0) && 
+				((fecha1.get(Calendar.YEAR) - fecha2.get(Calendar.YEAR)) >= 0));
+	}
+	
 	/*FECHA VENCIMIENTO*/
 	private boolean fechaValida() {
-		Date fecha = new Date();
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(fecha);
+		calendar.setTime(new Date());
 		@SuppressWarnings("deprecation")
 		Date fechaPago = new Date(calendar.get(Calendar.YEAR)-1900,calendar.get(Calendar.MONTH),contrato.getFechaMaxPago());
-		return (fechaPago.before(fecha) || fechaPago.equals(fecha));
+		Calendar calendarFP = Calendar.getInstance();
+		calendarFP.setTime(fechaPago);
+		return (!beforeDate(calendarFP,calendar));
 	}
 	
 	private void habilitarRecargo() {
@@ -328,7 +335,9 @@ public class vCobro extends JFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DAOPagos ipagos = new DAOPagosImpl();
-				if (!ipagos.existePago(contrato.getId(),getMes(lblMes.getText()))) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				if (!ipagos.existePago(contrato.getId(),getMes(lblMes.getText()),cal.get(Calendar.YEAR))) {
 					if (fechaValida()) {
 						if ((!txtRecargo.getText().isEmpty())) {
 							Pagos pago = new Pagos(contrato,new Date(),Double.valueOf(lblTotal.getText()),Double.valueOf(txtRecargo.getText()));
@@ -413,6 +422,13 @@ public class vCobro extends JFrame {
 	public vCobro(Contrato c,JTable tabla) {
 		contrato = c;
 		table = tabla;
+		cargarVentana();
+		cargarCampos(c);
+	}
+	
+	public vCobro(Contrato c) {
+		contrato = c;
+		table = null;
 		cargarVentana();
 		cargarCampos(c);
 	}
