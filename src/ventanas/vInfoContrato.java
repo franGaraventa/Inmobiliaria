@@ -7,19 +7,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import clases.Contrato;
 import clases.Pagos;
-import clases.Tablas;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
-import utils.ConvertirNumero;
 import utils.GeneradorPDF;
+import utils.Tablas;
 import utils.TableModels;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -27,9 +24,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+
 
 public class vInfoContrato extends JFrame {
 
@@ -148,7 +143,7 @@ public class vInfoContrato extends JFrame {
 		
 		txtLocador = new JTextField();
 		txtLocador.setColumns(10);
-		txtLocador.setBounds(103, 135, 172, 20);
+		txtLocador.setBounds(103, 135, 215, 20);
 		contentPane.add(txtLocador);
 		txtLocador.setEditable(editable);
 		
@@ -183,7 +178,9 @@ public class vInfoContrato extends JFrame {
 		txtFFirma.setText(format.format(c.getFechaFirma()));
 		txtFInicio.setText(format.format(c.getFechaInicio()));
 		txtFFinalizacion.setText(format.format(c.getFechaFinalizacion()));
-		txtLocador.setText(c.getLocador());
+		String nombre = c.getLocador().getNombre().toUpperCase();
+		String apellido = c.getLocador().getApellido().toUpperCase();
+		txtLocador.setText(nombre+","+apellido);
 		txtPago.setText(String.valueOf(c.getFechaMaxPago()));
 		txtGarantia.setText(String.valueOf(c.getGarantia()));
 		txtGastos.setText(String.valueOf(c.getGastosInmobiliaria()));
@@ -246,7 +243,7 @@ public class vInfoContrato extends JFrame {
 		btnCopiaContrato.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				GeneradorPDF pdf = new GeneradorPDF(contrato,obtenerPrimerPago());
-				pdf.generarPDFContrato("12345678", "DOMICILIO 1");
+				pdf.generarPDFContrato();
 			}
 		});
 		btnCopiaContrato.setBounds(382, 261, 130, 23);

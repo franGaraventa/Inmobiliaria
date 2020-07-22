@@ -48,7 +48,6 @@ public class vContrato extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtPlazo;
-	private JTextField txtLocador;
 	private JTextField txtMaxPago;
 	private JTable table;
 	private JTextField txtGarantia;
@@ -61,6 +60,7 @@ public class vContrato extends JFrame {
 	private JDateChooser dcFechaFirma;
 	private JComboBox<String> cbLocatario;
 	private JTextField txtExpensas;
+	private JComboBox<String> cbLocador;
 		
 	private boolean existeContrato(List<Contrato> contratos,Persona persona) {
 		for(Contrato c: contratos) {
@@ -79,13 +79,28 @@ public class vContrato extends JFrame {
 		return false;
 	}
 	
+	
+	/*CARGAR LOCADORES*/
+	private void cargarLocadores() {
+		DAOPersona ipersona = new DAOPersonaImpl();
+		List<Persona> locadores = ipersona.getPersonas('l');
+		DefaultComboBoxModel<String> comboModelo = new DefaultComboBoxModel<String>();
+		if (!locadores.isEmpty()) {
+			comboModelo.addElement("Seleccione un locador...");
+			for (Persona p : locadores) {
+				comboModelo.addElement(p.getDni()+"-"+p.getNombre()+","+p.getApellido());
+			}
+			cbLocador.setModel(comboModelo);
+		}
+	}
+	
 	/*CARGAR LOCATARIOS DISPONIBLES PARA CONTRATO*/
 	private void cargarLocatarios() {
 		DAOContrato icontrato = new DAOContratoImpl();
 		DAOPersona ipersona = new DAOPersonaImpl();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		List<Contrato> contratos = icontrato.getContratos("from Contrato as c where "+format.format((new Date())) +"< c.fechaFinalizacion");
-		List<Persona> personas = ipersona.getPersonas();
+		List<Persona> personas = ipersona.getPersonas('c');
 		List<Persona> p_aux = new ArrayList<Persona>();
 		for(Persona persona: personas) {
 			if (!existeContrato(contratos,persona)) {
@@ -111,6 +126,14 @@ public class vContrato extends JFrame {
 		DAOPersona ipersona = new DAOPersonaImpl();
 		Persona p = ipersona.obtenerPersona(parts[0]);
 		c.setLocatario(p);
+	}
+	
+	private void agregarLocador(Contrato c) {
+		String persona = (String) cbLocador.getSelectedItem();
+		String[] parts = persona.split("-");
+		DAOPersona ipersona = new DAOPersonaImpl();
+		Persona p = ipersona.obtenerPersona(parts[0]);
+		c.setLocador(p);
 	}
 
 	private void agregarLocacion(Contrato c) {
@@ -306,11 +329,6 @@ public class vContrato extends JFrame {
 		dcFechaFinalizacion.setEnabled(false);
 		pnlFechas.add(dcFechaFinalizacion);
 		
-		txtLocador = new JTextField();
-		txtLocador.setColumns(10);
-		txtLocador.setBounds(108, 160, 188, 20);
-		contentPane.add(txtLocador);
-		
 		cbLocatario = new JComboBox<String>();
 		cbLocatario.setBounds(118, 191, 253, 20);
 		contentPane.add(cbLocatario);
@@ -346,14 +364,19 @@ public class vContrato extends JFrame {
 		txtGastosInmobiliaria.setBounds(213, 558, 97, 20);
 		contentPane.add(txtGastosInmobiliaria);
 		
+		cbLocador = new JComboBox<String>();
+		cbLocador.setBounds(118, 160, 253, 20);
+		contentPane.add(cbLocador);
+		
 		modelo = TableModels.crearModeloPropiedades(modelo);
 		cargarTabla();
 		cargarLocatarios();
+		cargarLocadores();
 	}
 
 	/*VALIDACION DE CAMPOS PARA INSERCION DE CONTRATO*/
 	private boolean camposVacios() {
-		return (txtPlazo.getText().isEmpty() && txtLocador.getText().isEmpty() && txtMaxPago.getText().isEmpty() && txtGarantia.getText().isEmpty() 
+		return (txtPlazo.getText().isEmpty() && /*LOCADOR &&*/ txtMaxPago.getText().isEmpty() && txtGarantia.getText().isEmpty() 
 				&& txtGastosInmobiliaria.getText().isEmpty() && txtExpensas.getText().isEmpty());
 	}
 	
@@ -391,10 +414,10 @@ public class vContrato extends JFrame {
 					double garantia = Double.valueOf(txtGarantia.getText());
 					double gastosInmobiliaria = Double.valueOf(txtGastosInmobiliaria.getText());
 					int fechaMaxPago = Integer.parseInt(txtMaxPago.getText());
-					Contrato c = new Contrato(plazo,fechaMaxPago,dcFechaFirma.getDate(),dcFechaInicio.getDate(),dcFechaFinalizacion.getDate(),txtLocador.getText(),
-							garantia,gastosInmobiliaria);
+					Contrato c = new Contrato(plazo,fechaMaxPago,dcFechaFirma.getDate(),dcFechaInicio.getDate(),dcFechaFinalizacion.getDate(),garantia,gastosInmobiliaria);
 					agregarLocacion(c);
 					agregarPersona(c);
+					agregarLocador(c);
 					agregarTipoPago(c);
 					DAOContrato icontrato = new DAOContratoImpl();
 					icontrato.agregar(c);
@@ -429,11 +452,9 @@ public class vContrato extends JFrame {
 		cargarComponentes();
 		cargarLabels();
 		cargarButtons();
-		
 	}
 	
 	public vContrato() {
 		cargarVentana();
 	}
-	
 }

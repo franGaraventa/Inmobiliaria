@@ -113,7 +113,7 @@ public class GeneradorPDF {
 		}
 	}
 	
-	public void generarPDFContrato(String dni_locador,String domicilio_locador) {
+	public void generarPDFContrato() {
 		archivo = new JFileChooser();
 		int opcion = archivo.showSaveDialog(null);
 		if (opcion == JFileChooser.APPROVE_OPTION) {
@@ -134,9 +134,10 @@ public class GeneradorPDF {
 				Paragraph parrafo_1 = new Paragraph();
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(contrato.getFechaFirma());
+				String lapellidoynombre = contrato.getLocador().getApellido()+","+contrato.getLocador().getNombre();
 				String apellidoynombre = contrato.getLocatario().getApellido()+","+contrato.getLocatario().getNombre();
 				parrafo_1.add("En la ciudad de "+ciudad+" a los "+calendar.get(Calendar.DAY_OF_MONTH)+" del mes de "+Fechas.getMes(calendar.get(Calendar.MONTH))+" de "+
-							   calendar.get(Calendar.YEAR)+" entre "+contrato.getLocador()+" con DNI Nº "+dni_locador+", con domicilio en la calle "+domicilio_locador+
+							   calendar.get(Calendar.YEAR)+" entre "+lapellidoynombre+" con DNI Nº "+contrato.getLocador().getDni()+", con domicilio en la calle "+contrato.getLocador().getDireccion()+
 							   " por una parte, en lo sucesivo denominado/a como 'LOCADOR/A' por una parte, y por la otra "+apellidoynombre+" DNI Nº "+contrato.getLocatario().getDni()+
 							   ", con domicilio en el inmueble locado. En adelante denominado como 'LOCATARIO/A', convienen en celebrar el presente contrato de LOCACION de vivienda,"
 							   + "sujeto a las clausulas siguientes y a las disposiciones del Codigo Civil y Comercial ------------------------------------------------------------");
@@ -318,7 +319,7 @@ public class GeneradorPDF {
 				/*CLAUSULA 17*/
 				Paragraph clausula_17 = new Paragraph();
 				clausula_17.add("DECIMA SEPTIMA (DOMICILIOS DE LAS PARTES):\n");
-				clausula_17.add("Las partes establecen los siguiente domicilios para todo lo relativo al presente contrato:\n a) LOCADOR/A - en ___________________________; ______________________;\n"+
+				clausula_17.add("Las partes establecen los siguiente domicilios para todo lo relativo al presente contrato:\n a) LOCADOR/A - en "+contrato.getLocador().getDireccion()+" y "+contrato.getLocador().getEmail()+"\n"+
 				                "b) LOCATARIO/A - en el inmueble locado; y "+contrato.getLocatario().getEmail()+"\n Ambas partes convienen que las comunicaciones y emplazamientos entre si con motivo del presente contrato se efectuaran por via electronica, "
 				                +"exclusivamente. Las notificaciones cursadas de este modo se tendran por validas y plenamente eficaces (art. 75, CCyCN).\nDicho domicilio sera utilizado personal y exclusivamente por su titular quien se constituye responsable "
 				                +"de su uso y custodio de la informacion y documentacion que al mismo se envie, asumiendo las consecuencias de su divulgacion a terceros. LAS PARTES asumen la responsabilidad por el uso indebido o inadecuado, haciendose cargo de todos "

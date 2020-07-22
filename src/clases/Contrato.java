@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,8 +38,9 @@ public class Contrato implements java.io.Serializable {
 	@Column(name="fechaFinalizacion")
 	private Date fechaFinalizacion;
 	
-	@Column(name="locador")
-	private String locador;
+	@OneToOne(orphanRemoval = false)
+	@JoinColumn(name = "locador", referencedColumnName = "dni")
+	private Persona locador;
 	
 	@OneToOne(orphanRemoval = false)
 	@JoinColumn(name = "locatario", referencedColumnName = "dni")
@@ -70,13 +70,12 @@ public class Contrato implements java.io.Serializable {
 	public Contrato() {
 	}
 
-	public Contrato(int plazo, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, String locador, Persona locatario,
+	public Contrato(int plazo, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, Persona locatario,
 			TipoPrecio precio, Propiedad locacion, double garantia, double gastosInmobiliaria) {
 		this.plazo = plazo;
 		this.fechaFirma = fechaFirma;
 		this.fechaInicio = fechaInicio;
 		this.fechaFinalizacion = fechaFinalizacion;
-		this.locador = locador;
 		this.locatario = locatario;
 		this.precio = precio;
 		this.locacion = locacion;
@@ -85,12 +84,11 @@ public class Contrato implements java.io.Serializable {
 		this.pagos = new ArrayList<Pagos>();
 	}
 	
-	public Contrato(int plazo,int fechaMaxPago, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, String locador, double garantia, double gastosInmobiliaria) {
+	public Contrato(int plazo,int fechaMaxPago, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, double garantia, double gastosInmobiliaria) {
 		this.plazo = plazo;
 		this.fechaFirma = fechaFirma;
 		this.fechaInicio = fechaInicio;
 		this.fechaFinalizacion = fechaFinalizacion;
-		this.locador = locador;
 		this.garantia = garantia;
 		this.gastosInmobiliaria = gastosInmobiliaria;
 		this.fechaMaxPago = fechaMaxPago;
@@ -137,11 +135,11 @@ public class Contrato implements java.io.Serializable {
 		this.fechaFinalizacion = fechaFinalizacion;
 	}
 
-	public String getLocador() {
+	public Persona getLocador() {
 		return this.locador;
 	}
 
-	public void setLocador(String locador) {
+	public void setLocador(Persona locador) {
 		this.locador = locador;
 	}
 

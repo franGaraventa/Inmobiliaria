@@ -143,4 +143,18 @@ public class DAOPersonaImpl implements DAOPersona{
 		return list_persona;
 	}
 
+	@Override
+	public List<Persona> getPersonas(char tipo) {
+		session = HibernateUtils.getSessionFactory().openSession();
+		session.beginTransaction();
+		@SuppressWarnings("rawtypes")
+		Query query = session.createQuery("SELECT p FROM Persona p where p.tipo = :tipo");
+		query.setParameter("tipo", tipo);
+		@SuppressWarnings("unchecked")
+		List<Persona> list_persona  = query.list();		
+		session.getTransaction().commit();
+		session.close();
+		return list_persona;
+	}
+
 }

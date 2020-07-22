@@ -30,16 +30,24 @@ public class Persona implements java.io.Serializable {
 	@Column(name="telefono")
 	private String telefono;
 
+	@Column(name="tipo")
+	private char tipo;
+	
+	@Column(name="direccion")
+	private String direccion;
+	
 	public Persona() {
 	}
 
-	public Persona(String dni, String nombre, String apellido, String email, String codArea, String telefono) {
+	public Persona(String dni, String nombre, String apellido, String email, String codArea, String telefono,char tipo,String direccion) {
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.email = email;
 		this.codArea = codArea;
 		this.telefono = telefono;
+		this.tipo = tipo;
+		this.direccion = direccion;
 	}
 
 	public String getDni() {
@@ -90,4 +98,21 @@ public class Persona implements java.io.Serializable {
 		this.telefono = telefono;
 	}
 
+	public char getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(char tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	
 }

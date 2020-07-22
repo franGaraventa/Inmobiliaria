@@ -11,5 +11,5 @@ public interface DAOPersona {
 	public void modificar(Persona p);
 	public void eliminar(Persona p);
 	public List<Persona> gerPersonas(String condicion);
-	
+	public List<Persona> getPersonas(char tipo);
 }

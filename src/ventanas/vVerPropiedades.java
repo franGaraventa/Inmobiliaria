@@ -17,10 +17,10 @@ import Filtros.FPropSupLote;
 import Filtros.FPropValor;
 import Filtros.FPropiedad;
 import clases.Propiedad;
-import clases.Tablas;
 import interfaces.DAOPropiedad;
 import interfaces.DAOPropiedadImpl;
 import utils.GeneradorTexto;
+import utils.Tablas;
 import utils.TableModels;
 import utils.TextoBusqueda;
 

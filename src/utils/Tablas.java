@@ -1,12 +1,15 @@
-package clases;
+package utils;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import clases.Contrato;
+import clases.Pagos;
+import clases.Persona;
+import clases.Propiedad;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
 import interfaces.DAOPagos;

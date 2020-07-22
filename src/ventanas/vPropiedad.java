@@ -8,13 +8,13 @@ import javax.swing.border.EmptyBorder;
 import clases.Imagen;
 import clases.ImagenPropiedad;
 import clases.Propiedad;
-import clases.Tablas;
 import clases.Ubicacion;
 import interfaces.DAOImagen;
 import interfaces.DAOImagenImpl;
 import interfaces.DAOPropiedad;
 import interfaces.DAOPropiedadImpl;
 import utils.FileTypeFilter;
+import utils.Tablas;
 
 import javax.swing.JLabel;
 import java.awt.Font;

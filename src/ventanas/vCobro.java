@@ -13,10 +13,11 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import clases.Contrato;
 import clases.Pagos;
-import clases.Tablas;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
 import utils.ConvertirNumero;
+import utils.Tablas;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

@@ -6,9 +6,9 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
 import clases.Persona;
-import clases.Tablas;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
+import utils.Tablas;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
 
 public class vCliente extends JFrame {
 
@@ -29,8 +30,11 @@ public class vCliente extends JFrame {
 	private JTextField txtTelefono;
 	private JButton btnGuardar;
 	private JButton btnModificar;
+	private char tipo_persona;
+	private JCheckBox chkCliente;
 	
 	private JTable table;
+	private JTextField txtDireccion;
 
 	private void definirLabels() {
 		JLabel lblNewLabel = new JLabel("DNI");
@@ -62,38 +66,52 @@ public class vCliente extends JFrame {
 		lblTelefono.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblTelefono.setBounds(10, 174, 110, 20);
 		contentPane.add(lblTelefono);
+		
+		JLabel lblDireccion = new JLabel("DIRECCION");
+		lblDireccion.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblDireccion.setBounds(10, 205, 110, 20);
+		contentPane.add(lblDireccion);
 	}
 	
 	private void definirTextFields() {
 		txtDNI = new JTextField();
-		txtDNI.setBounds(65, 19, 199, 20);
+		txtDNI.setBounds(65, 19, 158, 20);
 		contentPane.add(txtDNI);
 		txtDNI.setColumns(10);
 		
 		txtNombre = new JTextField();
 		txtNombre.setColumns(10);
-		txtNombre.setBounds(104, 50, 160, 20);
+		txtNombre.setBounds(104, 50, 214, 20);
 		contentPane.add(txtNombre);
 		
 		txtApellido = new JTextField();
 		txtApellido.setColumns(10);
-		txtApellido.setBounds(104, 81, 160, 20);
+		txtApellido.setBounds(104, 81, 214, 20);
 		contentPane.add(txtApellido);
 		
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
-		txtEmail.setBounds(82, 112, 182, 20);
+		txtEmail.setBounds(82, 112, 236, 20);
 		contentPane.add(txtEmail);
 		
 		txtCodArea = new JTextField();
 		txtCodArea.setColumns(10);
-		txtCodArea.setBounds(174, 143, 90, 20);
+		txtCodArea.setBounds(174, 143, 78, 20);
 		contentPane.add(txtCodArea);
 		
 		txtTelefono = new JTextField();
 		txtTelefono.setColumns(10);
-		txtTelefono.setBounds(130, 174, 134, 20);
+		txtTelefono.setBounds(130, 174, 188, 20);
 		contentPane.add(txtTelefono);
+		
+		chkCliente = new JCheckBox("CLIENTE");
+		chkCliente.setBounds(10, 242, 72, 23);
+		contentPane.add(chkCliente);
+		
+		txtDireccion = new JTextField();
+		txtDireccion.setColumns(10);
+		txtDireccion.setBounds(130, 205, 188, 20);
+		contentPane.add(txtDireccion);
 	}
 	
 	private void deshabilitarTexts(boolean enabled) {
@@ -103,6 +121,24 @@ public class vCliente extends JFrame {
 		txtEmail.setEnabled(enabled);
 		txtCodArea.setEnabled(enabled);
 		txtTelefono.setEnabled(enabled);
+		chkCliente.setEnabled(enabled);
+		txtDireccion.setEnabled(enabled);
+	}
+	
+	private char campoCliente() {
+		if (chkCliente.isSelected()) {
+			return 'c';
+		}else {
+			return 'l';
+		}
+	}
+	
+	private void campoCliente(Persona p) {
+		if (p.getTipo() == 'c') {
+			chkCliente.setSelected(true);
+		}else {
+			chkCliente.setSelected(false);
+		}
 	}
 	
 	private void definirButtons(){
@@ -110,20 +146,20 @@ public class vCliente extends JFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				DAOPersona ipersona = new DAOPersonaImpl();
-				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText());
+				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),tipo_persona,txtDireccion.getText());
 				ipersona.guardar(p);
 				limpiarCampos();
 				dispose();
 			}
 		});
-		btnGuardar.setBounds(154, 208, 110, 23);
+		btnGuardar.setBounds(208, 242, 110, 23);
 		contentPane.add(btnGuardar);
 		
 		btnModificar = new JButton("MODIFICAR");
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DAOPersona ipersona = new DAOPersonaImpl();
-				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText());
+				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),campoCliente(),txtDireccion.getText());
 				ipersona.modificar(p);
 				if (table != null)
 					Tablas.actualizarTPersona(table);
@@ -131,13 +167,14 @@ public class vCliente extends JFrame {
 				dispose();
 			}
 		});
-		btnModificar.setBounds(154, 208, 110, 23);
+		btnModificar.setBounds(208, 242, 110, 23);
 		contentPane.add(btnModificar);
+	
 	}
 	
 	private void definirVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 290, 281);
+		setBounds(100, 100, 344, 315);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -156,6 +193,7 @@ public class vCliente extends JFrame {
 		txtEmail.setText(p.getEmail());
 		txtCodArea.setText(p.getCodArea());
 		txtTelefono.setText(p.getTelefono());
+		campoCliente(p);
 	}
 	
 	private void limpiarCampos() {
@@ -165,21 +203,33 @@ public class vCliente extends JFrame {
 		txtApellido.setText(null);
 		txtNombre.setText(null);
 		txtDNI.setText(null);
+		txtDireccion.setText(null);
+		chkCliente.setSelected(false);
 	}
 	
-	/*CONTRUCTOR PARA NUEVO CLIENTE*/
-	public vCliente() {
+	/*CONTRUCTOR PARA NUEVO CLIENTE/LOCADOR*/
+	public vCliente(char tipo) {
 		definirVentana();
+		tipo_persona = tipo;
+		if (tipo_persona == 'l') {
+			chkCliente.setEnabled(false);
+		}else {
+			if (tipo_persona == 'c') {
+				chkCliente.setEnabled(false);
+				chkCliente.setSelected(true);
+			}
+		}
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(true);
 		btnModificar.setVisible(false);
 	}
 	
-	/*CONTRUCTOR PARA MODIFICAR CLIENTE*/
+	/*CONTRUCTOR PARA MODIFICAR CLIENTE/LOCADOR*/
 	public vCliente(Persona p,JTable tabla) {
 		definirVentana();
 		cargarText(p);
 		txtDNI.setEnabled(false);
+		chkCliente.setEnabled(false);
 		table = tabla;
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(false);
@@ -190,6 +240,7 @@ public class vCliente extends JFrame {
 		definirVentana();
 		cargarText(p);
 		txtDNI.setEnabled(false);
+		chkCliente.setEnabled(false);
 		table = null;
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(false);

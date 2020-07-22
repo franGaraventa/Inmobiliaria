@@ -8,11 +8,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import clases.Contrato;
-import clases.Tablas;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
+import utils.Tablas;
 import utils.TableModels;
 
 import javax.swing.JMenuBar;
@@ -66,7 +66,7 @@ public class vMain extends JFrame {
 		JMenuItem mnNuevoCliente = new JMenuItem("Nuevo cliente");
 		mnNuevoCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				vCliente vcliente = new vCliente();
+				vCliente vcliente = new vCliente('c');
 				vcliente.setVisible(true);
 			}
 		});
@@ -122,6 +122,18 @@ public class vMain extends JFrame {
 			}
 		});	
 		mnContratos.add(mnVerContratos);
+		
+		JMenu mnLocadores = new JMenu("Locadores");
+		menuBar.add(mnLocadores);
+		
+		JMenuItem mnLocador = new JMenuItem("Nuevo Locador");
+		mnLocador.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				vLocador vlocador = new vLocador();
+				vlocador.setVisible(true);
+			}
+		});	
+		mnLocadores.add(mnLocador);
 	}
 	
 	private void verFechasPagos() {

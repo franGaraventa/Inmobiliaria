@@ -18,10 +18,10 @@ import Filtros.FPersNom;
 import Filtros.FPersOR;
 import Filtros.FPersona;
 import clases.Persona;
-import clases.Tablas;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
 import utils.GeneradorTexto;
+import utils.Tablas;
 import utils.TableModels;
 import utils.TextoBusqueda;
 

@@ -6,10 +6,10 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import clases.Contrato;
-import clases.Tablas;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
 import utils.GeneradorTexto;
+import utils.Tablas;
 import utils.TableModels;
 import utils.TextoBusqueda;
 
@@ -33,7 +33,6 @@ import Filtros.FContFMaxPago;
 import Filtros.FContFinalizacion;
 import Filtros.FContFirma;
 import Filtros.FContInicio;
-import Filtros.FContLocador;
 import Filtros.FContNOT;
 import Filtros.FContOR;
 import Filtros.FContPlazo;
@@ -99,10 +98,6 @@ public class vVerContratos extends JFrame {
 				}
 			}
 			case (5): {
-				busqueda.add(new TextoBusqueda("Locador "+ txtValor.getText()));
-				return new FContLocador(txtValor.getText());
-			}
-			case (6): {
 				busqueda.add(new TextoBusqueda("Dias Maxima de Pago "+ txtComparador.getText() + " " + txtValor.getText()));
 				return new FContFMaxPago(Integer.parseInt(txtValor.getText()),txtComparador.getText());
 			}
@@ -127,17 +122,13 @@ public class vVerContratos extends JFrame {
 	
 	private boolean datosValidos(int seleccionado,int logica) {
 		if (logica >= 0) {
-			if ((seleccionado == 1) || (seleccionado == 6)) {
+			if ((seleccionado == 1) || (seleccionado == 5)) {
 				return (!txtValor.getText().isEmpty() && !txtComparador.getText().isEmpty());
 			}else {
-				if (seleccionado == 5) {
-					return (!txtValor.getText().isEmpty());
+				if (txtComparador.getText().equals("entre")) {
+					return ((dcFecha1.getDate() != null) && (dcFecha2.getDate() != null));
 				}else {
-					if (txtComparador.getText().equals("entre")) {
-						return ((dcFecha1.getDate() != null) && (dcFecha2.getDate() != null));
-					}else {
-						return ((dcFecha1.getDate() != null));
-					}
+					return ((dcFecha1.getDate() != null));
 				}
 			}
 		}else {
@@ -305,7 +296,7 @@ public class vVerContratos extends JFrame {
 		pnlBusqueda.add(chkNegar);
 		
 		cbBuscador = new JComboBox<String>();
-		cbBuscador.setModel(new DefaultComboBoxModel<String>(new String[] {"Elija que ingresar a la busqueda", "Plazo", "Fecha Inicio", "Fecha Finalizacion", "Fecha Firma", "Locador", "Fecha Maxima Pago"}));
+		cbBuscador.setModel(new DefaultComboBoxModel(new String[] {"Elija que ingresar a la busqueda", "Plazo", "Fecha Inicio", "Fecha Finalizacion", "Fecha Firma", "Fecha Maxima Pago"}));
 		cbBuscador.setBounds(38, 10, 195, 20);
 		pnlBusqueda.add(cbBuscador);
 		
