@@ -6,7 +6,10 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import clases.Contrato;
+import clases.Pagos;
 import clases.Tablas;
+import interfaces.DAOContrato;
+import interfaces.DAOContratoImpl;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
 import utils.ConvertirNumero;
@@ -17,12 +20,16 @@ import java.awt.Font;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 public class vInfoContrato extends JFrame {
 
@@ -182,64 +189,23 @@ public class vInfoContrato extends JFrame {
 		txtGastos.setText(String.valueOf(c.getGastosInmobiliaria()));
 	}
 	
-	private String getDia(int valor) {
-        String Valor_dia = "";
-		if (valor == 1) {
-            Valor_dia = "Domingo";
-        } else if (valor == 2) {
-            Valor_dia = "Lunes";
-        } else if (valor == 3) {
-            Valor_dia = "Martes";
-        } else if (valor == 4) {
-            Valor_dia = "Miercoles";
-        } else if (valor == 5) {
-            Valor_dia = "Jueves";
-        } else if (valor == 6) {
-            Valor_dia = "Viernes";
-        } else if (valor == 7) {
-            Valor_dia = "Sabado";
-        }
-        return Valor_dia;
-	}
-	
-	private String getMes(int valor) {
-		String mes = "";
-		switch (valor) {
-            case 0:  mes = "Enero";
-                     break;
-            case 1:  mes = "Febrero";
-                     break;
-            case 2:  mes = "Marzo";
-                     break;
-            case 3:  mes = "Abril";
-                     break;
-            case 4:  mes = "Mayo";
-                     break;
-            case 5:  mes = "Junio";
-                     break;
-            case 6:  mes = "Julio";
-                     break;
-            case 7:  mes = "Agosto";
-            		 break;
-            case 8:  mes = "Septiembre";
-            		 break;
-            case 9:  mes = "Octubre";
-            		 break;
-            case 10:  mes = "Noviembre";
-            		 break;
-            case 11:  mes = "Diciembre";
-            	 	 break;
-        } 	 	
-		return mes;
-	}
-	
 	public static Double formatearDecimales(Double numero, Integer numeroDecimales) {
 		return Math.round(numero * Math.pow(10, numeroDecimales)) / Math.pow(10, numeroDecimales);
 	}
 	
+	private Pagos obtenerPrimerPago() {
+		DAOContrato icontrato = new DAOContratoImpl();
+		List<Pagos> pagos = icontrato.getPagos(contrato.getId());
+		if (pagos != null) {
+			return pagos.get(0);
+		}else {
+			return null;
+		}
+	}
+	
 	private void cargarVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 693, 332);
+		setBounds(100, 100, 693, 333);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -260,7 +226,7 @@ public class vInfoContrato extends JFrame {
 		table.setModel(modelo);
 		Tablas.actualizarTPagos(table,contrato.getId());
 		
-		JButton btnGuardarCopia = new JButton("CREAR COPIA");
+		JButton btnGuardarCopia = new JButton("FACTURA");
 		btnGuardarCopia.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int row = table.getSelectedRow();
@@ -275,6 +241,16 @@ public class vInfoContrato extends JFrame {
 		});
 		btnGuardarCopia.setBounds(522, 261, 141, 23);
 		contentPane.add(btnGuardarCopia);
+		
+		JButton btnCopiaContrato = new JButton("COPIA CONTRATO");
+		btnCopiaContrato.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				GeneradorPDF pdf = new GeneradorPDF(contrato,obtenerPrimerPago());
+				pdf.generarPDFContrato("12345678", "DOMICILIO 1");
+			}
+		});
+		btnCopiaContrato.setBounds(382, 261, 130, 23);
+		contentPane.add(btnCopiaContrato);
 	}
 	
 	public vInfoContrato(Contrato c) {
