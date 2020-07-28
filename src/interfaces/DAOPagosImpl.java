@@ -2,15 +2,11 @@ package interfaces;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.JOptionPane;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import clases.Pagos;
-import clases.Persona;
 import utils.HibernateUtils;
 
 @SuppressWarnings("deprecation")

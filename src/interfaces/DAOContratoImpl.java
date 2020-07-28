@@ -1,18 +1,18 @@
 package interfaces;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.JOptionPane;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.annotations.Parent;
 
+import clases.Cliente;
 import clases.Contrato;
 import clases.Pagos;
-import clases.Persona;
+import clases.Propiedad;
+import utils.Fechas;
 import utils.HibernateUtils;
 
 @SuppressWarnings("deprecation")
@@ -169,4 +169,83 @@ public class DAOContratoImpl implements DAOContrato{
 		return null;
 	}
 
+	@Override
+	public boolean contratoVigenteConCliente(int id,Date fecha) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("select cl from Contrato as c join Cliente as cl on (cl.id = c.locatario) where cl.id = :id and :fecha < c.fechaFinalizacion");
+			query.setParameter("id", id);
+			query.setParameter("fecha", fecha);
+			@SuppressWarnings("unchecked")
+			List<Cliente> cl = query.list();
+			if (cl.size() > 0) {
+				return true;
+			}else {
+				return false;
+			}
+       }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean contratoVigenteConPropiedad(int id,Date fecha) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("select p from Contrato as c join Propiedad as p on (c.locacion = p.id) where p.id = :id and :fecha < c.fechaFinalizacion");
+			query.setParameter("id", id);
+			query.setParameter("fecha", fecha);
+			@SuppressWarnings("unchecked")
+			List<Propiedad> p = query.list();
+			if (p.size() > 0) {
+				return true;
+			}else {
+				return false;
+			}
+       }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean contratoVigente(int id, Date fecha) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+        	Contrato contrato = session.get(Contrato.class, id);
+        	if (Fechas.compararFechas(contrato.getFechaFinalizacion()) >= 0) {
+        		return true;
+        	}else {
+        		return false;
+        	}
+       }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return false;
+	}
+	
 }

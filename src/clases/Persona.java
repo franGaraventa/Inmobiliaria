@@ -2,16 +2,25 @@ package clases;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="persona")
-public class Persona implements java.io.Serializable {
+public abstract class Persona implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
+	private int id;
+	
 	@Column(name="dni")
 	private String dni;
 	
@@ -29,25 +38,31 @@ public class Persona implements java.io.Serializable {
 	
 	@Column(name="telefono")
 	private String telefono;
-
-	@Column(name="tipo")
-	private char tipo;
 	
 	@Column(name="direccion")
 	private String direccion;
-	
+
 	public Persona() {
 	}
 
-	public Persona(String dni, String nombre, String apellido, String email, String codArea, String telefono,char tipo,String direccion) {
+	public Persona(int id,String dni, String nombre, String apellido, String email, String codArea, String telefono,
+			String direccion) {
+		this.id = id;
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.email = email;
 		this.codArea = codArea;
 		this.telefono = telefono;
-		this.tipo = tipo;
 		this.direccion = direccion;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getDni() {
@@ -98,21 +113,14 @@ public class Persona implements java.io.Serializable {
 		this.telefono = telefono;
 	}
 
-	public char getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(char tipo) {
-		this.tipo = tipo;
-	}
-
 	public String getDireccion() {
-		return direccion;
+		return this.direccion;
 	}
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
 	}
 
-	
+	public abstract CuentaBancaria getCuentaBancaria();
+
 }

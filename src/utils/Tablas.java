@@ -1,15 +1,19 @@
 package utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import clases.Cliente;
 import clases.Contrato;
 import clases.Pagos;
 import clases.Persona;
 import clases.Propiedad;
+import interfaces.DAOCliente;
+import interfaces.DAOClienteImpl;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
 import interfaces.DAOPagos;
@@ -21,27 +25,48 @@ import interfaces.DAOPropiedadImpl;
 
 public class Tablas {
 
-	public static void actualizarTPersona(JTable tabla) {
+	private static boolean existeCliente(List<Persona> personas,Cliente c) {
+		for(Persona p: personas) {
+			if(p.getId() == c.getId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static void cargarClientes(List<Persona> personas,List<Cliente> clientes,List<Cliente> aux) {
+		for(Cliente c: clientes) {
+			if (existeCliente(personas,c)) {
+				aux.add(c);
+			}
+		}
+	}
+	
+	public static void actualizarTClientes(JTable tabla) {
 		DAOPersona ipersona = new DAOPersonaImpl();
+		DAOCliente icliente = new DAOClienteImpl();
 		List<Persona> personas = ipersona.getPersonas();
+		List<Cliente> clientes = icliente.getClientes();
+		List<Cliente> p_aux = new ArrayList<Cliente>();
+		cargarClientes(personas,clientes,p_aux);
 		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
 		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
 		modelo.fireTableDataChanged();
-		if (!personas.isEmpty()){
-			for (Persona p : personas) {
-				modelo.addRow(new Object[] {p.getDni(),p.getNombre(),p.getApellido(),p.getEmail(),p.getCodArea(),p.getTelefono()});
+		if (!p_aux.isEmpty()){
+			for (Cliente c : p_aux) {
+				modelo.addRow(new Object[] {c.getId(),c.getDni(),c.getNombre(),c.getApellido(),c.getEmail(),c.getCodArea(),c.getTelefono(),c.getDireccion()});
 			}
 		}
 		tabla.setModel(modelo);
 	}
 	
-	public static void actualizarTPersona(JTable tabla, List<Persona> personas) {
+	public static void actualizarTClientes(JTable tabla, List<Cliente> clientes) {
 		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
 		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
 		modelo.fireTableDataChanged();
-		if (!personas.isEmpty()){
-			for (Persona p : personas) {
-				modelo.addRow(new Object[] {p.getDni(),p.getNombre(),p.getApellido(),p.getEmail(),p.getCodArea(),p.getTelefono()});
+		if (!clientes.isEmpty()){
+			for (Cliente c : clientes) {
+				modelo.addRow(new Object[] {c.getId(),c.getDni(),c.getNombre(),c.getApellido(),c.getEmail(),c.getCodArea(),c.getTelefono(),c.getDireccion()});
 			}
 		}
 		tabla.setModel(modelo);
@@ -69,7 +94,7 @@ public class Tablas {
 		modelo.fireTableDataChanged();
 		if (!contratos.isEmpty()){
 			for (Contrato c : contratos) {
-				modelo.addRow(new Object[] {c.getId(),c.getPlazo(),c.getFechaFirma(),c.getFechaInicio(),c.getFechaFinalizacion(),c.getLocador(),c.getFechaMaxPago()});
+				modelo.addRow(new Object[] {c.getId(),c.getPlazo(),c.getFechaFirma(),c.getFechaInicio(),c.getFechaFinalizacion(),c.getLocador().getApellido(),c.getFechaMaxPago()});
 			}
 		}
 		tabla.setModel(modelo);

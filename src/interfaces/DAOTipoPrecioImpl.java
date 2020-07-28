@@ -1,6 +1,5 @@
 package interfaces;
 
-import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -26,19 +25,6 @@ public class DAOTipoPrecioImpl implements DAOTipoPrecio{
 		}finally{
 			session.close();
 		}
-	}
-
-	@Override
-	public void modificar(TipoPrecio tp) {
-	}
-
-	@Override
-	public void eliminar(TipoPrecio tp) {
-	}
-
-	@Override
-	public List<TipoPrecio> getTipoPrecios() {
-		return null;
 	}
 
 	@Override

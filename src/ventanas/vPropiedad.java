@@ -15,6 +15,7 @@ import interfaces.DAOPropiedad;
 import interfaces.DAOPropiedadImpl;
 import utils.FileTypeFilter;
 import utils.Tablas;
+import utils.ValidadorCampos;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -78,7 +79,7 @@ public class vPropiedad extends JFrame {
 	
 	/*CARGAR IMAGEN PREDETERMINADA*/
 	private void cargarImagenPredeterminada() {
-		ImagenPropiedad img = new ImagenPropiedad("white_image.png",new ImageIcon(getClass().getResource("/imagenes/white_image.png")));
+		ImagenPropiedad img = new ImagenPropiedad("white_image.png",new ImageIcon(getClass().getResource("/Imagenes/white_image.png")));
 		ImageIcon icono = new ImageIcon(img.getImagen().getImage().getScaledInstance(lblImagenes.getWidth(),lblImagenes.getHeight(), Image.SCALE_DEFAULT));
 		lblImagenes.setIcon(icono);
 	}
@@ -115,6 +116,30 @@ public class vPropiedad extends JFrame {
 			}
 		}
 		return false;
+	}
+	
+	private boolean validarSuperficie() {
+		if (ValidadorCampos.campoNumeros(txtSupLote, 5) && ValidadorCampos.campoNumeros(txtSupCub, 5)) {
+			double supLote = Double.parseDouble(txtSupLote.getText());
+			double supCubierta = Double.parseDouble(txtSupCub.getText());
+			if (supCubierta > supLote) {
+				txtSupCub.setBorder(ValidadorCampos.getRBorder());
+				return false;
+			}else {
+				return true;
+			}	
+		}else {
+			return false;
+		}
+	}
+	
+	private boolean camposValidos() {
+		if(ValidadorCampos.campoNumeros(txtValor, 7) && validarSuperficie() && ValidadorCampos.campoNumeros(txtCodPostal, 5) &&
+		   ValidadorCampos.campoVacio(txtDistrito, 30) && ValidadorCampos.campoVacio(txtCiudad, 15) && ValidadorCampos.campoVacio(txtDireccion, 50) && ValidadorCampos.textVacio(txtInformacion, 150)) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	/*INSERTAR IMAGENES EN PROPIEDAD de ImagenPropiedad -> Imagen*/
@@ -306,36 +331,38 @@ public class vPropiedad extends JFrame {
 		btnGuardar = new JButton("GUARDAR");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DAOPropiedad ipropiedad = new DAOPropiedadImpl();
-				double valor = Double.valueOf(txtValor.getText());
-				double supLote = Double.valueOf(txtSupLote.getText());
-				double supCub = Double.valueOf(txtSupCub.getText());
-				int id = 0;
-				if (!editable) {
-					id = ipropiedad.getUltimoIndice()+1;
-				}else {
-					id = p.getId();
-				}
-				Propiedad p = new Propiedad(id,valor,supLote,supCub,txtInformacion.getText(),chkAmoblado.isSelected());
-				Ubicacion u = new Ubicacion(id,txtCodPostal.getText(),txtDistrito.getText(),txtCiudad.getText(),txtDireccion.getText());
-				p.setUbicacion(u);
-				u.setPropiedad(p);
-				try {
-					if (list_img != null) {
-						insertar(p);
-						p.setImagenes(list_imagenes);
+				if (camposValidos()) {
+					DAOPropiedad ipropiedad = new DAOPropiedadImpl();
+					double valor = Double.valueOf(txtValor.getText());
+					double supLote = Double.valueOf(txtSupLote.getText());
+					double supCub = Double.valueOf(txtSupCub.getText());
+					int id = 0;
+					if (!editable) {
+						id = ipropiedad.getUltimoIndice()+1;
+					}else {
+						id = p.getId();
 					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				if (!editable) {
-					ipropiedad.agregar(p);
-					dispose();
-				}else {
-					ipropiedad.modificar(p);
-					if (table != null)
-						Tablas.actualizarTPropiedad(table);
-					dispose();
+					Propiedad p = new Propiedad(id,valor,supLote,supCub,txtInformacion.getText(),chkAmoblado.isSelected());
+					Ubicacion u = new Ubicacion(id,txtCodPostal.getText(),txtDistrito.getText(),txtCiudad.getText(),txtDireccion.getText());
+						p.setUbicacion(u);
+					u.setPropiedad(p);
+					try {
+						if (list_img != null) {
+							insertar(p);
+							p.setImagenes(list_imagenes);
+						}
+					}catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					if (!editable) {
+						ipropiedad.agregar(p);
+						dispose();
+					}else {
+						ipropiedad.modificar(p);
+						if (table != null)
+							Tablas.actualizarTPropiedad(table);
+						dispose();
+					}
 				}
 			}
 		});

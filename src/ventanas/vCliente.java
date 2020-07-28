@@ -4,19 +4,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
-
+import clases.Cliente;
 import clases.Persona;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
 import utils.Tablas;
-
+import utils.ValidadorCampos;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JCheckBox;
 
 public class vCliente extends JFrame {
 
@@ -30,12 +30,11 @@ public class vCliente extends JFrame {
 	private JTextField txtTelefono;
 	private JButton btnGuardar;
 	private JButton btnModificar;
-	private char tipo_persona;
-	private JCheckBox chkCliente;
+	private Persona persona;
 	
 	private JTable table;
 	private JTextField txtDireccion;
-
+	
 	private void definirLabels() {
 		JLabel lblNewLabel = new JLabel("DNI");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -104,16 +103,12 @@ public class vCliente extends JFrame {
 		txtTelefono.setBounds(130, 174, 188, 20);
 		contentPane.add(txtTelefono);
 		
-		chkCliente = new JCheckBox("CLIENTE");
-		chkCliente.setBounds(10, 242, 72, 23);
-		contentPane.add(chkCliente);
-		
 		txtDireccion = new JTextField();
 		txtDireccion.setColumns(10);
 		txtDireccion.setBounds(130, 205, 188, 20);
 		contentPane.add(txtDireccion);
 	}
-	
+
 	private void deshabilitarTexts(boolean enabled) {
 		txtDNI.setEnabled(enabled);
 		txtNombre.setEnabled(enabled);
@@ -121,23 +116,25 @@ public class vCliente extends JFrame {
 		txtEmail.setEnabled(enabled);
 		txtCodArea.setEnabled(enabled);
 		txtTelefono.setEnabled(enabled);
-		chkCliente.setEnabled(enabled);
 		txtDireccion.setEnabled(enabled);
 	}
 	
-	private char campoCliente() {
-		if (chkCliente.isSelected()) {
-			return 'c';
+	private boolean camposValidos() {
+		if (ValidadorCampos.campoNumeros(txtDNI,9) && ValidadorCampos.campoLetras(txtNombre,15) && ValidadorCampos.campoLetras(txtApellido,15) && 
+				ValidadorCampos.campoVacio(txtEmail,40) && ValidadorCampos.campoNumeros(txtCodArea,4) && ValidadorCampos.campoNumeros(txtTelefono,8) 
+				&& ValidadorCampos.campoVacio(txtDireccion,100)) {
+			return true;
 		}else {
-			return 'l';
+			return false;
 		}
 	}
 	
-	private void campoCliente(Persona p) {
-		if (p.getTipo() == 'c') {
-			chkCliente.setSelected(true);
+	private boolean camposModValidos() {
+		if (ValidadorCampos.campoLetras(txtNombre,15) && ValidadorCampos.campoLetras(txtApellido,15) && ValidadorCampos.campoVacio(txtEmail,40) && 
+				ValidadorCampos.campoNumeros(txtCodArea,4) && ValidadorCampos.campoNumeros(txtTelefono,8) && ValidadorCampos.campoVacio(txtDireccion,100)) {
+			return true;
 		}else {
-			chkCliente.setSelected(false);
+			return false;
 		}
 	}
 	
@@ -145,11 +142,23 @@ public class vCliente extends JFrame {
 		btnGuardar = new JButton("GUARDAR");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DAOPersona ipersona = new DAOPersonaImpl();
-				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),tipo_persona,txtDireccion.getText());
-				ipersona.guardar(p);
-				limpiarCampos();
-				dispose();
+				if (camposValidos()) {
+					DAOPersona ipersona = new DAOPersonaImpl();
+					int id = ipersona.getUltimoIndice()+1;
+					Persona p = new Cliente(id,txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),txtDireccion.getText());
+					if (!ipersona.existe(txtDNI.getText())) {
+						ipersona.guardar(p);
+						limpiarCampos();
+						dispose();
+					}else {
+						txtDNI.setBorder(ValidadorCampos.getRBorder());
+						txtDNI.setBorder(ValidadorCampos.getRBorder());
+						JOptionPane.showMessageDialog(null,
+						        "El DNI ya fue ingresado",
+						        "DNI duplicado",
+						        JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 			}
 		});
 		btnGuardar.setBounds(208, 242, 110, 23);
@@ -159,12 +168,14 @@ public class vCliente extends JFrame {
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DAOPersona ipersona = new DAOPersonaImpl();
-				Persona p = new Persona(txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),campoCliente(),txtDireccion.getText());
-				ipersona.modificar(p);
-				if (table != null)
-					Tablas.actualizarTPersona(table);
-				limpiarCampos();
-				dispose();
+				Persona p = new Cliente(persona.getId(),txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),txtDireccion.getText());
+				if (camposModValidos()) {
+					ipersona.modificar(p);
+					if (table != null)
+						Tablas.actualizarTClientes(table);
+					limpiarCampos();
+					dispose();
+				}
 			}
 		});
 		btnModificar.setBounds(208, 242, 110, 23);
@@ -193,7 +204,7 @@ public class vCliente extends JFrame {
 		txtEmail.setText(p.getEmail());
 		txtCodArea.setText(p.getCodArea());
 		txtTelefono.setText(p.getTelefono());
-		campoCliente(p);
+		txtDireccion.setText(p.getDireccion());
 	}
 	
 	private void limpiarCampos() {
@@ -204,32 +215,22 @@ public class vCliente extends JFrame {
 		txtNombre.setText(null);
 		txtDNI.setText(null);
 		txtDireccion.setText(null);
-		chkCliente.setSelected(false);
 	}
 	
-	/*CONTRUCTOR PARA NUEVO CLIENTE/LOCADOR*/
-	public vCliente(char tipo) {
+	/*CONTRUCTOR PARA NUEVO CLIENTE*/
+	public vCliente() {
 		definirVentana();
-		tipo_persona = tipo;
-		if (tipo_persona == 'l') {
-			chkCliente.setEnabled(false);
-		}else {
-			if (tipo_persona == 'c') {
-				chkCliente.setEnabled(false);
-				chkCliente.setSelected(true);
-			}
-		}
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(true);
 		btnModificar.setVisible(false);
 	}
 	
-	/*CONTRUCTOR PARA MODIFICAR CLIENTE/LOCADOR*/
+	/*CONTRUCTOR PARA MODIFICAR CLIENTE*/
 	public vCliente(Persona p,JTable tabla) {
+		persona = p;
 		definirVentana();
 		cargarText(p);
 		txtDNI.setEnabled(false);
-		chkCliente.setEnabled(false);
 		table = tabla;
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(false);
@@ -240,7 +241,6 @@ public class vCliente extends JFrame {
 		definirVentana();
 		cargarText(p);
 		txtDNI.setEnabled(false);
-		chkCliente.setEnabled(false);
 		table = null;
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(false);

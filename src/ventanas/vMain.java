@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,7 +65,7 @@ public class vMain extends JFrame {
 		JMenuItem mnNuevoCliente = new JMenuItem("Nuevo cliente");
 		mnNuevoCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				vCliente vcliente = new vCliente('c');
+				vCliente vcliente = new vCliente();
 				vcliente.setVisible(true);
 			}
 		});

@@ -5,12 +5,14 @@ import javax.swing.table.DefaultTableModel;
 
 public class TableModels {
 
-	public static DefaultTableModel crearModeloPersona(DefaultTableModel modelo) {
+	public static DefaultTableModel crearModeloCliente(DefaultTableModel modelo) {
 		try {
-	        modelo = (new DefaultTableModel(null, new Object[]{"DNI","Nombre","Apellido","Email","Cod Area","Telefono"}){
+	        modelo = (new DefaultTableModel(null, new Object[]{"id","DNI","Nombre","Apellido","Email","Cod Area","Telefono","Direccion"}){
 				private static final long serialVersionUID = 1L;
 				@SuppressWarnings("rawtypes")
 				Class[] types = new Class[]{
+					java.lang.Integer.class,
+	                java.lang.String.class,
 	                java.lang.String.class,
 	                java.lang.String.class,
 	                java.lang.String.class,
@@ -19,7 +21,7 @@ public class TableModels {
 	                java.lang.String.class,
 	            };
 	            boolean[] canEdit = new boolean[]{
-	                false, false, false, false, false, false
+	                false, false, false, false, false, false, false, false
 	            };
 
 	            @Override

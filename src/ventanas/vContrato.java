@@ -11,21 +11,26 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
 
+import clases.Cliente;
 import clases.Contrato;
 import clases.FechaPautada;
+import clases.Locador;
 import clases.Persona;
 import clases.PrecioCompleto;
 import clases.PrecioPorcentual;
 import clases.Propiedad;
+import interfaces.DAOCliente;
+import interfaces.DAOClienteImpl;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
-import interfaces.DAOPersona;
-import interfaces.DAOPersonaImpl;
+import interfaces.DAOLocador;
+import interfaces.DAOLocadorImpl;
 import interfaces.DAOPropiedad;
 import interfaces.DAOPropiedadImpl;
 import interfaces.DAOTipoPrecio;
 import interfaces.DAOTipoPrecioImpl;
 import utils.TableModels;
+import utils.ValidadorCampos;
 
 import java.awt.Panel;
 import java.text.SimpleDateFormat;
@@ -62,13 +67,12 @@ public class vContrato extends JFrame {
 	private JTextField txtExpensas;
 	private JComboBox<String> cbLocador;
 		
-	private boolean existeContrato(List<Contrato> contratos,Persona persona) {
+	private boolean existeContrato(List<Contrato> contratos,Cliente cliente) {
 		for(Contrato c: contratos) {
-			if (c.getLocatario().getDni().equals(persona.getDni()))
+			if (c.getLocatario().getId() == cliente.getId())
 				return true;
 		}
 		return false;
-		
 	}
 	
 	private boolean existeContrato(List<Contrato> contratos,Propiedad propiedad) {
@@ -76,19 +80,19 @@ public class vContrato extends JFrame {
 			if (c.getLocacion().getId() == propiedad.getId())
 				return true;
 		}
-		return false;
+			return false;
 	}
 	
 	
 	/*CARGAR LOCADORES*/
 	private void cargarLocadores() {
-		DAOPersona ipersona = new DAOPersonaImpl();
-		List<Persona> locadores = ipersona.getPersonas('l');
+		DAOLocador ilocador = new DAOLocadorImpl();
+		List<Locador> locadores = ilocador.getLocadores();
 		DefaultComboBoxModel<String> comboModelo = new DefaultComboBoxModel<String>();
 		if (!locadores.isEmpty()) {
 			comboModelo.addElement("Seleccione un locador...");
-			for (Persona p : locadores) {
-				comboModelo.addElement(p.getDni()+"-"+p.getNombre()+","+p.getApellido());
+			for (Locador l : locadores) {
+				comboModelo.addElement(l.getId()+"-"+l.getNombre()+","+l.getApellido());
 			}
 			cbLocador.setModel(comboModelo);
 		}
@@ -97,21 +101,21 @@ public class vContrato extends JFrame {
 	/*CARGAR LOCATARIOS DISPONIBLES PARA CONTRATO*/
 	private void cargarLocatarios() {
 		DAOContrato icontrato = new DAOContratoImpl();
-		DAOPersona ipersona = new DAOPersonaImpl();
+		DAOCliente iclientes = new DAOClienteImpl();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		List<Contrato> contratos = icontrato.getContratos("from Contrato as c where "+format.format((new Date())) +"< c.fechaFinalizacion");
-		List<Persona> personas = ipersona.getPersonas('c');
-		List<Persona> p_aux = new ArrayList<Persona>();
-		for(Persona persona: personas) {
-			if (!existeContrato(contratos,persona)) {
-				p_aux.add(persona);
+		List<Cliente> clientes = iclientes.getClientes();
+		List<Cliente> c_aux = new ArrayList<Cliente>();
+		for(Cliente cliente: clientes) {
+			if (!existeContrato(contratos,cliente)) {
+				c_aux.add(cliente);
 			}
 		}
 		DefaultComboBoxModel<String> comboModelo = new DefaultComboBoxModel<String>();
-		if (!p_aux.isEmpty()) {
+		if (!c_aux.isEmpty()) {
 			comboModelo.addElement("Seleccione un cliente...");
-			for (Persona p : p_aux) {
-				comboModelo.addElement(p.getDni()+"-"+p.getNombre()+","+p.getApellido());
+			for (Cliente c : c_aux) {
+				comboModelo.addElement(c.getId()+"-"+c.getNombre()+","+c.getApellido());
 			}
 			cbLocatario.setModel(comboModelo);
 		}else {
@@ -123,16 +127,16 @@ public class vContrato extends JFrame {
 	private void agregarPersona(Contrato c) {
 		String persona = (String) cbLocatario.getSelectedItem();
 		String[] parts = persona.split("-");
-		DAOPersona ipersona = new DAOPersonaImpl();
-		Persona p = ipersona.obtenerPersona(parts[0]);
+		DAOCliente icliente = new DAOClienteImpl();
+		Persona p = icliente.getCliente(Integer.parseInt(parts[0]));
 		c.setLocatario(p);
 	}
 	
 	private void agregarLocador(Contrato c) {
 		String persona = (String) cbLocador.getSelectedItem();
 		String[] parts = persona.split("-");
-		DAOPersona ipersona = new DAOPersonaImpl();
-		Persona p = ipersona.obtenerPersona(parts[0]);
+		DAOLocador ilocador = new DAOLocadorImpl();
+		Persona p = ilocador.getLocador(Integer.parseInt(parts[0]));
 		c.setLocador(p);
 	}
 
@@ -376,8 +380,12 @@ public class vContrato extends JFrame {
 
 	/*VALIDACION DE CAMPOS PARA INSERCION DE CONTRATO*/
 	private boolean camposVacios() {
-		return (txtPlazo.getText().isEmpty() && /*LOCADOR &&*/ txtMaxPago.getText().isEmpty() && txtGarantia.getText().isEmpty() 
-				&& txtGastosInmobiliaria.getText().isEmpty() && txtExpensas.getText().isEmpty());
+		if (ValidadorCampos.campoNumeros(txtPlazo) && ValidadorCampos.campoNumeros(txtExpensas) && ValidadorCampos.campoNumeros(txtMaxPago) && 
+			ValidadorCampos.campoNumeros(txtGarantia) && ValidadorCampos.campoNumeros(txtGastosInmobiliaria)) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	private boolean fechasVacias() {
@@ -394,13 +402,7 @@ public class vContrato extends JFrame {
 	}
 	
 	private boolean camposValidos() {
-		System.out.println(!camposVacios());
-		System.out.println(!fechasVacias());
-		System.out.println(cbLocatario.getSelectedIndex());
-		System.out.println(chkFormaPago.getSelectedIndex());
-		System.out.println(fechasValidas());
-		System.out.print(table.getSelectedRow());
-		return ((!camposVacios()) && (fechasVacias()) && (cbLocatario.getSelectedIndex() > 0) && (chkFormaPago.getSelectedIndex() > 0) && (fechasValidas()) && (table.getSelectedRow() != -1)); 
+		return ((camposVacios()) && (fechasVacias()) && (cbLocatario.getSelectedIndex() > 0) && (chkFormaPago.getSelectedIndex() > 0) && (fechasValidas()) && (table.getSelectedRow() != -1)); 
 	}
 	
 	/*-----------------------------------------------------------------------------------*/
@@ -422,8 +424,6 @@ public class vContrato extends JFrame {
 					DAOContrato icontrato = new DAOContratoImpl();
 					icontrato.agregar(c);
 					dispose();
-				}else {
-					JOptionPane.showMessageDialog(null,"Campos invalidos");
 				}
 			}
 		});

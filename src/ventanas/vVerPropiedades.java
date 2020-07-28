@@ -17,6 +17,8 @@ import Filtros.FPropSupLote;
 import Filtros.FPropValor;
 import Filtros.FPropiedad;
 import clases.Propiedad;
+import interfaces.DAOContrato;
+import interfaces.DAOContratoImpl;
 import interfaces.DAOPropiedad;
 import interfaces.DAOPropiedadImpl;
 import utils.GeneradorTexto;
@@ -27,6 +29,7 @@ import utils.TextoBusqueda;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -190,18 +193,23 @@ public class vVerPropiedades extends JFrame {
 				if (row == -1) {
 					JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna propiedad");
 				}else {
-					int input = JOptionPane.showConfirmDialog(null, "Desea eliminar la propiedad seleccionada?","Elija una opcion",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
-					if (input == 0){
-						DAOPropiedad ipropiedad = new DAOPropiedadImpl();
-						Propiedad p = ipropiedad.obtenerPropiedad((Integer)modelo.getValueAt(row, 0));
-						if (p != null) {
-							ipropiedad.eliminar(p);
-							table.clearSelection();	
-							Tablas.actualizarTPropiedad(table);
-							resetearCampos();
+					DAOContrato icontrato = new DAOContratoImpl();
+					if (!icontrato.contratoVigenteConPropiedad((Integer)modelo.getValueAt(row, 0), new Date())) {
+						int input = JOptionPane.showConfirmDialog(null, "Desea eliminar la propiedad seleccionada?","Elija una opcion",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+						if (input == 0){
+							DAOPropiedad ipropiedad = new DAOPropiedadImpl();
+							Propiedad p = ipropiedad.obtenerPropiedad((Integer)modelo.getValueAt(row, 0));
+							if (p != null) {
+								ipropiedad.eliminar(p);
+								table.clearSelection();	
+								Tablas.actualizarTPropiedad(table);
+								resetearCampos();
+							}
+						}else {
+							table.clearSelection();
 						}
 					}else {
-						table.clearSelection();
+						JOptionPane.showMessageDialog(null, "No es posible eliminar la propiedad, ya que se encuentra en un contrato vigente");
 					}
 				}
 			}

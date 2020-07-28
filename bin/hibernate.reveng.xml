@@ -2,5 +2,7 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
-	<table-filter match-name="pagos" match-catalog="Inmobiliaria"></table-filter>
+	<table-filter match-name="cliente" match-catalog="Inmobiliaria"></table-filter>
+	<table-filter match-name="persona" match-catalog="Inmobiliaria"></table-filter>
+	<table-filter match-name="locador" match-catalog="Inmobiliaria"></table-filter>
 </hibernate-reverse-engineering>

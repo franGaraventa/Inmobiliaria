@@ -34,26 +34,12 @@ public class DAOPersonaImpl implements DAOPersona{
 		session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			Persona persona = session.get(Persona.class, p.getDni());
-			if (persona != null) {
-				if (persona.getDni().equals(p.getDni())) {
-					session.save(p);
-					tx.commit();
-					JOptionPane.showMessageDialog(null,
-							"Cliente agregado correctamente",
-							"Cliente agregado",
-							JOptionPane.INFORMATION_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(null, "El DNI ya fue ingresado","DNI Repetido",JOptionPane.WARNING_MESSAGE);
-				}
-			}else {
-				session.save(p);
-				tx.commit();
-				JOptionPane.showMessageDialog(null,
-						"Cliente agregado correctamente",
-						"Cliente agregado",
-						JOptionPane.INFORMATION_MESSAGE);
-			}
+			session.save(p);
+			tx.commit();
+			JOptionPane.showMessageDialog(null,
+					"Persona agregada correctamente",
+					"Persona agregada",
+					JOptionPane.INFORMATION_MESSAGE);
 		}catch(Exception e) {
 			if (tx != null) {
 	            tx.rollback();
@@ -91,7 +77,7 @@ public class DAOPersonaImpl implements DAOPersona{
         Transaction tx = session.getTransaction();
         tx.begin();
 		try {
-			 Persona persona = session.get(Persona.class, p.getDni());
+			 Persona persona = session.get(Persona.class, p.getId());
 			 if(persona != null){
 		        session.delete(persona);
 		        JOptionPane.showMessageDialog(null,
@@ -111,12 +97,12 @@ public class DAOPersonaImpl implements DAOPersona{
 	}
 
 	@Override
-	public Persona obtenerPersona(String dni) {
+	public Persona obtenerPersona(int id) {
 		session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
         tx.begin();
         try {
-			 Persona persona = session.get(Persona.class, dni);
+			 Persona persona = session.get(Persona.class, id);
 			 tx.commit();
 			 return persona;
         }catch(Exception e) {
@@ -155,6 +141,55 @@ public class DAOPersonaImpl implements DAOPersona{
 		session.getTransaction().commit();
 		session.close();
 		return list_persona;
+	}
+
+	@Override
+	public int getUltimoIndice() {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+		try {
+			Object id = session.createQuery("SELECT MAX(id) FROM Persona").uniqueResult();
+			tx.commit();
+			if (id != null) {
+				return (Integer) id;
+			}
+		}catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}	
+		return 0;
+	}
+
+	@Override
+	public boolean existe(String dni) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+		try {
+			Query query = session.createQuery("SELECT p FROM Persona as p where p.dni = :dni");
+			query.setParameter("dni", dni);
+			List<Persona> p = query.list();
+			tx.commit();
+			if (p.size() > 0) {
+				return true;
+			}else {
+				System.out.println("TIENE QUE ENTRAR ACA");
+				return false;
+			}
+		}catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}	
+		return false;
 	}
 
 }

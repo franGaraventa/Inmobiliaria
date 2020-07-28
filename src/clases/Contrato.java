@@ -39,11 +39,11 @@ public class Contrato implements java.io.Serializable {
 	private Date fechaFinalizacion;
 	
 	@OneToOne(orphanRemoval = false)
-	@JoinColumn(name = "locador", referencedColumnName = "dni")
+	@JoinColumn(name = "locador", referencedColumnName = "id")
 	private Persona locador;
 	
 	@OneToOne(orphanRemoval = false)
-	@JoinColumn(name = "locatario", referencedColumnName = "dni")
+	@JoinColumn(name = "locatario", referencedColumnName = "id")
 	private Persona locatario;
 	
 	@OneToOne(orphanRemoval = false)

@@ -12,6 +12,7 @@ import utils.GeneradorTexto;
 import utils.Tablas;
 import utils.TableModels;
 import utils.TextoBusqueda;
+import utils.ValidadorCampos;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
@@ -61,9 +63,13 @@ public class vVerContratos extends JFrame {
 	private FContrato filtro;
 	private JTextPane txtBusqueda;
 	
+	private boolean fechasValidas() {
+		return ((dcFecha1.getDate() != null) && (dcFecha2.getDate() != null));
+	}
+	
 	/*CREACION DE FILTRO*/
 	private FContrato agregarFiltro(int seleccionado) {
-		/*1 - Plazo, 2 - Fecha Inicio, 3 - Fecha Finalizacion, 4 - Fecha Firma, 5 - Locador, 6 - Fecha Maxima Pago*/
+		/*1 - Plazo, 2 - Fecha Inicio, 3 - Fecha Finalizacion, 4 - Fecha Firma, 5 - Fecha Maxima Pago*/
 		SimpleDateFormat formato_fecha = new SimpleDateFormat("yyyy-MM-dd");
 		switch(seleccionado) {
 			case (1): {
@@ -72,7 +78,7 @@ public class vVerContratos extends JFrame {
 			}
 			case (2): {
 				if (txtComparador.getText().equals("entre")) {
-					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" < Fecha > "+ formato_fecha.format(dcFecha2.getDate())+")"));
+					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" < Fecha Inicio > "+ formato_fecha.format(dcFecha2.getDate())+")"));
 					return new FContInicio(dcFecha1.getDate(),dcFecha2.getDate(),txtComparador.getText());
 				}else{
 					busqueda.add(new TextoBusqueda("Fecha "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
@@ -81,8 +87,8 @@ public class vVerContratos extends JFrame {
 			}
 			case (3): {
 				if (txtComparador.getText().equals("entre")) {
-					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" < Fecha > "+ formato_fecha.format(dcFecha2.getDate())+")"));
-					return new FContFinalizacion(dcFecha1.getDate(),dcFecha2.getDate(),txtComparador.getText());
+					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" < Fecha Finalizacion > "+ formato_fecha.format(dcFecha2.getDate())+")"));
+						return new FContFinalizacion(dcFecha1.getDate(),dcFecha2.getDate(),txtComparador.getText());
 				}else {
 					busqueda.add(new TextoBusqueda("Fecha "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
 					return new FContFinalizacion(dcFecha1.getDate(),txtComparador.getText());
@@ -90,7 +96,7 @@ public class vVerContratos extends JFrame {
 			}
 			case (4): {
 				if (txtComparador.getText().equals("entre")) {
-					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" < Fecha > "+ formato_fecha.format(dcFecha2.getDate())+")"));
+					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" > Fecha Firma < "+ formato_fecha.format(dcFecha2.getDate())+")"));
 					return new FContFirma(dcFecha1.getDate(),dcFecha2.getDate(),txtComparador.getText());
 				}else {
 					busqueda.add(new TextoBusqueda("Fecha "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
@@ -119,21 +125,59 @@ public class vVerContratos extends JFrame {
 		}
 		return null;
 	}
+
+	private boolean textoVacio(JTextField txt) {
+		if (txt.getText() != null) {
+			return !txt.getText().isEmpty();
+		}else {
+			return true;
+		}
+	}
 	
-	private boolean datosValidos(int seleccionado,int logica) {
-		if (logica >= 0) {
+	private boolean camposValidos(int seleccionado) {
+		if (cParametros == 0) {
 			if ((seleccionado == 1) || (seleccionado == 5)) {
-				return (!txtValor.getText().isEmpty() && !txtComparador.getText().isEmpty());
+				if (textoVacio(txtValor) && textoVacio(txtComparador)) {
+					return true;
+				}else {
+					return false;
+				}
 			}else {
 				if (txtComparador.getText().equals("entre")) {
-					return ((dcFecha1.getDate() != null) && (dcFecha2.getDate() != null));
+					return (fechasValidas());
 				}else {
-					return ((dcFecha1.getDate() != null));
+					if (dcFecha1.getDate() != null) {
+						return (ValidadorCampos.comparadorValido(txtComparador));
+					}else {
+						return false;
+					}
 				}
 			}
-		}else {
-			return false;
 		}
+		return false;
+	}
+	
+	private boolean camposValidos(int seleccionado,int logica) {
+		if (logica > 0) {
+			if (((seleccionado == 1) || (seleccionado == 5))){
+				if (textoVacio(txtValor) && textoVacio(txtComparador)) {
+					return true;
+				}else {
+					return false;
+				}
+			}else {
+				if (txtComparador.getText().equals("entre")) {
+					return (fechasValidas());
+				}else {
+					if (dcFecha1.getDate() != null) {
+						return (ValidadorCampos.comparadorValido(txtComparador));
+					}else {
+						return false;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	private void setear() {
@@ -174,8 +218,13 @@ public class vVerContratos extends JFrame {
 					JOptionPane.showMessageDialog(null, "No se ha seleccionado ningun contrato");
 				}else {
 					DAOContrato icontrato = new DAOContratoImpl();
-					Contrato c = icontrato.getContrato((Integer)modelo.getValueAt(row, 0));
-					icontrato.eliminar(c);
+					if (!icontrato.contratoVigente((Integer)modelo.getValueAt(row, 0), new Date())) {
+						Contrato c = icontrato.getContrato((Integer)modelo.getValueAt(row, 0));
+						icontrato.eliminar(c);
+						Tablas.actualizarTContratos(table);
+					}else{
+						JOptionPane.showMessageDialog(null, "No es posible eliminar el contrato, ya que no ha finalizado");
+					}
 				}
 			}
 		});
@@ -187,9 +236,8 @@ public class vVerContratos extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int seleccionado = cbBuscador.getSelectedIndex();
 				if (cParametros == 0) {
-					System.out.println("SELECCIONADO: "+seleccionado);
 					if (seleccionado > 0) {
-						if (datosValidos(seleccionado,0)) {
+						if (camposValidos(seleccionado)) {
 							if (chkNegar.isSelected()) {
 								filtro = agregarFiltro(seleccionado);
 								filtro = new FContNOT(filtro);
@@ -200,8 +248,6 @@ public class vVerContratos extends JFrame {
 							cbLogica.setEnabled(true);
 							setear();
 							txtBusqueda.setText(GeneradorTexto.generarTexto(busqueda, conectores));
-						}else {
-							JOptionPane.showMessageDialog(null, "Datos invalidos");
 						}
 					}else {
 						JOptionPane.showMessageDialog(null, "Debe seleccionar un campo a buscar");
@@ -209,7 +255,7 @@ public class vVerContratos extends JFrame {
 				}else {
 					int logica = cbLogica.getSelectedIndex();
 					if (GeneradorTexto.comprobarCampos(seleccionado, logica)){
-						if (datosValidos(seleccionado,logica)) {
+						if (camposValidos(seleccionado,logica)) {
 							if (chkNegar.isSelected()) {
 								filtro = agregarFiltroLogica(logica,new FContNOT(agregarFiltro(seleccionado)));
 								busqueda.get(busqueda.size()-1).setNegado(true);
@@ -218,8 +264,6 @@ public class vVerContratos extends JFrame {
 							}
 							setear();
 							txtBusqueda.setText(GeneradorTexto.generarTexto(busqueda, conectores));
-						}else {
-							JOptionPane.showMessageDialog(null, "Datos invalidos");
 						}
 					}
 				}
@@ -296,7 +340,7 @@ public class vVerContratos extends JFrame {
 		pnlBusqueda.add(chkNegar);
 		
 		cbBuscador = new JComboBox<String>();
-		cbBuscador.setModel(new DefaultComboBoxModel(new String[] {"Elija que ingresar a la busqueda", "Plazo", "Fecha Inicio", "Fecha Finalizacion", "Fecha Firma", "Fecha Maxima Pago"}));
+		cbBuscador.setModel(new DefaultComboBoxModel<String>(new String[] {"Elija que ingresar a la busqueda", "Plazo", "Fecha Inicio", "Fecha Finalizacion", "Fecha Firma", "Fecha Maxima Pago"}));
 		cbBuscador.setBounds(38, 10, 195, 20);
 		pnlBusqueda.add(cbBuscador);
 		

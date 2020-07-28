@@ -16,6 +16,7 @@ import clases.Pagos;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
 import utils.ConvertirNumero;
+import utils.Fechas;
 import utils.Tablas;
 
 import javax.swing.JButton;
@@ -36,96 +37,30 @@ public class vCobro extends JFrame {
 	private JLabel lblCiudad;
 	private JLabel lblFechaVencimiento;
 	private JLabel lblValor;
-	private JLabel lblExpensas;
 	private JLabel lblTotal;
 	private Contrato contrato;
 	private JLabel lblMes;
 	private JTextField txtRecargo;
 	private JTable table;
+	private JTextField txtExpensas;
+	private double total;
+	private double expensas;
 	
-	/*OBTENER MES Y DIA*/
-	private int getMes(String valor) {
-		int mes = 0;
-		switch (valor) {
-            case "Enero":  mes = 1;
-                     break;
-            case "Febrero":  mes = 2;
-                     break;
-            case "Marzo":  mes = 3;
-                     break;
-            case "Abril":  mes = 4;
-                     break;
-            case "Mayo":  mes = 5;
-                     break;
-            case "Junio":  mes = 6;
-                     break;
-            case "Julio":  mes = 7;
-                     break;
-            case "Agosto":  mes = 8;
-            		 break;
-            case "Septiembre":  mes = 9;
-            		 break;
-            case "Octubre":  mes = 10;
-            		 break;
-            case "Noviembre":  mes = 11;
-            		 break;
-            case "Diciembre":  mes = 12;
-            	 	 break;
-        } 	 	
-		return mes;
+	private void cambiarCampoTotal(JTextField txtField) {
+		double nuevo_valor = Double.valueOf(lblTotal.getText()) + Double.valueOf(txtField.getText());
+		total = nuevo_valor;
+		lblTotal.setText(String.valueOf(nuevo_valor));
+		double num = formatearDecimales(nuevo_valor,2);
+		int p_ent= (int)num;
+		double p_dec= num - p_ent;
+		String valor = ConvertirNumero.cantidadConLetra(String.valueOf(num));
+		if (p_dec != 0) {
+			String valor2 = valor +"con "+ConvertirNumero.cantidadConLetra(String.valueOf(p_dec*100));
+			lblPesosVEscrita.setText(valor2.toUpperCase());
+		}else {
+			lblPesosVEscrita.setText(valor.toUpperCase());
+		}
 	}
-	
-	private String getMes(int valor) {
-		String mes = "";
-		switch (valor) {
-            case 0:  mes = "Enero";
-                     break;
-            case 1:  mes = "Febrero";
-                     break;
-            case 2:  mes = "Marzo";
-                     break;
-            case 3:  mes = "Abril";
-                     break;
-            case 4:  mes = "Mayo";
-                     break;
-            case 5:  mes = "Junio";
-                     break;
-            case 6:  mes = "Julio";
-                     break;
-            case 7:  mes = "Agosto";
-            		 break;
-            case 8:  mes = "Septiembre";
-            		 break;
-            case 9:  mes = "Octubre";
-            		 break;
-            case 10:  mes = "Noviembre";
-            		 break;
-            case 11:  mes = "Diciembre";
-            	 	 break;
-        } 	 	
-		return mes;
-	}
-	
-	private String getDia(int valor) {
-        String Valor_dia = "";
-		if (valor == 1) {
-            Valor_dia = "Domingo";
-        } else if (valor == 2) {
-            Valor_dia = "Lunes";
-        } else if (valor == 3) {
-            Valor_dia = "Martes";
-        } else if (valor == 4) {
-            Valor_dia = "Miercoles";
-        } else if (valor == 5) {
-            Valor_dia = "Jueves";
-        } else if (valor == 6) {
-            Valor_dia = "Viernes";
-        } else if (valor == 7) {
-            Valor_dia = "Sabado";
-        }
-        return Valor_dia;
-	}
-	/*-----------------------------------------------------------------------*/
 	
 	private boolean beforeDate(Calendar fecha1,Calendar fecha2) {
 		return (((fecha1.get(Calendar.DAY_OF_MONTH) - fecha2.get(Calendar.DAY_OF_MONTH)) >= 0) && 
@@ -163,11 +98,10 @@ public class vCobro extends JFrame {
 		calendar.setTime(new Date());
 		String fecha = contrato.getFechaMaxPago() +"/"+(calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.YEAR);
 		lblFechaVencimiento.setText(fecha);
-		lblFechaDelRecibo.setText("TANDIL, "+getDia(calendar.get(Calendar.DAY_OF_WEEK))+", "+calendar.get(Calendar.DAY_OF_MONTH)+" de "+getMes(calendar.get(Calendar.MONTH))+" del "+calendar.get(Calendar.YEAR));
+		lblFechaDelRecibo.setText("TANDIL, "+Fechas.getDia(calendar.get(Calendar.DAY_OF_WEEK))+", "+calendar.get(Calendar.DAY_OF_MONTH)+" de "+Fechas.getMes(calendar.get(Calendar.MONTH))+" del "+calendar.get(Calendar.YEAR));
 		lblDPropiedad.setText(contrato.getLocacion().getUbicacion().getDireccion().toUpperCase());
 		lblCiudad.setText(contrato.getLocacion().getUbicacion().getCiudad().toUpperCase());
 		lblValor.setText(String.valueOf(contrato.getPrecio().getPrecioBase()));
-		lblExpensas.setText(String.valueOf(contrato.getPrecio().getExpensas()));
 		lblTotal.setText(String.valueOf(formatearDecimales(contrato.getPrecio().getPrecio(),2)));
 		double num = formatearDecimales(contrato.getPrecio().getPrecio(),2);
 		int p_ent= (int)num;
@@ -179,6 +113,10 @@ public class vCobro extends JFrame {
 		}else {
 			lblPesosVEscrita.setText(valor.toUpperCase());
 		}
+		txtExpensas.setText(String.valueOf(contrato.getPrecio().getExpensas()));
+		/*PARAMETROS DE PRUEBA*/
+		expensas = contrato.getPrecio().getExpensas();
+		total = Double.valueOf(lblTotal.getText());
 	}
 	
 	private void cargarLabels() {
@@ -257,10 +195,6 @@ public class vCobro extends JFrame {
 		separator_5.setBounds(144, 257, 135, 2);
 		contentPane.add(separator_5);
 		
-		JSeparator separator_6 = new JSeparator();
-		separator_6.setBounds(155, 291, 135, 2);
-		contentPane.add(separator_6);
-		
 		JSeparator separator_7 = new JSeparator();
 		separator_7.setBounds(108, 336, 143, 2);
 		contentPane.add(separator_7);
@@ -269,11 +203,6 @@ public class vCobro extends JFrame {
 		label.setFont(new Font("Verdana", Font.PLAIN, 20));
 		label.setBounds(129, 230, 18, 26);
 		contentPane.add(label);
-		
-		JLabel label_2 = new JLabel("$");
-		label_2.setFont(new Font("Verdana", Font.PLAIN, 20));
-		label_2.setBounds(139, 258, 13, 45);
-		contentPane.add(label_2);
 		
 		JLabel label_1 = new JLabel("$");
 		label_1.setFont(new Font("Verdana", Font.PLAIN, 20));
@@ -317,11 +246,6 @@ public class vCobro extends JFrame {
 		lblValor.setBounds(159, 232, 120, 26);
 		contentPane.add(lblValor);
 			
-		lblExpensas = new JLabel();
-		lblExpensas.setFont(new Font("Verdana", Font.PLAIN, 20));
-		lblExpensas.setBounds(154, 267, 125, 26);
-		contentPane.add(lblExpensas);
-			
 		lblTotal = new JLabel();
 		lblTotal.setBackground(Color.WHITE);
 		lblTotal.setFont(new Font("Verdana", Font.PLAIN, 20));
@@ -338,22 +262,21 @@ public class vCobro extends JFrame {
 				DAOPagos ipagos = new DAOPagosImpl();
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(new Date());
-				if (!ipagos.existePago(contrato.getId(),getMes(lblMes.getText()),cal.get(Calendar.YEAR))) {
+				if (!ipagos.existePago(contrato.getId(),Fechas.getMes(lblMes.getText()),cal.get(Calendar.YEAR))) {
 					if (fechaValida()) {
 						if ((!txtRecargo.getText().isEmpty())) {
 							Pagos pago = new Pagos(contrato,new Date(),Double.valueOf(lblTotal.getText()),Double.valueOf(txtRecargo.getText()));
 							ipagos.agregar(pago);
-							Tablas.actualizarTPagos(table, contrato.getId());
-							dispose();
 						}else {
 							JOptionPane.showMessageDialog(null, "Ingrese un valor al campo recargo");
 						}
 					}else {
 						Pagos pago = new Pagos(contrato,new Date(),Double.valueOf(lblTotal.getText()),0);
 						ipagos.agregar(pago);
-						Tablas.actualizarTPagos(table, contrato.getId());
-						dispose();
 					}
+					if (table != null)
+						Tablas.actualizarTPagos(table, contrato.getId());
+					dispose();
 				}else {
 					JOptionPane.showMessageDialog(null, "El pago correspondiente al mes: "+lblMes.getText()+" ya fue ingresado");
 				}
@@ -368,7 +291,7 @@ public class vCobro extends JFrame {
 		contentPane.add(lblMes);
 		
 		Date fecha = new Date();
-		lblMes.setText(getMes(fecha.getMonth()));
+		lblMes.setText(Fechas.getMes(fecha.getMonth()));
 		
 		txtRecargo = new JTextField();
 		txtRecargo.addKeyListener(new KeyAdapter() {
@@ -377,18 +300,7 @@ public class vCobro extends JFrame {
 				char tecla = e.getKeyChar();
 				if (tecla == KeyEvent.VK_ENTER) {
 					if (!txtRecargo.getText().isEmpty()) {
-						double nuevo_valor = Double.valueOf(lblTotal.getText()) + Double.valueOf(txtRecargo.getText());
-						lblTotal.setText(String.valueOf(nuevo_valor));
-						double num = formatearDecimales(nuevo_valor,2);
-						int p_ent= (int)num;
-						double p_dec= num - p_ent;
-						String valor = ConvertirNumero.cantidadConLetra(String.valueOf(num));
-						if (p_dec != 0) {
-							String valor2 = valor +"con "+ConvertirNumero.cantidadConLetra(String.valueOf(p_dec*100));
-							lblPesosVEscrita.setText(valor2.toUpperCase());
-						}else {
-							lblPesosVEscrita.setText(valor.toUpperCase());
-						}
+						cambiarCampoTotal(txtRecargo);
 					}
 				}
 			}
@@ -403,6 +315,26 @@ public class vCobro extends JFrame {
 		lblRecargo.setFont(new Font("Verdana", Font.PLAIN, 20));
 		lblRecargo.setBounds(289, 312, 125, 26);
 		contentPane.add(lblRecargo);
+		
+		txtExpensas = new JTextField();
+		txtExpensas.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char tecla = e.getKeyChar();
+				if (tecla == KeyEvent.VK_ENTER) {
+					double nuevo_valor = total - expensas;
+					lblTotal.setText(String.valueOf(nuevo_valor));
+					if (!txtExpensas.getText().isEmpty()) {
+						expensas = Double.parseDouble(txtExpensas.getText());
+						cambiarCampoTotal(txtExpensas);
+					}
+				}
+			}
+		});
+		txtExpensas.setFont(new Font("Verdana", Font.PLAIN, 20));
+		txtExpensas.setColumns(10);
+		txtExpensas.setBounds(139, 266, 125, 27);
+		contentPane.add(txtExpensas);
 		
 	}
 	

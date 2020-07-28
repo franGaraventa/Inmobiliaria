@@ -15,6 +15,8 @@ import utils.GeneradorPDF;
 import utils.Tablas;
 import utils.TableModels;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -193,7 +195,7 @@ public class vInfoContrato extends JFrame {
 	private Pagos obtenerPrimerPago() {
 		DAOContrato icontrato = new DAOContratoImpl();
 		List<Pagos> pagos = icontrato.getPagos(contrato.getId());
-		if (pagos != null) {
+		if (pagos.size() != 0) {
 			return pagos.get(0);
 		}else {
 			return null;
@@ -228,11 +230,11 @@ public class vInfoContrato extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int row = table.getSelectedRow();
 				if (row == -1) {
-					
+					JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna factura");
 				}else {
 					DAOPagos ipago = new DAOPagosImpl();
 					GeneradorPDF pdf = new GeneradorPDF(contrato,ipago.getPago((Integer)modelo.getValueAt(row, 0)));
-					pdf.generarPDF();
+					pdf.generarPDFFactura();
 				}
 			}
 		});
@@ -240,6 +242,7 @@ public class vInfoContrato extends JFrame {
 		contentPane.add(btnGuardarCopia);
 		
 		JButton btnCopiaContrato = new JButton("COPIA CONTRATO");
+		btnCopiaContrato.setFont(new Font("Tahoma", Font.PLAIN, 9));
 		btnCopiaContrato.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				GeneradorPDF pdf = new GeneradorPDF(contrato,obtenerPrimerPago());

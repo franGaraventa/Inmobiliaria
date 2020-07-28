@@ -1,19 +1,25 @@
 package ventanas;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Font;
-
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import clases.Locador;
+import clases.Persona;
+import interfaces.DAOPersona;
+import interfaces.DAOPersonaImpl;
+import utils.ValidadorCampos;
+
+import java.awt.event.ActionListener;
+import java.util.Objects;
+import java.awt.event.ActionEvent;
 
 public class vLocador extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtDNI;
 	private JTextField txtNombre;
@@ -93,8 +99,71 @@ public class vLocador extends JFrame {
 		panel.add(lblCbu);
 	}
 	
+	private boolean validarCuit(String cuit) {
+	    //Controlamos si son 11 números los que quedaron, si no es el caso, ya devuelve falso
+	    if (cuit.length() != 11){
+	        return false;
+	    }
+	    //Convertimos la cadena que quedó en una matriz de caracteres
+	    char[] cuitArray = cuit.toCharArray();
+	    //Inicializamos una matriz por la cual se multiplicarán cada uno de los dígitos
+	    Integer[] serie = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+	    //Creamos una variable auxiliar donde guardaremos los resultados del cálculo del número validador
+	    Integer aux = 0;
+	    //Recorremos las matrices de forma simultánea, sumando los productos de la serie por el número en la misma posición
+	    for (int i=0; i<10; i++){
+	        aux += Character.getNumericValue(cuitArray[i]) * serie[i];
+	    }
+	    //Hacemos como se especifica: 11 menos el resto de de la división de la suma de productos anterior por 11
+	    aux = 11 - (aux % 11);
+	    //Si el resultado anterior es 11 el código es 0
+	    if (aux == 11){
+	        aux = 0;
+	    }
+	    //Si el resultado anterior es 10 el código no tiene que validar, cosa que de todas formas pasa
+	    //en la siguiente comparación.
+	    //Devuelve verdadero si son iguales, falso si no lo son
+	    return Objects.equals(Character.getNumericValue(cuitArray[10]), aux);
+	}
+	
+	private boolean validarCuentaBancaria() {
+		if(ValidadorCampos.campoNumeros(txtNCuenta, 20) && ValidadorCampos.campoVacio(txtBanco, 50) && ValidadorCampos.campoNumeros(txtCBU, 22) &&
+		   ValidadorCampos.campoNumeros(txtTipo, 2) && ValidadorCampos.campoNumeros(txtDoc, 8) && ValidadorCampos.campoNumeros(txtTipo, 1)) {
+			String cuit = txtTipo.getText()+txtDoc.getText()+txtDoc.getText();
+			if (validarCuit(cuit)) {
+				return true;
+			}else {
+				return false;
+			}
+		}else {
+			return false;
+		}
+	}
+	
+	private boolean camposValidos() {
+		if(ValidadorCampos.campoNumeros(txtDNI,9) && ValidadorCampos.campoLetras(txtNombre,15) && ValidadorCampos.campoLetras(txtApellido,15) && 
+			ValidadorCampos.campoVacio(txtEmail,40) && ValidadorCampos.campoNumeros(txtCodArea,4) && ValidadorCampos.campoNumeros(txtTelefono,8) 
+			&& ValidadorCampos.campoVacio(txtDireccion,100) && validarCuentaBancaria()) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	private void definirButtons() {
 		JButton btnGuardar = new JButton("GUARDAR");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (camposValidos()) {
+					DAOPersona ipersona = new DAOPersonaImpl();
+					int id = ipersona.getUltimoIndice()+1;
+					Persona p = new Locador(id,txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),txtDireccion.getText(),
+							txtNCuenta.getText(),txtBanco.getText(),txtTipo.getText(),txtDoc.getText(),txtVerificador.getText(),txtCBU.getText());
+					ipersona.guardar(p);
+					dispose();
+				}
+			}
+		});
 		btnGuardar.setBounds(258, 400, 100, 23);
 		contentPane.add(btnGuardar);
 	}

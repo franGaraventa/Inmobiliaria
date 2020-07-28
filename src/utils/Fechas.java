@@ -2,6 +2,7 @@ package utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Fechas {
@@ -98,4 +99,13 @@ public class Fechas {
 		return null;
 	}
 	
+	public static long compararFechas(Date fecha2) {
+		Calendar calendar = Calendar.getInstance();
+		long mlsFActual = calendar.getTimeInMillis();
+		Calendar calendar2 = Calendar.getInstance();
+		calendar2.setTime(fecha2);
+		long mlsFFinalizacion = calendar2.getTimeInMillis();
+		long diferencia_tiempo = mlsFFinalizacion - mlsFActual;
+		return (diferencia_tiempo / (24 * 60 * 60 * 1000));
+	}
 }

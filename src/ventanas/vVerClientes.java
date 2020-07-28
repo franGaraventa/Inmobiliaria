@@ -12,12 +12,18 @@ import Filtros.FPersAND;
 import Filtros.FPersApell;
 import Filtros.FPersCodyTel;
 import Filtros.FPersDNI;
+import Filtros.FPersDirec;
 import Filtros.FPersEmail;
 import Filtros.FPersNOT;
 import Filtros.FPersNom;
 import Filtros.FPersOR;
 import Filtros.FPersona;
+import clases.Cliente;
 import clases.Persona;
+import interfaces.DAOCliente;
+import interfaces.DAOClienteImpl;
+import interfaces.DAOContrato;
+import interfaces.DAOContratoImpl;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
 import utils.GeneradorTexto;
@@ -28,6 +34,7 @@ import utils.TextoBusqueda;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -84,6 +91,10 @@ public class vVerClientes extends JFrame {
 				busqueda.add(new TextoBusqueda("Codigo de Area - Telefono: "+valor+" "));
 				String[] parts = valor.split("-");
 				return new FPersCodyTel(parts[0],parts[1]);
+			}
+			case (6): {
+				busqueda.add(new TextoBusqueda("Direccion: "+valor+" "));
+				return new FPersDirec(valor);
 			}
 		}
 		return null;
@@ -169,8 +180,8 @@ public class vVerClientes extends JFrame {
 				if (row == -1) {
 					JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna persona");
 				}else {
-					DAOPersona ipersona = new DAOPersonaImpl();
-					Persona p = ipersona.obtenerPersona((String)modelo.getValueAt(row, 0));
+					DAOCliente icliente = new DAOClienteImpl();
+					Persona p = icliente.getCliente((Integer)modelo.getValueAt(row, 0));
 					if (p != null) {
 						vCliente vcliente = new vCliente(p,table);
 						vcliente.setVisible(true);
@@ -191,17 +202,22 @@ public class vVerClientes extends JFrame {
 				if (row == -1) {
 					JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna persona");
 				}else {
-					int input = JOptionPane.showConfirmDialog(null, "Desea eliminar el usuario seleccionado?","Elija una opcion",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
-					if (input == 0){
-						DAOPersona ipersona = new DAOPersonaImpl();
-						Persona p = ipersona.obtenerPersona((String)modelo.getValueAt(row, 0));
-						if (p != null) {
-							ipersona.eliminar(p);
-							table.clearSelection();	
-							Tablas.actualizarTPersona(table);
+					DAOContrato icontrato = new DAOContratoImpl();
+					if (!icontrato.contratoVigenteConCliente((Integer)modelo.getValueAt(row, 0), new Date())) {
+						int input = JOptionPane.showConfirmDialog(null, "Desea eliminar el usuario seleccionado?","Elija una opcion",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+						if (input == 0){
+							DAOPersona ipersona = new DAOPersonaImpl();
+							Persona p = ipersona.obtenerPersona((Integer)modelo.getValueAt(row, 0));
+							if (p != null) {
+								ipersona.eliminar(p);
+								table.clearSelection();	
+								Tablas.actualizarTClientes(table);
+							}
+						}else {
+							table.clearSelection();
 						}
 					}else {
-						table.clearSelection();
+						JOptionPane.showMessageDialog(null, "No es posible eliminar al cliente, ya que se encuentra en un contrato vigente");
 					}
 				}
 			}
@@ -216,7 +232,7 @@ public class vVerClientes extends JFrame {
 		pnlBusqueda.setLayout(null);
 		
 		cbBuscador = new JComboBox<String>();
-		cbBuscador.setModel(new DefaultComboBoxModel<String>(new String[] {"Seleccione un atributo", "DNI", "Nombre", "Apellido", "Email", "Codigo de area - Telefono"}));
+		cbBuscador.setModel(new DefaultComboBoxModel<String>(new String[] {"Seleccione un atributo", "DNI", "Nombre", "Apellido", "Email", "Codigo de area - Telefono", "Direccion"}));
 		cbBuscador.setBounds(52, 10, 226, 20);
 		pnlBusqueda.add(cbBuscador);
 		
@@ -276,15 +292,15 @@ public class vVerClientes extends JFrame {
 		JButton btnNewButton_1 = new JButton("BUSCAR");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DAOPersona ipersona = new DAOPersonaImpl();
-				List<Persona> persona = ipersona.getPersonas();
-				List<Persona> fpersonas = new ArrayList<Persona>();
-				for(Persona p: persona) {
+				DAOCliente icliente = new DAOClienteImpl();
+				List<Cliente> clientes = icliente.getClientes();
+				List<Cliente> fpersonas = new ArrayList<Cliente>();
+				for(Cliente p: clientes) {
 					if (filtro.cumple(p)) {
 						fpersonas.add(p);
 					}
 				}
-				Tablas.actualizarTPersona(table, fpersonas);
+				Tablas.actualizarTClientes(table, fpersonas);
 			}
 		});
 		btnNewButton_1.setBounds(514, 166, 89, 23);
@@ -294,7 +310,7 @@ public class vVerClientes extends JFrame {
 		btnReestablecer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetearCampos();
-				Tablas.actualizarTPersona(table);
+				Tablas.actualizarTClientes(table);
 			}
 		});
 		btnReestablecer.setBounds(373, 166, 131, 23);
@@ -331,11 +347,12 @@ public class vVerClientes extends JFrame {
 	public vVerClientes() {
 		cargarVentana();
 		/*CARGO EL MODELO Y LOS DATOS DENTRO DE UNA TABLA*/
-		modelo = TableModels.crearModeloPersona(modelo);
+		modelo = TableModels.crearModeloCliente(modelo);
 		table.setModel(modelo);
-		Tablas.actualizarTPersona(table);
-		table.getColumnModel().getColumn(3).setPreferredWidth(200);
-		table.getColumnModel().getColumn(4).setPreferredWidth(75);
+		Tablas.actualizarTClientes(table);
+		table.getColumnModel().getColumn(0).setPreferredWidth(50);
+		table.getColumnModel().getColumn(4).setPreferredWidth(200);
+		table.getColumnModel().getColumn(5).setPreferredWidth(75);
 		/*---------------------------------------------------------*/
 		definirButtons();
 	}

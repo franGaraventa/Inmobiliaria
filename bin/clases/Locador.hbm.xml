@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 22-jul-2020 18:10:54 by Hibernate Tools 5.4.14.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+    <class catalog="Inmobiliaria" dynamic-insert="false" dynamic-update="false" mutable="true" name="clases.Locador" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="locador">
+        <composite-id class="clases.LocadorId" mapped="false" name="id" unsaved-value="undefined">
+            <key-property name="id" type="int">
+                <column name="id"/>
+            </key-property>
+            <key-property name="nrocuenta" type="string">
+                <column length="20" name="nrocuenta"/>
+            </key-property>
+            <key-property name="banco" type="string">
+                <column length="50" name="banco"/>
+            </key-property>
+            <key-property name="tipoCuit" type="string">
+                <column length="2" name="tipo_cuit"/>
+            </key-property>
+            <key-property name="docempCuit" type="string">
+                <column length="8" name="docemp_cuit"/>
+            </key-property>
+            <key-property name="validadorCuit" type="string">
+                <column length="1" name="validador_cuit"/>
+            </key-property>
+            <key-property name="cbu" type="string">
+                <column length="22" name="cbu"/>
+            </key-property>
+        </composite-id>
+    </class>
+</hibernate-mapping>
