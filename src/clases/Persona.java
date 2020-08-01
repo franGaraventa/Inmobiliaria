@@ -9,6 +9,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+import Filtros.FPersona;
+
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="persona")
@@ -122,5 +124,8 @@ public abstract class Persona implements java.io.Serializable {
 	}
 
 	public abstract CuentaBancaria getCuentaBancaria();
-
+	
+	public boolean cumple(FPersona filtro) {
+		return (filtro.cumple(this));
+	}
 }

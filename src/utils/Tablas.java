@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 
 import clases.Cliente;
 import clases.Contrato;
+import clases.Locador;
 import clases.Pagos;
 import clases.Persona;
 import clases.Propiedad;
@@ -16,6 +17,8 @@ import interfaces.DAOCliente;
 import interfaces.DAOClienteImpl;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
+import interfaces.DAOLocador;
+import interfaces.DAOLocadorImpl;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
 import interfaces.DAOPersona;
@@ -180,6 +183,20 @@ public class Tablas {
 				Contrato c = contratos.get(i);
 				modelo.addRow(new Object[] {c.getId(),c.getFechaFirma(),c.getFechaInicio(),c.getFechaFinalizacion(),dias.get(i)});
 				i++;
+			}
+		}
+		tabla.setModel(modelo);
+	}
+	
+	public static void actualizarTLocadores(JTable tabla) {
+		DAOLocador ilocador = new DAOLocadorImpl();
+		List<Locador> locadores = ilocador.getLocadores();
+		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
+		modelo.fireTableDataChanged();
+		if (!locadores.isEmpty()){
+			for (Locador l : locadores) {
+				modelo.addRow(new Object[] {l.getId(),l.getDni(),l.getNombre(),l.getApellido()});
 			}
 		}
 		tabla.setModel(modelo);

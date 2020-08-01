@@ -1,5 +1,6 @@
 package clases;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.swing.JOptionPane;
+
+import Filtros.FContrato;
 
 
 @Entity
@@ -199,4 +203,12 @@ public class Contrato implements java.io.Serializable {
 		this.pagos = pagos;
 	}
 	
+	public boolean cumple(FContrato filtro) {
+		return (filtro.cumple(this));
+	}
+
+	
+	public void rescindir() {
+		this.setFechaFinalizacion(new Date());
+	}
 }

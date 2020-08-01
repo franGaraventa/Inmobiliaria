@@ -4,17 +4,18 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import clases.Locador;
 import clases.Persona;
 import interfaces.DAOPersona;
 import interfaces.DAOPersonaImpl;
+import utils.Tablas;
 import utils.ValidadorCampos;
-
 import java.awt.event.ActionListener;
-import java.util.Objects;
 import java.awt.event.ActionEvent;
 
 public class vLocador extends JFrame {
@@ -35,6 +36,45 @@ public class vLocador extends JFrame {
 	private JTextField txtVerificador;
 	private JTextField txtCBU;
 	private JPanel panel;
+	private JButton btnGuardar;
+	private JButton btnModificar;
+	private boolean editable;
+	private Locador locador;
+	private JTable table;
+	
+	/*CARGAR CAMPOS LOCADOR*/
+	private void cargarCampos(Locador l) {
+		txtDNI.setText(l.getDni());
+		txtNombre.setText(l.getNombre());
+		txtApellido.setText(l.getApellido());
+		txtEmail.setText(l.getEmail());
+		txtCodArea.setText(l.getCodArea());
+		txtTelefono.setText(l.getTelefono());
+		txtDireccion.setText(l.getDireccion());
+		txtNCuenta.setText(l.getNrocuenta());
+		txtBanco.setText(l.getBanco());
+		txtTipo.setText(l.getTipoCuit());
+		txtDoc.setText(l.getDocempCuit());
+		txtVerificador.setText(l.getValidadorCuit());
+		txtCBU.setText(l.getCbu());
+	}
+	
+	/*HABILITAR/DESHABILITAR LOS CAMPOS*/
+	private void habilitarCampos(boolean enabled) {
+		txtDNI.setEnabled(enabled);
+		txtNombre.setEnabled(enabled);
+		txtApellido.setEnabled(enabled);
+		txtEmail.setEnabled(enabled);
+		txtCodArea.setEnabled(enabled);
+		txtTelefono.setEnabled(enabled);
+		txtDireccion.setEnabled(enabled);
+		txtNCuenta.setEnabled(enabled);
+		txtBanco.setEnabled(enabled);
+		txtTipo.setEnabled(enabled);
+		txtDoc.setEnabled(enabled);
+		txtVerificador.setEnabled(enabled);
+		txtCBU.setEnabled(enabled);
+	}
 	
 	private void definirLabels() {
 		contentPane.setLayout(null);
@@ -99,42 +139,10 @@ public class vLocador extends JFrame {
 		panel.add(lblCbu);
 	}
 	
-	private boolean validarCuit(String cuit) {
-	    //Controlamos si son 11 números los que quedaron, si no es el caso, ya devuelve falso
-	    if (cuit.length() != 11){
-	        return false;
-	    }
-	    //Convertimos la cadena que quedó en una matriz de caracteres
-	    char[] cuitArray = cuit.toCharArray();
-	    //Inicializamos una matriz por la cual se multiplicarán cada uno de los dígitos
-	    Integer[] serie = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
-	    //Creamos una variable auxiliar donde guardaremos los resultados del cálculo del número validador
-	    Integer aux = 0;
-	    //Recorremos las matrices de forma simultánea, sumando los productos de la serie por el número en la misma posición
-	    for (int i=0; i<10; i++){
-	        aux += Character.getNumericValue(cuitArray[i]) * serie[i];
-	    }
-	    //Hacemos como se especifica: 11 menos el resto de de la división de la suma de productos anterior por 11
-	    aux = 11 - (aux % 11);
-	    //Si el resultado anterior es 11 el código es 0
-	    if (aux == 11){
-	        aux = 0;
-	    }
-	    //Si el resultado anterior es 10 el código no tiene que validar, cosa que de todas formas pasa
-	    //en la siguiente comparación.
-	    //Devuelve verdadero si son iguales, falso si no lo son
-	    return Objects.equals(Character.getNumericValue(cuitArray[10]), aux);
-	}
-	
 	private boolean validarCuentaBancaria() {
 		if(ValidadorCampos.campoNumeros(txtNCuenta, 20) && ValidadorCampos.campoVacio(txtBanco, 50) && ValidadorCampos.campoNumeros(txtCBU, 22) &&
-		   ValidadorCampos.campoNumeros(txtTipo, 2) && ValidadorCampos.campoNumeros(txtDoc, 8) && ValidadorCampos.campoNumeros(txtTipo, 1)) {
-			String cuit = txtTipo.getText()+txtDoc.getText()+txtDoc.getText();
-			if (validarCuit(cuit)) {
-				return true;
-			}else {
-				return false;
-			}
+		   ValidadorCampos.campoNumeros(txtTipo, 2) && ValidadorCampos.campoNumeros(txtDoc, 8) && ValidadorCampos.campoNumeros(txtVerificador, 1)) {
+			return true;
 		}else {
 			return false;
 		}
@@ -151,21 +159,51 @@ public class vLocador extends JFrame {
 	}
 	
 	private void definirButtons() {
-		JButton btnGuardar = new JButton("GUARDAR");
+		btnGuardar = new JButton("GUARDAR");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (camposValidos()) {
 					DAOPersona ipersona = new DAOPersonaImpl();
 					int id = ipersona.getUltimoIndice()+1;
-					Persona p = new Locador(id,txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),txtDireccion.getText(),
-							txtNCuenta.getText(),txtBanco.getText(),txtTipo.getText(),txtDoc.getText(),txtVerificador.getText(),txtCBU.getText());
-					ipersona.guardar(p);
-					dispose();
+					if (!editable) {
+						Persona p = new Locador(id,txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),txtDireccion.getText(),
+								txtNCuenta.getText(),txtBanco.getText(),txtTipo.getText(),txtDoc.getText(),txtVerificador.getText(),txtCBU.getText());
+						ipersona.guardar(p);
+						JOptionPane.showMessageDialog(null,
+						        "Locador agregado correctamente",
+						        "Locador agregado",
+						        JOptionPane.INFORMATION_MESSAGE);
+						dispose();
+					}else {
+						Persona p = new Locador(locador.getId(),txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),txtDireccion.getText(),
+								txtNCuenta.getText(),txtBanco.getText(),txtTipo.getText(),txtDoc.getText(),txtVerificador.getText(),txtCBU.getText());
+						ipersona.modificar(p);
+						if (table != null)
+							Tablas.actualizarTLocadores(table);
+						JOptionPane.showMessageDialog(null,
+						        "Locador modificado correctamente",
+						        "Locador modificado",
+						        JOptionPane.INFORMATION_MESSAGE);
+						dispose();
+					}
 				}
 			}
 		});
-		btnGuardar.setBounds(258, 400, 100, 23);
+		btnGuardar.setBounds(234, 400, 100, 23);
 		contentPane.add(btnGuardar);
+		
+		btnModificar = new JButton("MODIFICAR");
+		btnModificar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				habilitarCampos(true);
+				txtDNI.setEditable(false);
+				btnModificar.setVisible(false);
+				btnGuardar.setVisible(true);
+				editable = true;
+			}
+		});
+		btnModificar.setBounds(258, 400, 100, 23);
+		contentPane.add(btnModificar);
 	}
 	
 	private void definirTextFields() {
@@ -254,7 +292,22 @@ public class vLocador extends JFrame {
 		definirButtons();
 	}
 	
-	public vLocador() {
+	public vLocador(boolean editar) {
 		definirVentana();
+		/*HABILITAR BOTONES*/
+		editable = editar;
+		btnModificar.setVisible(false);
+	}
+	
+	public vLocador(Locador l,JTable tabla,boolean editar) {
+		definirVentana();
+		cargarCampos(l);
+		locador = l;
+		table = tabla;
+		habilitarCampos(false);
+		/*HABILITAR BOTONES*/
+		editable = editar;
+		btnGuardar.setVisible(false);
+		btnModificar.setVisible(true);
 	}
 }

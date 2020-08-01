@@ -229,7 +229,7 @@ public class vVerPropiedades extends JFrame {
 				List<Propiedad> propiedades = ipropiedades.getPropiedades();
 				List<Propiedad> fpropiedades = new ArrayList<Propiedad>();
 				for(Propiedad p: propiedades) {
-					if (filtro.cumple(p)) {
+					if (p.cumple(filtro)) {
 						fpropiedades.add(p);
 					}
 				}

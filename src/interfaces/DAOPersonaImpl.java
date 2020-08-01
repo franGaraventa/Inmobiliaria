@@ -36,10 +36,6 @@ public class DAOPersonaImpl implements DAOPersona{
 		try {
 			session.save(p);
 			tx.commit();
-			JOptionPane.showMessageDialog(null,
-					"Persona agregada correctamente",
-					"Persona agregada",
-					JOptionPane.INFORMATION_MESSAGE);
 		}catch(Exception e) {
 			if (tx != null) {
 	            tx.rollback();
@@ -57,10 +53,6 @@ public class DAOPersonaImpl implements DAOPersona{
 		try {
 			session.merge(p);
 			tx.commit();
-			JOptionPane.showMessageDialog(null,
-			        "Cliente modificado correctamente",
-			        "Modificar cliente",
-			        JOptionPane.INFORMATION_MESSAGE);
 		}catch(Exception e) {
 			if (tx != null) {
 	            tx.rollback();
@@ -80,10 +72,6 @@ public class DAOPersonaImpl implements DAOPersona{
 			 Persona persona = session.get(Persona.class, p.getId());
 			 if(persona != null){
 		        session.delete(persona);
-		        JOptionPane.showMessageDialog(null,
-				        "Cliente eliminado correctamente",
-				        "Cliente eliminado",
-				        JOptionPane.INFORMATION_MESSAGE);
 		     }
 			 tx.commit();
 		}catch(Exception e) {
@@ -130,20 +118,6 @@ public class DAOPersonaImpl implements DAOPersona{
 	}
 
 	@Override
-	public List<Persona> getPersonas(char tipo) {
-		session = HibernateUtils.getSessionFactory().openSession();
-		session.beginTransaction();
-		@SuppressWarnings("rawtypes")
-		Query query = session.createQuery("SELECT p FROM Persona p where p.tipo = :tipo");
-		query.setParameter("tipo", tipo);
-		@SuppressWarnings("unchecked")
-		List<Persona> list_persona  = query.list();		
-		session.getTransaction().commit();
-		session.close();
-		return list_persona;
-	}
-
-	@Override
 	public int getUltimoIndice() {
 		session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -178,7 +152,6 @@ public class DAOPersonaImpl implements DAOPersona{
 			if (p.size() > 0) {
 				return true;
 			}else {
-				System.out.println("TIENE QUE ENTRAR ACA");
 				return false;
 			}
 		}catch(Exception e) {

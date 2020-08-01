@@ -148,7 +148,10 @@ public class vCliente extends JFrame {
 					Persona p = new Cliente(id,txtDNI.getText(),txtNombre.getText(),txtApellido.getText(),txtEmail.getText(),txtCodArea.getText(),txtTelefono.getText(),txtDireccion.getText());
 					if (!ipersona.existe(txtDNI.getText())) {
 						ipersona.guardar(p);
-						limpiarCampos();
+						JOptionPane.showMessageDialog(null,
+						        "Cliente agregado correctamente",
+						        "Cliente agregado",
+						        JOptionPane.INFORMATION_MESSAGE);
 						dispose();
 					}else {
 						txtDNI.setBorder(ValidadorCampos.getRBorder());
@@ -173,7 +176,10 @@ public class vCliente extends JFrame {
 					ipersona.modificar(p);
 					if (table != null)
 						Tablas.actualizarTClientes(table);
-					limpiarCampos();
+					JOptionPane.showMessageDialog(null,
+					        "Cliente modificado correctamente",
+					        "Cliente modificado",
+					        JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 				}
 			}
@@ -205,16 +211,6 @@ public class vCliente extends JFrame {
 		txtCodArea.setText(p.getCodArea());
 		txtTelefono.setText(p.getTelefono());
 		txtDireccion.setText(p.getDireccion());
-	}
-	
-	private void limpiarCampos() {
-		txtCodArea.setText(null);
-		txtTelefono.setText(null);
-		txtEmail.setText(null);
-		txtApellido.setText(null);
-		txtNombre.setText(null);
-		txtDNI.setText(null);
-		txtDireccion.setText(null);
 	}
 	
 	/*CONTRUCTOR PARA NUEVO CLIENTE*/

@@ -24,13 +24,13 @@ public class ValidadorCampos {
 	}
 	
 	private static boolean isNumeric(String cadena){
-		try {
-			Integer.parseInt(cadena);
+		if (cadena.matches("[0-9]*")) {
 			return true;
-		} catch (NumberFormatException nfe){
+		}else {
 			return false;
 		}
 	}
+	
 	
 	public static boolean campoNumeros(JTextField txt,int length) {
 		if ((!txt.getText().isEmpty()) && (isNumeric(txt.getText()))) {

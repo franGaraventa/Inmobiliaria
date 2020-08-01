@@ -296,7 +296,7 @@ public class vVerClientes extends JFrame {
 				List<Cliente> clientes = icliente.getClientes();
 				List<Cliente> fpersonas = new ArrayList<Cliente>();
 				for(Cliente p: clientes) {
-					if (filtro.cumple(p)) {
+					if (p.cumple(filtro)) {
 						fpersonas.add(p);
 					}
 				}

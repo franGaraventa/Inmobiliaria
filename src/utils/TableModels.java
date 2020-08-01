@@ -199,4 +199,35 @@ public class TableModels {
 	    	}
 		return modelo;
 	}
+
+	public static DefaultTableModel crearModeloLocador(DefaultTableModel modelo) {
+		try {
+	        modelo = (new DefaultTableModel(null, new Object[]{"id","DNI","Nombre","Apellido"}){
+				private static final long serialVersionUID = 1L;
+				@SuppressWarnings("rawtypes")
+				Class[] types = new Class[]{
+					java.lang.Integer.class,
+	                java.lang.String.class,
+	                java.lang.String.class,
+	                java.lang.String.class
+	            };
+	            boolean[] canEdit = new boolean[]{
+	                false, false, false, false
+	            };
+
+	            @Override
+	            public Class<?> getColumnClass(int columnIndex) {
+	                return types[columnIndex];
+	            }
+
+	            @Override
+	            public boolean isCellEditable(int rowIndex, int colIndex) {
+	                return canEdit[colIndex];
+	            }
+	        });
+			}catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+	    	}
+		return modelo;
+	}
 }

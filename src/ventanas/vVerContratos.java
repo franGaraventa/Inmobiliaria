@@ -81,7 +81,7 @@ public class vVerContratos extends JFrame {
 					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" < Fecha Inicio > "+ formato_fecha.format(dcFecha2.getDate())+")"));
 					return new FContInicio(dcFecha1.getDate(),dcFecha2.getDate(),txtComparador.getText());
 				}else{
-					busqueda.add(new TextoBusqueda("Fecha "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
+					busqueda.add(new TextoBusqueda("Fecha Inicio "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
 					return new FContInicio(dcFecha1.getDate(),txtComparador.getText());
 				}
 			}
@@ -90,7 +90,7 @@ public class vVerContratos extends JFrame {
 					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" < Fecha Finalizacion > "+ formato_fecha.format(dcFecha2.getDate())+")"));
 						return new FContFinalizacion(dcFecha1.getDate(),dcFecha2.getDate(),txtComparador.getText());
 				}else {
-					busqueda.add(new TextoBusqueda("Fecha "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
+					busqueda.add(new TextoBusqueda("Fecha Finalizacion "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
 					return new FContFinalizacion(dcFecha1.getDate(),txtComparador.getText());
 				}
 			}
@@ -99,7 +99,7 @@ public class vVerContratos extends JFrame {
 					busqueda.add(new TextoBusqueda("("+formato_fecha.format(dcFecha1.getDate())+" > Fecha Firma < "+ formato_fecha.format(dcFecha2.getDate())+")"));
 					return new FContFirma(dcFecha1.getDate(),dcFecha2.getDate(),txtComparador.getText());
 				}else {
-					busqueda.add(new TextoBusqueda("Fecha "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
+					busqueda.add(new TextoBusqueda("Fecha Firma "+ txtComparador.getText() + " " + formato_fecha.format(dcFecha1.getDate())));
 					return new FContFirma(dcFecha1.getDate(),txtComparador.getText());
 				}
 			}
@@ -279,7 +279,7 @@ public class vVerContratos extends JFrame {
 				List<Contrato> contratos = icontrato.getContratos();
 				List<Contrato> fcontratos = new ArrayList<Contrato>();
 				for(Contrato c: contratos) {
-					if (filtro.cumple(c)) {
+					if (c.cumple(filtro)) {
 						fcontratos.add(c);
 					}
 				}

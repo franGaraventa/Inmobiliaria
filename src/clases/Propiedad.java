@@ -15,6 +15,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import Filtros.FPropiedad;
+
 @Entity
 @Table(name="propiedad")
 public class Propiedad implements java.io.Serializable {
@@ -124,5 +126,9 @@ public class Propiedad implements java.io.Serializable {
 	
 	public void setImagenes(List<Imagen> imagenes) {
 		this.imagenes = imagenes;
+	}
+	
+	public boolean cumple(FPropiedad filtro) {
+		return (filtro.cumple(this));
 	}
 }

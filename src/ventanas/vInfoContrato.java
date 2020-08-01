@@ -19,6 +19,11 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -31,6 +36,8 @@ import javax.swing.JTable;
 public class vInfoContrato extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private static final int meses = 6;
+	private static final int anioenMeses = 12;
 	private JPanel contentPane;
 	private JTextField txtPlazo;
 	private JTextField txtFFirma;
@@ -202,9 +209,57 @@ public class vInfoContrato extends JFrame {
 		}
 	}
 	
+	private int confirmarAccion() {
+		int input = JOptionPane.showConfirmDialog(null, "¿Desea confirmar la accion elegida?", "Elija una opcion...",
+				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+		return input;
+	}
+	
+	private int diferenciaMeses() {
+		Calendar inicio = new GregorianCalendar();
+        Calendar fin = new GregorianCalendar();
+        inicio.setTime(contrato.getFechaInicio());
+        fin.setTime(new Date());
+        System.out.println(inicio.get(Calendar.YEAR)+"/"+inicio.get(Calendar.MONTH)+"/"+inicio.get(Calendar.DAY_OF_MONTH));
+        System.out.println(fin.get(Calendar.YEAR)+"/"+fin.get(Calendar.MONTH)+"/"+fin.get(Calendar.DAY_OF_MONTH));
+        int difA = fin.get(Calendar.YEAR) - inicio.get(Calendar.YEAR);
+        int difM = difA * 12 + fin.get(Calendar.MONTH) - inicio.get(Calendar.MONTH);
+        return difM;
+	}
+	
+	private void opcion(String texto) {
+		switch(texto) {
+			case("Falta de Pago"):{
+				System.out.println("Eligio la opcion 1");
+				if (confirmarAccion() == 0) {
+					if (diferenciaMeses() <= anioenMeses) {
+						/*TERMINAR*/
+						/*CONTROLAR LOS DOS PAGOS ANTERIORES SIN COBRAR, mes actual y anterior*/
+					}
+				}
+				break;
+			}
+			case("Incumplimiento contrato"):{
+				System.out.println("Eligio la opcion 2");
+				if (confirmarAccion() == 0) {
+					contrato.rescindir();
+				}
+				break;
+			}
+			case("Rescision anticipada"):{
+				if (confirmarAccion() == 0) {
+					if (diferenciaMeses() == meses) {
+						JOptionPane.showMessageDialog(null,"No debe abonar");
+					}
+				}
+				break;
+			}
+		}
+	}
+	
 	private void cargarVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 693, 333);
+		setBounds(100, 100, 693, 359);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -249,8 +304,25 @@ public class vInfoContrato extends JFrame {
 				pdf.generarPDFContrato();
 			}
 		});
-		btnCopiaContrato.setBounds(382, 261, 130, 23);
+		btnCopiaContrato.setBounds(384, 286, 130, 23);
 		contentPane.add(btnCopiaContrato);
+		
+		JButton btnRescindir = new JButton("RESCINDIR");
+		btnRescindir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String seleccion = (String) JOptionPane.showInputDialog(
+						   null,
+						   "Seleccione opcion",
+						   "Selector de opciones",
+						   JOptionPane.QUESTION_MESSAGE,
+						   null,  // null para icono defecto
+						   new String[] { "Falta de Pago", "Incumplimiento contrato", "Rescision anticipada" },
+						   "Falta de Pago");
+				opcion(seleccion);
+			}
+		});
+		btnRescindir.setBounds(382, 261, 130, 23);
+		contentPane.add(btnRescindir);
 	}
 	
 	public vInfoContrato(Contrato c) {

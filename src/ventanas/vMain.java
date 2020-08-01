@@ -128,11 +128,20 @@ public class vMain extends JFrame {
 		JMenuItem mnLocador = new JMenuItem("Nuevo Locador");
 		mnLocador.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				vLocador vlocador = new vLocador();
+				vLocador vlocador = new vLocador(false);
 				vlocador.setVisible(true);
 			}
 		});	
 		mnLocadores.add(mnLocador);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Ver Locadores");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				vVerLocadores vverlocadores = new vVerLocadores();
+				vverlocadores.setVisible(true);
+			}
+		});
+		mnLocadores.add(mntmNewMenuItem);
 	}
 	
 	private void verFechasPagos() {
