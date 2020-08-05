@@ -9,10 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+
 import com.toedter.calendar.JDateChooser;
 
 import clases.Cliente;
 import clases.Contrato;
+import clases.EstadoInmueble;
 import clases.FechaPautada;
 import clases.Locador;
 import clases.Persona;
@@ -31,7 +34,6 @@ import interfaces.DAOTipoPrecio;
 import interfaces.DAOTipoPrecioImpl;
 import utils.TableModels;
 import utils.ValidadorCampos;
-
 import java.awt.Panel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,12 +42,14 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import javax.swing.JList;
 
 public class vContrato extends JFrame {
 
@@ -66,6 +70,10 @@ public class vContrato extends JFrame {
 	private JComboBox<String> cbLocatario;
 	private JTextField txtExpensas;
 	private JComboBox<String> cbLocador;
+	private JTextField txtEstado;
+	private JTextField txtDescripcion;
+	private JList<String> list;
+	private DefaultListModel<String> listModel;
 		
 	private boolean existeContrato(List<Contrato> contratos,Cliente cliente) {
 		for(Contrato c: contratos) {
@@ -102,8 +110,7 @@ public class vContrato extends JFrame {
 	private void cargarLocatarios() {
 		DAOContrato icontrato = new DAOContratoImpl();
 		DAOCliente iclientes = new DAOClienteImpl();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		List<Contrato> contratos = icontrato.getContratos("from Contrato as c where "+format.format((new Date())) +"< c.fechaFinalizacion");
+		List<Contrato> contratos = icontrato.getContratosVigentes(new Date());
 		List<Cliente> clientes = iclientes.getClientes();
 		List<Cliente> c_aux = new ArrayList<Cliente>();
 		for(Cliente cliente: clientes) {
@@ -130,6 +137,16 @@ public class vContrato extends JFrame {
 		DAOCliente icliente = new DAOClienteImpl();
 		Persona p = icliente.getCliente(Integer.parseInt(parts[0]));
 		c.setLocatario(p);
+	}
+	
+	private void agregarEstadoInmueble(Contrato c) {
+		List<EstadoInmueble> estadoInmueble = new ArrayList<EstadoInmueble>();
+		for(int i=0; i < listModel.getSize(); i++){
+			String[] parts = listModel.getElementAt(i).toString().split("-");
+			EstadoInmueble ei = new EstadoInmueble(c,parts[0],parts[1]);
+			estadoInmueble.add(ei);
+		}
+		c.setEstado_inmueble(estadoInmueble);
 	}
 	
 	private void agregarLocador(Contrato c) {
@@ -197,8 +214,7 @@ public class vContrato extends JFrame {
 	private void cargarTabla() {
 		DAOPropiedad ipropiedad = new DAOPropiedadImpl();
 		DAOContrato icontrato = new DAOContratoImpl();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		List<Contrato> contratos = icontrato.getContratos("from Contrato as c where "+format.format((new Date())) +"< c.fechaFinalizacion");
+		List<Contrato> contratos = icontrato.getContratosVigentes(new Date());
 		List<Propiedad> propiedades = ipropiedad.getPropiedades();
 		List<Propiedad> p_aux = new ArrayList<Propiedad>();
 		for(Propiedad propiedad: propiedades) {
@@ -206,7 +222,6 @@ public class vContrato extends JFrame {
 				p_aux.add(propiedad);
 			}
 		}
-		/*NO SE POR QUE DESDE LA CLASE TABLE NO LO CARGA*/
 		if(!p_aux.isEmpty()) {
 			for (Propiedad p : p_aux) {
 				modelo.addRow(new Object[] {p.getId(),p.getValor(),p.getSupLote(),p.getSupCubierta(),p.getInformacion()});
@@ -293,6 +308,21 @@ public class vContrato extends JFrame {
 		pnlFechas.add(lblFechaDeFinalizacion);
 		lblFechaDeFinalizacion.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
+		JLabel lblExpensas = new JLabel("EXPENSAS");
+		lblExpensas.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblExpensas.setBounds(156, 290, 105, 22);
+		contentPane.add(lblExpensas);
+		
+		JLabel lblEstado = new JLabel("ESTADO");
+		lblEstado.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblEstado.setBounds(416, 21, 105, 22);
+		contentPane.add(lblEstado);
+		
+		JLabel lblDescripcion = new JLabel("DESCRIPCION");
+		lblDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblDescripcion.setBounds(416, 49, 150, 22);
+		contentPane.add(lblDescripcion);
+		
 	}
 
 	private void cargarComponentes() {
@@ -372,12 +402,45 @@ public class vContrato extends JFrame {
 		cbLocador.setBounds(118, 160, 253, 20);
 		contentPane.add(cbLocador);
 		
+		txtExpensas = new JTextField();
+		txtExpensas.setColumns(10);
+		txtExpensas.setBounds(271, 292, 86, 20);
+		contentPane.add(txtExpensas);
+		
+		txtEstado = new JTextField();
+		txtEstado.setColumns(10);
+		txtEstado.setBounds(516, 21, 199, 20);
+		contentPane.add(txtEstado);
+		
+		txtDescripcion = new JTextField();
+		txtDescripcion.setColumns(10);
+		txtDescripcion.setBounds(576, 49, 244, 20);
+		contentPane.add(txtDescripcion);
+		
+		listModel = new DefaultListModel<String>();
+		list = new JList<String>(listModel);
+		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		list.setLayoutOrientation(JList.VERTICAL);
+		list.setVisibleRowCount(-1);
+		JScrollPane scroll2 = new JScrollPane(list);
+		scroll2.setBounds(416, 110, 402, 191);
+		contentPane.add(scroll2);
+		
 		modelo = TableModels.crearModeloPropiedades(modelo);
 		cargarTabla();
 		cargarLocatarios();
 		cargarLocadores();
 	}
 
+	/*COMPRUEBA QUE LOS CAMPOS A CARGAR SEAN VALIDOS*/
+	private boolean camposEstadoVacios() {
+		if (ValidadorCampos.campoVacio(txtEstado, 20) && ValidadorCampos.campoVacio(txtDescripcion, 30)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	/*VALIDACION DE CAMPOS PARA INSERCION DE CONTRATO*/
 	private boolean camposVacios() {
 		if (ValidadorCampos.campoNumeros(txtPlazo) && ValidadorCampos.campoNumeros(txtExpensas) && ValidadorCampos.campoNumeros(txtMaxPago) && 
@@ -421,29 +484,47 @@ public class vContrato extends JFrame {
 					agregarPersona(c);
 					agregarLocador(c);
 					agregarTipoPago(c);
+					agregarEstadoInmueble(c);
 					DAOContrato icontrato = new DAOContratoImpl();
 					icontrato.agregar(c);
 					dispose();
 				}
 			}
 		});
-		btnGuardar.setBounds(536, 557, 97, 23);
+		btnGuardar.setBounds(723, 557, 97, 23);
 		contentPane.add(btnGuardar);
 		
-		JLabel lblExpensas = new JLabel("EXPENSAS");
-		lblExpensas.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblExpensas.setBounds(391, 224, 105, 22);
-		contentPane.add(lblExpensas);
+		JButton btnAgregar = new JButton("AGREGAR");
+		btnAgregar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (camposEstadoVacios()) {
+					String estado = txtEstado.getText()+"-"+txtDescripcion.getText();
+					listModel.addElement(estado);
+				}
+			}
+		});
+		btnAgregar.setBounds(723, 80, 97, 23);
+		contentPane.add(btnAgregar);
 		
-		txtExpensas = new JTextField();
-		txtExpensas.setColumns(10);
-		txtExpensas.setBounds(485, 226, 86, 20);
-		contentPane.add(txtExpensas);
+		JButton btnEliminar = new JButton("ELIMINAR");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int indice = list.getSelectedIndex();
+				if (indice == -1) {
+					JOptionPane.showMessageDialog(null,"No ha seleccionado un elemento");
+				}else {
+					listModel.remove(indice);
+					list.clearSelection();
+				}
+			}
+		});
+		btnEliminar.setBounds(616, 80, 97, 23);
+		contentPane.add(btnEliminar);
 	}
 	
 	private void cargarVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 659, 628);
+		setBounds(100, 100, 843, 628);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -452,6 +533,7 @@ public class vContrato extends JFrame {
 		cargarComponentes();
 		cargarLabels();
 		cargarButtons();
+		
 	}
 	
 	public vContrato() {

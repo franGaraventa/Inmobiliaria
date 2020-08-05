@@ -1,0 +1,45 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+      <!-- Database connection settings -->
+	  <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+	  <property name="connection.url">jdbc:mysql://localhost:3306/inmobiliaria</property>
+	  <property name="connection.username">root</property>
+	  <property name="connection.password"></property>
+	
+	  <!-- JDBC connection pool (use the built-in) -->
+	  <property name="connection.pool_size">1</property>
+	
+	  <!-- SQL dialect -->
+	  <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+	
+	  <!-- Enable Hibernate's automatic session context management -->
+	  <property name="current_session_context_class">thread</property>
+	
+	  <!-- Disable the second-level cache -->
+	  <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+	
+	  <!-- Echo all executed SQL to stdout -->
+	  <property name="show_sql">true</property>
+
+        <!-- Indicamos el fichero de mapeo-->
+        <mapping class="clases.Cliente" package="clases" ></mapping>
+        <mapping class="clases.Contrato" package="clases" ></mapping>
+        <mapping class="clases.FechaPautada" package="clases" ></mapping>
+        <mapping class="clases.Imagen" package="clases" ></mapping>
+        <mapping class="clases.Locador" package="clases" ></mapping>
+        <mapping class="clases.Pagos" package="clases" ></mapping>
+        <mapping class="clases.Persona" package="clases" ></mapping>
+        <mapping class="clases.PrecioCompleto" package="clases" ></mapping>
+        <mapping class="clases.PrecioPorcentual" package="clases" ></mapping> 
+        <mapping class="clases.Propiedad" package="clases" ></mapping>
+        <mapping class="clases.TipoPrecio" package="clases" ></mapping>
+        <mapping class="clases.Ubicacion" package="clases" ></mapping>
+        <mapping class="clases.EstadoInmueble" package="clases" ></mapping>
+		
+    </session-factory>
+</hibernate-configuration>

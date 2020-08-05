@@ -11,12 +11,12 @@ public class PrecioCompleto extends TipoPrecio implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name="cantMesesContrato")
-	private int cantMesesContrato;
+	private Integer cantMesesContrato;
 	
 	public PrecioCompleto() {
 	}
 
-	public PrecioCompleto(int id,double precio_base,double expensas,int cantMesesContrato) {
+	public PrecioCompleto(Integer id,double precio_base,double expensas,int cantMesesContrato) {
 		super(id,precio_base,expensas);
 		this.cantMesesContrato = cantMesesContrato;
 	}
@@ -26,11 +26,11 @@ public class PrecioCompleto extends TipoPrecio implements java.io.Serializable {
 		return (this.getPrecioBase()/this.cantMesesContrato)+this.getExpensas();
 	}
 
-	public int getCantMesesContrato() {
+	public Integer getCantMesesContrato() {
 		return cantMesesContrato;
 	}
 
-	public void setCantMesesContrato(int cantMesesContrato) {
+	public void setCantMesesContrato(Integer cantMesesContrato) {
 		this.cantMesesContrato = cantMesesContrato;
 	}
 	

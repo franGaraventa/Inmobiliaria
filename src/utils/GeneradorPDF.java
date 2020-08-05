@@ -16,6 +16,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 import clases.Contrato;
 import clases.CuentaBancaria;
 import clases.Pagos;
+import interfaces.DAOEstadoInmueble;
+import interfaces.DAOEstadoInmuebleImpl;
 
 public class GeneradorPDF {
 	
@@ -278,7 +280,10 @@ public class GeneradorPDF {
 				Paragraph clausula_10 = new Paragraph();
 				clausula_10.add(new Chunk("DECIMA (ESTADO DEL INMUEBLE E INVENTARIO):",bold));
 				clausula_10.add("\nEl LOCATARIO/A declara que ha visitado el inmueble y comprobado que el mismo se encuentra desocupado, y en el siguiente estado de conservacion: \n");
-				//clasula_10.add(DETALLE INMUEBLE)
+				//DETALLE INMUEBLE
+				DAOEstadoInmueble iestado = new DAOEstadoInmuebleImpl();
+				clausula_10.add(GeneradorTexto.generarTexto(iestado.getEstadoInmueble(contrato.getId())));
+				documento.add(clausula_10);
 				documento.add( Chunk.NEWLINE );
 				clausula_10.add("El/la LOCATARIO/A se obliga a preserva el inmueble, y a restituirlo en iguales condiciones a las de recepcion, salvo por el normal desgaste propio de un uso de la cosa. Seran a exclusivo cargo "
 						+ "del LOCATARIO/A todas las reparaciones, reconstrucciones y/o refacciones que fueran menester realizar para el debido cumplimiento de esta obligacion, cualquiera fuera la causa, naturaleza o cuantia del "

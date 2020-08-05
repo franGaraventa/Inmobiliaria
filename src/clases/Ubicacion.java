@@ -16,7 +16,7 @@ public class Ubicacion implements java.io.Serializable {
 
 	@Id
 	@Column(name="id")
-	private int id;
+	private Integer id;
 	
 	@Column(name="codPostal")
 	private String codPostal;
@@ -37,7 +37,7 @@ public class Ubicacion implements java.io.Serializable {
 	public Ubicacion() {
 	}
 
-	public Ubicacion(int id, String codPostal, String distrito, String ciudad, String direccion) {
+	public Ubicacion(Integer id, String codPostal, String distrito, String ciudad, String direccion) {
 		this.id = id;
 		this.codPostal = codPostal;
 		this.distrito = distrito;
@@ -45,11 +45,11 @@ public class Ubicacion implements java.io.Serializable {
 		this.direccion = direccion;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

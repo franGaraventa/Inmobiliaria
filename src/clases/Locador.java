@@ -31,7 +31,7 @@ public class Locador extends Persona implements java.io.Serializable {
 	public Locador() {
 	}
 
-	public Locador(int id,String dni, String nombre, String apellido, String email, String codArea, String telefono,
+	public Locador(Integer id,String dni, String nombre, String apellido, String email, String codArea, String telefono,
 			String direccion, String nrocuenta, String banco, String tipoCuit, String docempCuit, String validadorCuit,
 			String cbu) {
 		super(id,dni,nombre,apellido,email,codArea,telefono,direccion);

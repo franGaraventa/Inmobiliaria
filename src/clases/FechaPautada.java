@@ -20,7 +20,7 @@ public class FechaPautada implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private Integer id;
 	
 	@Column(name="fecha")
 	private Date fecha;

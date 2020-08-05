@@ -12,7 +12,7 @@ public class Cliente extends Persona implements java.io.Serializable {
 	public Cliente() {
 	}
 
-	public Cliente(int id,String dni, String nombre, String apellido, String email, String codArea, String telefono,
+	public Cliente(Integer id,String dni, String nombre, String apellido, String email, String codArea, String telefono,
 			String direccion) {
 		super(id,dni,nombre,apellido,email,codArea,telefono,direccion);
 	}

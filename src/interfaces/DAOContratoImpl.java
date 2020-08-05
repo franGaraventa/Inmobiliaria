@@ -1,6 +1,5 @@
 package interfaces;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -10,6 +9,7 @@ import org.hibernate.Transaction;
 
 import clases.Cliente;
 import clases.Contrato;
+import clases.Locador;
 import clases.Pagos;
 import clases.Propiedad;
 import utils.Fechas;
@@ -56,7 +56,19 @@ public class DAOContratoImpl implements DAOContrato{
 
 	@Override
 	public void modificar(Contrato c) {
-		// TODO Auto-generated method stub
+		session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			session.merge(c);
+			tx.commit();
+		}catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
 	}
 
 	@Override
@@ -86,19 +98,6 @@ public class DAOContratoImpl implements DAOContrato{
 		}finally {
 			session.close();
 		}
-	}
-
-	@Override
-	public List<Contrato> getContratos(String condicion) {
-		session = HibernateUtils.getSessionFactory().openSession();
-		Transaction tx = session.beginTransaction();
-		@SuppressWarnings("rawtypes")
-		Query query = session.createQuery(condicion); 
-		@SuppressWarnings("unchecked")
-		List<Contrato> contratos = query.list();
-		tx.commit();
-		session.close();
-		return contratos;
 	}
 
 	@Override
@@ -152,7 +151,7 @@ public class DAOContratoImpl implements DAOContrato{
         tx.begin();
         try {
 			 @SuppressWarnings("rawtypes")
-			Query query = session.createQuery("from Contrato where :fecha < fechaFinalizacion ");
+			Query query = session.createQuery("from Contrato as c where :fecha < c.fechaFinalizacion");
 			 query.setParameter("fecha", fecha);
 			 @SuppressWarnings("unchecked")
 			List<Contrato> contratosVigentes = query.list();
@@ -237,6 +236,34 @@ public class DAOContratoImpl implements DAOContrato{
         	}else {
         		return false;
         	}
+       }catch(Exception e) {
+			if (tx != null) {
+	            tx.rollback();
+	         }
+	         e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean contratoVigenteConLocador(int id, Date fecha) {
+		session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+        tx.begin();
+        try {
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery("select l from Contrato as c join Locador as l on (l.id = c.locador) where l.id = :id and :fecha < c.fechaFinalizacion");
+			query.setParameter("id", id);
+			query.setParameter("fecha", fecha);
+			@SuppressWarnings("unchecked")
+			List<Locador> l = query.list();
+			if (l.size() > 0) {
+				return true;
+			}else {
+				return false;
+			}
        }catch(Exception e) {
 			if (tx != null) {
 	            tx.rollback();

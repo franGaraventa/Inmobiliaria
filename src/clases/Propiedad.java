@@ -26,7 +26,7 @@ public class Propiedad implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private Integer id;
 	
 	@Column(name="valor")
 	private double valor;
@@ -54,7 +54,7 @@ public class Propiedad implements java.io.Serializable {
 	public Propiedad() {
 	}
 
-	public Propiedad(int id,double valor, double supLote, double supCubierta, String informacion, boolean amoblado) {
+	public Propiedad(Integer id,double valor, double supLote, double supCubierta, String informacion, boolean amoblado) {
 		this.id = id;
 		this.valor = valor;
 		this.supLote = supLote;
@@ -64,11 +64,11 @@ public class Propiedad implements java.io.Serializable {
 		this.imagenes = new ArrayList<Imagen>();
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

@@ -32,7 +32,7 @@ public class Imagen implements java.io.Serializable {
 	public Imagen() {
 	}
 
-	public Imagen(int id,String pathImg,Blob imagen,Propiedad propiedad) {
+	public Imagen(Integer id,String pathImg,Blob imagen,Propiedad propiedad) {
 		this.id = id;
 		this.pathImg = pathImg;
 		this.imagen = imagen;

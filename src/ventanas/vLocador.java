@@ -189,7 +189,7 @@ public class vLocador extends JFrame {
 				}
 			}
 		});
-		btnGuardar.setBounds(234, 400, 100, 23);
+		btnGuardar.setBounds(258, 400, 100, 23);
 		contentPane.add(btnGuardar);
 		
 		btnModificar = new JButton("MODIFICAR");

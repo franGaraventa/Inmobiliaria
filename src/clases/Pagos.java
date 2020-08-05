@@ -21,7 +21,7 @@ public class Pagos implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private Integer id;
 
 	@ManyToOne
 	@JoinColumn(name="cid")

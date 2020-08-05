@@ -21,7 +21,7 @@ public abstract class Persona implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private Integer id;
 	
 	@Column(name="dni")
 	private String dni;
@@ -47,7 +47,7 @@ public abstract class Persona implements java.io.Serializable {
 	public Persona() {
 	}
 
-	public Persona(int id,String dni, String nombre, String apellido, String email, String codArea, String telefono,
+	public Persona(Integer id,String dni, String nombre, String apellido, String email, String codArea, String telefono,
 			String direccion) {
 		this.id = id;
 		this.dni = dni;
@@ -59,11 +59,11 @@ public abstract class Persona implements java.io.Serializable {
 		this.direccion = direccion;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

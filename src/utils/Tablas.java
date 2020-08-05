@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JTable;
@@ -161,10 +162,28 @@ public class Tablas {
 		}
 	}
 	
-	public static void actualizarTContratosVencidos(JTable tabla,List<Contrato> contratos) {
+	private static List<Contrato> getContratos(){
+		Date fecha = new Date();
+		Calendar fcalendar = Calendar.getInstance();
+		fcalendar.setTime(fecha);
+		DAOContrato icontrato = new DAOContratoImpl();
+		List<Contrato> contratos = icontrato.getContratosVigentes(fecha);
+		Calendar calendar = Calendar.getInstance();
+		DAOPagos ipagos = new DAOPagosImpl();
+		List<Contrato> vcontratos = new ArrayList<Contrato>();
+		for(Contrato c: contratos) {
+			if (!ipagos.existePago(c.getId(),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR))) {
+				vcontratos.add(c);
+			}
+		}
+		return vcontratos;
+	}
+	
+	public static void actualizarTContratosVencidos(JTable tabla) {
 		DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
 		modelo.getDataVector().removeAllElements();	//LIMPIO LOS ELEMENTOS EN LA TABLA
 		modelo.fireTableDataChanged();
+		List<Contrato> contratos = getContratos();
 		if (!contratos.isEmpty()){
 			for (Contrato c : contratos) {
 				modelo.addRow(new Object[] {c.getId(),c.getFechaMaxPago(),diasRestantes(c.getFechaMaxPago()),diasExcedido(c.getFechaMaxPago())});

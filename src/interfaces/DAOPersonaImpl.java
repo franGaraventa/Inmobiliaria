@@ -2,16 +2,13 @@ package interfaces;
 
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import clases.Persona;
 import utils.HibernateUtils;
 
-@SuppressWarnings("deprecation")
 public class DAOPersonaImpl implements DAOPersona{
 
 	private static Session session;
@@ -145,8 +142,10 @@ public class DAOPersonaImpl implements DAOPersona{
         Transaction tx = session.getTransaction();
         tx.begin();
 		try {
+			@SuppressWarnings("rawtypes")
 			Query query = session.createQuery("SELECT p FROM Persona as p where p.dni = :dni");
 			query.setParameter("dni", dni);
+			@SuppressWarnings("unchecked")
 			List<Persona> p = query.list();
 			tx.commit();
 			if (p.size() > 0) {

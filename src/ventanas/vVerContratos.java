@@ -202,7 +202,7 @@ public class vVerContratos extends JFrame {
 				}else {
 					DAOContrato icontrato = new DAOContratoImpl();
 					Contrato c = icontrato.getContrato((Integer)modelo.getValueAt(row, 0));
-					vInfoContrato vinformacion = new vInfoContrato(c);
+					vInfoContrato vinformacion = new vInfoContrato(c,table);
 					vinformacion.setVisible(true);
 				}
 			}

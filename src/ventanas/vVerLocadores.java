@@ -8,14 +8,20 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import clases.Locador;
+import clases.Persona;
+import interfaces.DAOContrato;
+import interfaces.DAOContratoImpl;
 import interfaces.DAOLocador;
 import interfaces.DAOLocadorImpl;
+import interfaces.DAOPersona;
+import interfaces.DAOPersonaImpl;
 import utils.Tablas;
 import utils.TableModels;
 
 import javax.swing.JTable;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 
 public class vVerLocadores extends JFrame {
@@ -63,6 +69,33 @@ public class vVerLocadores extends JFrame {
 		contentPane.add(btnInformacion);
 		
 		JButton btnEliminar = new JButton("ELIMINAR");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int row = table.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "No se ha seleccionado ningun locador");
+				}else {
+					DAOContrato icontrato = new DAOContratoImpl();
+					if (!icontrato.contratoVigenteConLocador((Integer)modelo.getValueAt(row, 0), new Date())) {
+						int input = JOptionPane.showConfirmDialog(null, "Desea eliminar el usuario seleccionado?","Elija una opcion",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+						if (input == 0){
+							DAOPersona ipersona = new DAOPersonaImpl();
+							Persona p = ipersona.obtenerPersona((Integer)modelo.getValueAt(row, 0));
+							if (p != null) {
+								ipersona.eliminar(p);
+								table.clearSelection();	
+								Tablas.actualizarTLocadores(table);
+							}
+						}else {
+							table.clearSelection();
+						}
+					}else {
+						JOptionPane.showMessageDialog(null, "No es posible eliminar al locador, ya que se encuentra en un contrato vigente");
+					}
+				}
+			
+			}
+		});
 		btnEliminar.setBounds(413, 252, 97, 23);
 		contentPane.add(btnEliminar);
 	}

@@ -6,21 +6,23 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import clases.Contrato;
+import clases.EstadoInmueble;
 import clases.Pagos;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
+import interfaces.DAOEstadoInmueble;
+import interfaces.DAOEstadoInmuebleImpl;
 import interfaces.DAOPagos;
 import interfaces.DAOPagosImpl;
+import utils.Fechas;
 import utils.GeneradorPDF;
+import utils.GeneradorTexto;
 import utils.Tablas;
 import utils.TableModels;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -31,12 +33,12 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
 
 
 public class vInfoContrato extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private static final int meses = 6;
 	private static final int anioenMeses = 12;
 	private JPanel contentPane;
 	private JTextField txtPlazo;
@@ -50,7 +52,11 @@ public class vInfoContrato extends JFrame {
 	private Contrato contrato;
 	private JTable table;
 	private DefaultTableModel modelo;
-
+	private JButton btnRescindir;
+	private JButton btnCobrar;
+	private JTextPane txtEstadoInmueble;
+	private JTable tabla;
+	
 	private void cargarLabels() {
 		JLabel lblNewLabel = new JLabel("PLAZO");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -91,6 +97,11 @@ public class vInfoContrato extends JFrame {
 		lblGastosInmobiliaria.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblGastosInmobiliaria.setBounds(10, 228, 207, 22);
 		contentPane.add(lblGastosInmobiliaria);
+		
+		JLabel lblHistorialPagos = new JLabel("PAGOS REALIZADOS");
+		lblHistorialPagos.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblHistorialPagos.setBounds(10, 261, 172, 22);
+		contentPane.add(lblHistorialPagos);
 	}
 	
 	private void cargarButtons() {
@@ -101,7 +112,7 @@ public class vInfoContrato extends JFrame {
 				vpropiedad.setVisible(true);
 			}
 		});
-		btnPropiedad.setBounds(10, 261, 114, 23);
+		btnPropiedad.setBounds(315, 297, 130, 23);
 		contentPane.add(btnPropiedad);
 		
 		JButton btnCliente = new JButton("CLIENTE");
@@ -111,18 +122,62 @@ public class vInfoContrato extends JFrame {
 				vcliente.setVisible(true);
 			}
 		});
-		btnCliente.setBounds(134, 261, 114, 23);
+		btnCliente.setBounds(315, 331, 130, 23);
 		contentPane.add(btnCliente);
 		
-		JButton btnCobrar = new JButton("NUEVO PAGO");
+		btnCobrar = new JButton("NUEVO PAGO");
 		btnCobrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				vCobro vcobro = new vCobro(contrato,table);
+				vCobro vcobro = new vCobro(contrato,table,"infoContrato_pago");
 				vcobro.setVisible(true);
 			}
 		});
-		btnCobrar.setBounds(258, 261, 114, 23);
+		btnCobrar.setBounds(315, 365, 130, 23);
 		contentPane.add(btnCobrar);
+		
+		JButton btnGuardarCopia = new JButton("FACTURA");
+		btnGuardarCopia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int row = table.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna factura");
+				}else {
+					DAOPagos ipago = new DAOPagosImpl();
+					GeneradorPDF pdf = new GeneradorPDF(contrato,ipago.getPago((Integer)modelo.getValueAt(row, 0)));
+					pdf.generarPDFFactura();
+				}
+			}
+		});
+		btnGuardarCopia.setBounds(315, 399, 130, 23);
+		contentPane.add(btnGuardarCopia);
+		
+		JButton btnCopiaContrato = new JButton("COPIA CONTRATO");
+		btnCopiaContrato.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		btnCopiaContrato.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				GeneradorPDF pdf = new GeneradorPDF(contrato,obtenerPrimerPago());
+				pdf.generarPDFContrato();
+			}
+		});
+		btnCopiaContrato.setBounds(315, 433, 130, 23);
+		contentPane.add(btnCopiaContrato);
+		
+		btnRescindir = new JButton("RESCINDIR");
+		btnRescindir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String seleccion = (String) JOptionPane.showInputDialog(
+						   null,
+						   "Seleccione opcion",
+						   "Selector de opciones",
+						   JOptionPane.QUESTION_MESSAGE,
+						   null,  // null para icono defecto
+						   new String[] { "Falta de Pago", "Incumplimiento contrato", "Rescision anticipada" },
+						   "Falta de Pago");
+				opcion(seleccion);
+			}
+		});
+		btnRescindir.setBounds(315, 467, 130, 23);
+		contentPane.add(btnRescindir);
 	}
 	
 	private void cargarTextFields(boolean editable) {
@@ -174,11 +229,15 @@ public class vInfoContrato extends JFrame {
 		contentPane.add(txtGastos);
 		txtGastos.setEditable(editable);
 		
-		JLabel lblHistorialPagos = new JLabel("PAGOS REALIZADOS");
-		lblHistorialPagos.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblHistorialPagos.setBounds(392, 11, 172, 22);
-		contentPane.add(lblHistorialPagos);
-		
+	}
+	
+	private void cargarEstadoInmueble(Contrato c) {
+		DAOEstadoInmueble iestado = new DAOEstadoInmuebleImpl();
+		List<EstadoInmueble> estado_inmueble = iestado.getEstadoInmueble(c.getId());
+		if (estado_inmueble.size() != 0) {
+			txtEstadoInmueble.setText(GeneradorTexto.generarTexto(estado_inmueble));
+		}
+		txtEstadoInmueble.setEditable(false);
 	}
 	
 	private void cargarCampos(Contrato c) {
@@ -193,6 +252,7 @@ public class vInfoContrato extends JFrame {
 		txtPago.setText(String.valueOf(c.getFechaMaxPago()));
 		txtGarantia.setText(String.valueOf(c.getGarantia()));
 		txtGastos.setText(String.valueOf(c.getGastosInmobiliaria()));
+		cargarEstadoInmueble(c);
 	}
 	
 	public static Double formatearDecimales(Double numero, Integer numeroDecimales) {
@@ -220,8 +280,6 @@ public class vInfoContrato extends JFrame {
         Calendar fin = new GregorianCalendar();
         inicio.setTime(contrato.getFechaInicio());
         fin.setTime(new Date());
-        System.out.println(inicio.get(Calendar.YEAR)+"/"+inicio.get(Calendar.MONTH)+"/"+inicio.get(Calendar.DAY_OF_MONTH));
-        System.out.println(fin.get(Calendar.YEAR)+"/"+fin.get(Calendar.MONTH)+"/"+fin.get(Calendar.DAY_OF_MONTH));
         int difA = fin.get(Calendar.YEAR) - inicio.get(Calendar.YEAR);
         int difM = difA * 12 + fin.get(Calendar.MONTH) - inicio.get(Calendar.MONTH);
         return difM;
@@ -230,27 +288,44 @@ public class vInfoContrato extends JFrame {
 	private void opcion(String texto) {
 		switch(texto) {
 			case("Falta de Pago"):{
-				System.out.println("Eligio la opcion 1");
 				if (confirmarAccion() == 0) {
-					if (diferenciaMeses() <= anioenMeses) {
-						/*TERMINAR*/
-						/*CONTROLAR LOS DOS PAGOS ANTERIORES SIN COBRAR, mes actual y anterior*/
+					System.out.println(contrato.cumpleFaltaDePago());
+					if (contrato.cumpleFaltaDePago()) {
+						contrato.setFechaFinalizacion(new Date());
+						DAOContrato icontrato = new DAOContratoImpl();
+						icontrato.modificar(contrato);
+						Tablas.actualizarTContratos(tabla);
 					}
 				}
 				break;
 			}
 			case("Incumplimiento contrato"):{
-				System.out.println("Eligio la opcion 2");
 				if (confirmarAccion() == 0) {
-					contrato.rescindir();
+					contrato.setFechaFinalizacion(new Date());
+					DAOContrato icontrato = new DAOContratoImpl();
+					icontrato.modificar(contrato);
+					Tablas.actualizarTContratos(tabla);
 				}
 				break;
 			}
 			case("Rescision anticipada"):{
 				if (confirmarAccion() == 0) {
-					if (diferenciaMeses() == meses) {
-						JOptionPane.showMessageDialog(null,"No debe abonar");
+					double mescompleto = contrato.getPrecio().getPrecio();
+					double mediomes = mescompleto/2;
+					contrato.setFechaFinalizacion(new Date());
+					if (diferenciaMeses() <= anioenMeses) {
+						double total = mescompleto + mediomes;
+						JOptionPane.showMessageDialog(null, "Debera abonar: $"+String.format("%.2f", total));
+						contrato.setFechaFinalizacion(new Date());
+						DAOContrato icontrato = new DAOContratoImpl();
+						icontrato.modificar(contrato);
+					}else {
+						JOptionPane.showMessageDialog(null, "Debera abonar: $"+String.format("%.2f", mescompleto));
+						contrato.setFechaFinalizacion(new Date());
+						DAOContrato icontrato = new DAOContratoImpl();
+						icontrato.modificar(contrato);
 					}
+					Tablas.actualizarTContratos(tabla);
 				}
 				break;
 			}
@@ -259,7 +334,7 @@ public class vInfoContrato extends JFrame {
 	
 	private void cargarVentana() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 693, 359);
+		setBounds(100, 100, 596, 554);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -273,61 +348,46 @@ public class vInfoContrato extends JFrame {
 		table = new JTable();
 		JScrollPane scroll = new JScrollPane();
 		scroll.setViewportView(table);
-		scroll.setBounds(384, 41, 279, 209);
+		scroll.setBounds(10, 294, 279, 209);
 		contentPane.add(scroll);
 		
 		modelo = TableModels.crearModeloPagos(modelo);
 		table.setModel(modelo);
 		Tablas.actualizarTPagos(table,contrato.getId());
 		
-		JButton btnGuardarCopia = new JButton("FACTURA");
-		btnGuardarCopia.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int row = table.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna factura");
-				}else {
-					DAOPagos ipago = new DAOPagosImpl();
-					GeneradorPDF pdf = new GeneradorPDF(contrato,ipago.getPago((Integer)modelo.getValueAt(row, 0)));
-					pdf.generarPDFFactura();
-				}
-			}
-		});
-		btnGuardarCopia.setBounds(522, 261, 141, 23);
-		contentPane.add(btnGuardarCopia);
+		txtEstadoInmueble = new JTextPane();
+		//txtEstadoInmueble.setBounds(359, 41, 211, 225);
+		//contentPane.add(txtEstadoInmueble);
+		JScrollPane scroll2 = new JScrollPane(txtEstadoInmueble);
+		scroll2.setBounds(359, 41, 211, 225);
+		contentPane.add(scroll2);
 		
-		JButton btnCopiaContrato = new JButton("COPIA CONTRATO");
-		btnCopiaContrato.setFont(new Font("Tahoma", Font.PLAIN, 9));
-		btnCopiaContrato.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				GeneradorPDF pdf = new GeneradorPDF(contrato,obtenerPrimerPago());
-				pdf.generarPDFContrato();
-			}
-		});
-		btnCopiaContrato.setBounds(384, 286, 130, 23);
-		contentPane.add(btnCopiaContrato);
+		JLabel lblEstadoInmueble = new JLabel("ESTADO INMUEBLE");
+		lblEstadoInmueble.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblEstadoInmueble.setBounds(359, 11, 211, 22);
+		contentPane.add(lblEstadoInmueble);
 		
-		JButton btnRescindir = new JButton("RESCINDIR");
-		btnRescindir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				String seleccion = (String) JOptionPane.showInputDialog(
-						   null,
-						   "Seleccione opcion",
-						   "Selector de opciones",
-						   JOptionPane.QUESTION_MESSAGE,
-						   null,  // null para icono defecto
-						   new String[] { "Falta de Pago", "Incumplimiento contrato", "Rescision anticipada" },
-						   "Falta de Pago");
-				opcion(seleccion);
-			}
-		});
-		btnRescindir.setBounds(382, 261, 130, 23);
-		contentPane.add(btnRescindir);
 	}
 	
-	public vInfoContrato(Contrato c) {
+	public vInfoContrato(Contrato c,JTable table) {
+		tabla = table;
 		contrato = c;
 		cargarVentana();
 		cargarCampos(c);
+		if ((Fechas.compararFechas(contrato.getFechaFinalizacion())) < 0) {
+			btnRescindir.setEnabled(false);
+			btnCobrar.setEnabled(false);
+		}
+	}
+	
+	public vInfoContrato(Contrato c) {
+		tabla = table;
+		contrato = c;
+		cargarVentana();
+		cargarCampos(c);
+		btnRescindir.setEnabled(false);
+		if ((Fechas.compararFechas(contrato.getFechaFinalizacion())) <= 0) {
+			btnCobrar.setEnabled(false);
+		}
 	}
 }

@@ -45,6 +45,7 @@ public class vCobro extends JFrame {
 	private JTextField txtExpensas;
 	private double total;
 	private double expensas;
+	private String nombre_tabla;
 	
 	private void cambiarCampoTotal(JTextField txtField) {
 		double nuevo_valor = Double.valueOf(lblTotal.getText()) + Double.valueOf(txtField.getText());
@@ -275,7 +276,11 @@ public class vCobro extends JFrame {
 						ipagos.agregar(pago);
 					}
 					if (table != null)
-						Tablas.actualizarTPagos(table, contrato.getId());
+						if (nombre_tabla.equals("main_pagos")) {
+							Tablas.actualizarTContratosVencidos(table);
+						}else {
+							Tablas.actualizarTPagos(table, contrato.getId());
+						}
 					dispose();
 				}else {
 					JOptionPane.showMessageDialog(null, "El pago correspondiente al mes: "+lblMes.getText()+" ya fue ingresado");
@@ -352,9 +357,10 @@ public class vCobro extends JFrame {
 		habilitarRecargo();
 	}
 	
-	public vCobro(Contrato c,JTable tabla) {
+	public vCobro(Contrato c,JTable tabla,String nombre_tabla) {
 		contrato = c;
 		table = tabla;
+		this.nombre_tabla = nombre_tabla;
 		cargarVentana();
 		cargarCampos(c);
 	}

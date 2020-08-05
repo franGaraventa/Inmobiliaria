@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import clases.EstadoInmueble;
+
 public class GeneradorTexto {
 
 	private static final int par = 2;
@@ -44,6 +46,15 @@ public class GeneradorTexto {
 					index++;
 				}
 			}
+		}
+		return texto;
+	}
+	
+	/*GENERADOR TEXTO DESCRIPCION ESTADO INMUEBLE*/
+	public static String generarTexto(List<EstadoInmueble> estado) {
+		String texto = "";
+		for (EstadoInmueble ei : estado) {
+			 texto = texto + ei.getClave()+" - "+ei.getDato()+"\n";
 		}
 		return texto;
 	}

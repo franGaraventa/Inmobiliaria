@@ -6,15 +6,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
 import clases.Contrato;
 import interfaces.DAOContrato;
 import interfaces.DAOContratoImpl;
-import interfaces.DAOPagos;
-import interfaces.DAOPagosImpl;
 import utils.Tablas;
 import utils.TableModels;
-
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -145,23 +141,10 @@ public class vMain extends JFrame {
 	}
 	
 	private void verFechasPagos() {
-		Date fecha = new Date();
-		Calendar fcalendar = Calendar.getInstance();
-		fcalendar.setTime(fecha);
-		DAOContrato icontrato = new DAOContratoImpl();
-		List<Contrato> contratos = icontrato.getContratosVigentes(fecha);
-		Calendar calendar = Calendar.getInstance();
-		DAOPagos ipagos = new DAOPagosImpl();
 		modelo = TableModels.crearModeloPagosVencidos(modelo);
 		table.setModel(modelo);
 		table.getColumnModel().getColumn(1).setPreferredWidth(150);
-		List<Contrato> vcontratos = new ArrayList<Contrato>();
-		for(Contrato c: contratos) {
-			if (!ipagos.existePago(c.getId(),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR))) {
-				vcontratos.add(c);
-			}
-		}
-		Tablas.actualizarTContratosVencidos(table,vcontratos);
+		Tablas.actualizarTContratosVencidos(table);
 	}
 	
 	private void verContratosAVencer() throws ParseException {
@@ -197,7 +180,7 @@ public class vMain extends JFrame {
 				if (row != -1) {
 					DAOContrato icontrato = new DAOContratoImpl();
 					Contrato c = icontrato.getContrato((Integer) modelo.getValueAt(row, 0));
-					vCobro vcobro = new vCobro(c);
+					vCobro vcobro = new vCobro(c,table,"main_pagos");
 					vcobro.setVisible(true);
 					table.clearSelection();
 				}else {

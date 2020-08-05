@@ -1,9 +1,9 @@
 package clases;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +14,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.swing.JOptionPane;
-
 import Filtros.FContrato;
-
+import interfaces.DAOContrato;
+import interfaces.DAOContratoImpl;
+import interfaces.DAOPagos;
+import interfaces.DAOPagosImpl;
 
 @Entity
 @Table(name="contrato")
@@ -28,10 +29,10 @@ public class Contrato implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private Integer id;
 	
 	@Column(name="plazo")
-	private int plazo;
+	private Integer plazo;
 	
 	@Column(name="fechaFirma")
 	private Date fechaFirma;
@@ -55,7 +56,7 @@ public class Contrato implements java.io.Serializable {
 	private TipoPrecio precio;
 	
 	@Column(name="fechaMaxPago")
-	private int fechaMaxPago;
+	private Integer fechaMaxPago;
 	
 	@OneToOne(orphanRemoval = false)
 	@JoinColumn(name = "locacion", referencedColumnName = "id")
@@ -71,10 +72,14 @@ public class Contrato implements java.io.Serializable {
 	@JoinColumn(name="cid")
 	private List<Pagos> pagos;
 	
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="cid")
+	private List<EstadoInmueble> estado_inmueble;
+	
 	public Contrato() {
 	}
 
-	public Contrato(int plazo, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, Persona locatario,
+	public Contrato(Integer plazo, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, Persona locatario,
 			TipoPrecio precio, Propiedad locacion, double garantia, double gastosInmobiliaria) {
 		this.plazo = plazo;
 		this.fechaFirma = fechaFirma;
@@ -86,9 +91,10 @@ public class Contrato implements java.io.Serializable {
 		this.garantia = garantia;
 		this.gastosInmobiliaria = gastosInmobiliaria;
 		this.pagos = new ArrayList<Pagos>();
+		this.estado_inmueble = new ArrayList<EstadoInmueble>();
 	}
 	
-	public Contrato(int plazo,int fechaMaxPago, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, double garantia, double gastosInmobiliaria) {
+	public Contrato(Integer plazo,Integer fechaMaxPago, Date fechaFirma, Date fechaInicio, Date fechaFinalizacion, double garantia, double gastosInmobiliaria) {
 		this.plazo = plazo;
 		this.fechaFirma = fechaFirma;
 		this.fechaInicio = fechaInicio;
@@ -97,21 +103,22 @@ public class Contrato implements java.io.Serializable {
 		this.gastosInmobiliaria = gastosInmobiliaria;
 		this.fechaMaxPago = fechaMaxPago;
 		this.pagos = new ArrayList<Pagos>();
+		this.estado_inmueble = new ArrayList<EstadoInmueble>();
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getPlazo() {
+	public Integer getPlazo() {
 		return this.plazo;
 	}
 
-	public void setPlazo(int plazo) {
+	public void setPlazo(Integer plazo) {
 		this.plazo = plazo;
 	}
 
@@ -163,11 +170,11 @@ public class Contrato implements java.io.Serializable {
 		this.precio = precio;
 	}
 
-	public int getFechaMaxPago() {
+	public Integer getFechaMaxPago() {
 		return this.fechaMaxPago;
 	}
 
-	public void setFechaMaxPago(int fechaMaxPago) {
+	public void setFechaMaxPago(Integer fechaMaxPago) {
 		this.fechaMaxPago = fechaMaxPago;
 	}
 
@@ -207,8 +214,41 @@ public class Contrato implements java.io.Serializable {
 		return (filtro.cumple(this));
 	}
 
-	
-	public void rescindir() {
-		this.setFechaFinalizacion(new Date());
+	public boolean cumpleFaltaDePago() {
+		DAOContrato icontrato = new DAOContratoImpl();
+		List<Pagos> list_pagos = icontrato.getPagos(this.getId());
+		if (list_pagos.size() == 0) {
+			return true;
+		}else {
+			Calendar fecha_actual = Calendar.getInstance();
+			int mes = fecha_actual.get(Calendar.MONTH);
+			int anio = fecha_actual.get(Calendar.YEAR);
+			DAOPagos ipagos = new DAOPagosImpl();
+			if (!ipagos.existePago(anio, mes, this.getId())) {
+				/*CONTROLO QUE EL MES ANTERIOR AL MES ACTUAL TAMPOCO ESTE PAGO*/
+				if ((mes-1) < 0) {
+					mes = 12;
+					anio-=1;
+				}
+				if (!ipagos.existePago(anio, mes, this.getId())) {
+					return true;
+				}
+			}else {
+				return false;
+			}
+		}
+		return false;
 	}
+
+	
+	public List<EstadoInmueble> getEstado_inmueble() {
+		return estado_inmueble;
+	}
+
+	
+	public void setEstado_inmueble(List<EstadoInmueble> estado_inmueble) {
+		this.estado_inmueble = estado_inmueble;
+	}
+
+
 }
