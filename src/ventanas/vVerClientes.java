@@ -36,6 +36,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
@@ -292,15 +293,19 @@ public class vVerClientes extends JFrame {
 		JButton btnNewButton_1 = new JButton("BUSCAR");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DAOCliente icliente = new DAOClienteImpl();
-				List<Cliente> clientes = icliente.getClientes();
-				List<Cliente> fpersonas = new ArrayList<Cliente>();
-				for(Cliente p: clientes) {
-					if (p.cumple(filtro)) {
-						fpersonas.add(p);
+				if (filtro != null) {
+					DAOCliente icliente = new DAOClienteImpl();
+					List<Cliente> clientes = icliente.getClientes();
+					List<Cliente> fpersonas = new ArrayList<Cliente>();
+					for(Cliente p: clientes) {
+						if (p.cumple(filtro)) {
+							fpersonas.add(p);
+						}
 					}
+					Tablas.actualizarTClientes(table, fpersonas);
+				}else {
+					JOptionPane.showMessageDialog(null,"No ha ingresado busqueda");
 				}
-				Tablas.actualizarTClientes(table, fpersonas);
 			}
 		});
 		btnNewButton_1.setBounds(514, 166, 89, 23);
@@ -324,11 +329,13 @@ public class vVerClientes extends JFrame {
 	}
 	
 	public void cargarVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vVerClientes.class.getResource("/Imagenes/icon_clienteInfo.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 646, 499);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		super.setTitle("INFORMACION CLIENTES");
 		setContentPane(contentPane);
 
 		/*INICIALIZACION*/

@@ -76,6 +76,8 @@ public class Contrato implements java.io.Serializable {
 	@JoinColumn(name="cid")
 	private List<EstadoInmueble> estado_inmueble;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Contrato() {
 	}
 
@@ -105,7 +107,10 @@ public class Contrato implements java.io.Serializable {
 		this.pagos = new ArrayList<Pagos>();
 		this.estado_inmueble = new ArrayList<EstadoInmueble>();
 	}
-
+	/*---------------------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -210,6 +215,16 @@ public class Contrato implements java.io.Serializable {
 		this.pagos = pagos;
 	}
 	
+	public void setEstado_inmueble(List<EstadoInmueble> estado_inmueble) {
+		this.estado_inmueble = estado_inmueble;
+	}
+	
+	public List<EstadoInmueble> getEstado_inmueble() {
+		return estado_inmueble;
+	}
+	
+	/*----------------------------------------------------------------------------------------------*/
+	
 	public boolean cumple(FContrato filtro) {
 		return (filtro.cumple(this));
 	}
@@ -239,16 +254,5 @@ public class Contrato implements java.io.Serializable {
 		}
 		return false;
 	}
-
 	
-	public List<EstadoInmueble> getEstado_inmueble() {
-		return estado_inmueble;
-	}
-
-	
-	public void setEstado_inmueble(List<EstadoInmueble> estado_inmueble) {
-		this.estado_inmueble = estado_inmueble;
-	}
-
-
 }

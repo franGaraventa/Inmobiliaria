@@ -29,6 +29,8 @@ public class Imagen implements java.io.Serializable {
 	@JoinColumn(name="propiedadId")
 	private Propiedad propiedad;
 
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Imagen() {
 	}
 
@@ -38,7 +40,10 @@ public class Imagen implements java.io.Serializable {
 		this.imagen = imagen;
 		this.propiedad = propiedad;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -70,5 +75,6 @@ public class Imagen implements java.io.Serializable {
 	public void setPropiedadId(Propiedad propiedad) {
 		this.propiedad = propiedad;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
 }

@@ -2,6 +2,7 @@ package ventanas;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JFrame;
@@ -344,7 +345,9 @@ public class vCobro extends JFrame {
 	}
 	
 	private void cargarVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vMain.class.getResource("/Imagenes/icon_pago.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		super.setTitle("RECIBO DE ALQUILER");
 		setBounds(100, 100, 1052, 397);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -357,6 +360,8 @@ public class vCobro extends JFrame {
 		habilitarRecargo();
 	}
 	
+	/*CONSTRUCTORES*/
+	/*VENTANA COBRO DESDE MAIN O INFO CONTRATO*/
 	public vCobro(Contrato c,JTable tabla,String nombre_tabla) {
 		contrato = c;
 		table = tabla;

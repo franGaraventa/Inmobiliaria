@@ -26,6 +26,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.Toolkit;
 
 
 public class vMain extends JFrame {
@@ -59,6 +61,7 @@ public class vMain extends JFrame {
 		menuBar.add(mnClientes);
 		
 		JMenuItem mnNuevoCliente = new JMenuItem("Nuevo cliente");
+		mnNuevoCliente.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icono_add.png")));
 		mnNuevoCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				vCliente vcliente = new vCliente();
@@ -68,6 +71,7 @@ public class vMain extends JFrame {
 		mnClientes.add(mnNuevoCliente);
 		
 		JMenuItem mnVerClientes = new JMenuItem("Ver clientes");
+		mnVerClientes.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icon_search.png")));
 		mnVerClientes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				vVerClientes vclientes = new vVerClientes();
@@ -80,6 +84,7 @@ public class vMain extends JFrame {
 		menuBar.add(mnPropiedades);
 		
 		JMenuItem mnNuevaPropiedad = new JMenuItem("Nueva propiedad");
+		mnNuevaPropiedad.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icono_add.png")));
 		mnNuevaPropiedad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				vPropiedad vpropiedad = new vPropiedad();
@@ -89,6 +94,7 @@ public class vMain extends JFrame {
 		mnPropiedades.add(mnNuevaPropiedad);
 		
 		JMenuItem mnVerPropiedades = new JMenuItem("Ver propiedades");
+		mnVerPropiedades.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icon_search.png")));
 		mnVerPropiedades.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				vVerPropiedades vpropiedades = new vVerPropiedades();
@@ -101,6 +107,7 @@ public class vMain extends JFrame {
 		menuBar.add(mnContratos);
 		
 		JMenuItem mnNuevoContrato = new JMenuItem("Nuevo Contrato");
+		mnNuevoContrato.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icono_add.png")));
 		mnNuevoContrato.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				vContrato vcontrato = new vContrato();
@@ -110,6 +117,7 @@ public class vMain extends JFrame {
 		mnContratos.add(mnNuevoContrato);
 		
 		JMenuItem mnVerContratos = new JMenuItem("Ver Contratos");
+		mnVerContratos.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icon_search.png")));
 		mnVerContratos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				vVerContratos vvercontratos = new vVerContratos();
@@ -122,6 +130,7 @@ public class vMain extends JFrame {
 		menuBar.add(mnLocadores);
 		
 		JMenuItem mnLocador = new JMenuItem("Nuevo Locador");
+		mnLocador.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icono_add.png")));
 		mnLocador.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				vLocador vlocador = new vLocador(false);
@@ -131,6 +140,7 @@ public class vMain extends JFrame {
 		mnLocadores.add(mnLocador);
 		
 		JMenuItem mntmNewMenuItem = new JMenuItem("Ver Locadores");
+		mntmNewMenuItem.setIcon(new ImageIcon(vMain.class.getResource("/Imagenes/icon_search.png")));
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				vVerLocadores vverlocadores = new vVerLocadores();
@@ -211,12 +221,14 @@ public class vMain extends JFrame {
 	}
 	
 	public vMain() throws ParseException {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vMain.class.getResource("/Imagenes/icon_menuprincipal.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 661, 558);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		super.setTitle("MENU PRINCIPAL");
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("PAGOS POR VENCER");

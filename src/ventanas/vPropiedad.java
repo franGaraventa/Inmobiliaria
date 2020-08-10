@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -452,21 +453,6 @@ public class vPropiedad extends JFrame {
 		
 	}
 	
-	public void cargarVentana() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 850, 513);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		setLocationRelativeTo(null);
-		
-		pnlUbicacion = new JPanel();
-		pnlUbicacion.setBounds(0, 112, 411, 133);
-		contentPane.add(pnlUbicacion);
-		pnlUbicacion.setLayout(null);
-	}
-	
 	private void cargarDatos() {
 		txtValor.setText(String.valueOf(p.getValor()));
 		txtSupLote.setText(String.valueOf(p.getSupLote()));
@@ -509,9 +495,28 @@ public class vPropiedad extends JFrame {
 		}
 	}
 	
+	public void cargarVentana() {
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 850, 513);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		setLocationRelativeTo(null);
+		
+		pnlUbicacion = new JPanel();
+		pnlUbicacion.setBounds(0, 112, 411, 133);
+		contentPane.add(pnlUbicacion);
+		pnlUbicacion.setLayout(null);
+	}
+	
+	/*CONSTRUCTORES VENTANAS*/
+	/*NUEVA PROPIEDAD*/
 	public vPropiedad() {
 		this.editable = false;
 		cargarVentana();
+		super.setTitle("NUEVA PROPIEDAD");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vMain.class.getResource("/Imagenes/icon_propiedad.png")));
 		cargarLabels();
 		cargarCheckBoxs();
 		cargarButtons();
@@ -526,6 +531,8 @@ public class vPropiedad extends JFrame {
 		this.editable = true;
 		this.table = tabla;
 		cargarVentana();
+		super.setTitle("PROPIEDAD: "+p.getId());
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vPropiedad.class.getResource("/Imagenes/icon_propiedadCliente.png")));
 		cargarLabels();
 		cargarCheckBoxs();
 		cargarButtons();
@@ -542,6 +549,8 @@ public class vPropiedad extends JFrame {
 		this.editable = true;
 		this.table = null;
 		cargarVentana();
+		super.setTitle("PROPIEDAD: "+p.getId());
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vPropiedad.class.getResource("/Imagenes/icon_propiedadCliente.png")));
 		cargarLabels();
 		cargarCheckBoxs();
 		cargarButtons();
@@ -556,6 +565,8 @@ public class vPropiedad extends JFrame {
 	public vPropiedad(Propiedad p,boolean visible) {
 		this.p = p;
 		cargarVentana();
+		super.setTitle("PROPIEDAD: "+p.getId());
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vPropiedad.class.getResource("/Imagenes/icon_propiedadCliente.png")));
 		cargarLabels();
 		cargarCheckBoxs();
 		cargarButtons();

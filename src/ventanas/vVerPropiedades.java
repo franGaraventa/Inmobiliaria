@@ -36,6 +36,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JCheckBox;
@@ -225,15 +227,19 @@ public class vVerPropiedades extends JFrame {
 		JButton btnBuscar = new JButton("BUSCAR");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DAOPropiedad ipropiedades = new DAOPropiedadImpl();
-				List<Propiedad> propiedades = ipropiedades.getPropiedades();
-				List<Propiedad> fpropiedades = new ArrayList<Propiedad>();
-				for(Propiedad p: propiedades) {
-					if (p.cumple(filtro)) {
-						fpropiedades.add(p);
+				if (filtro != null) {
+					DAOPropiedad ipropiedades = new DAOPropiedadImpl();
+					List<Propiedad> propiedades = ipropiedades.getPropiedades();
+					List<Propiedad> fpropiedades = new ArrayList<Propiedad>();
+					for(Propiedad p: propiedades) {
+						if (p.cumple(filtro)) {
+							fpropiedades.add(p);
+						}
 					}
+					Tablas.actualizarTPropiedad(table, fpropiedades);
+				}else {
+					JOptionPane.showMessageDialog(null,"No ha ingresado busqueda");
 				}
-				Tablas.actualizarTPropiedad(table, fpropiedades);
 			}
 		});
 		btnBuscar.setBounds(462, 143, 89, 23);
@@ -336,6 +342,7 @@ public class vVerPropiedades extends JFrame {
 	}
 	
 	public void cargarVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vMain.class.getResource("/Imagenes/icon_informacionPropiedad.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 600, 512);
 		contentPane = new JPanel();
@@ -343,6 +350,7 @@ public class vVerPropiedades extends JFrame {
 		setContentPane(contentPane);
 		setLocationRelativeTo(null);
 		contentPane.setLayout(null);
+		super.setTitle("INFORMACION PROPIEDADES");
 		cParametros = 0;
 		table = new JTable();
 		JScrollPane scroll = new JScrollPane();

@@ -44,6 +44,8 @@ public abstract class Persona implements java.io.Serializable {
 	@Column(name="direccion")
 	private String direccion;
 
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Persona() {
 	}
 
@@ -59,6 +61,8 @@ public abstract class Persona implements java.io.Serializable {
 		this.direccion = direccion;
 	}
 
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -124,6 +128,7 @@ public abstract class Persona implements java.io.Serializable {
 	}
 
 	public abstract CuentaBancaria getCuentaBancaria();
+	/*-----------------------------------------------------------------------------------------------*/
 	
 	public boolean cumple(FPersona filtro) {
 		return (filtro.cumple(this));

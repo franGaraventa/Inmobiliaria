@@ -32,6 +32,8 @@ public class FechaPautada implements java.io.Serializable {
 	@JoinColumn(name="ppid")
 	private PrecioPorcentual ppid;
 
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public FechaPautada() {
 	}
 
@@ -40,7 +42,10 @@ public class FechaPautada implements java.io.Serializable {
 		this.porcentaje = porcentaje;
 		this.ppid = ppid;
 	}
+	/*-----------------------------------------------------------------------------------------------*/
 
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -72,5 +77,5 @@ public class FechaPautada implements java.io.Serializable {
 	public void setPpid(PrecioPorcentual ppid) {
 		this.ppid = ppid;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
 }

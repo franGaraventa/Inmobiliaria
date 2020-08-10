@@ -369,7 +369,9 @@ public class GeneradorPDF {
 				documento.add( Chunk.NEWLINE );
 				documento.close();
 				texto_salida.close();
+				JOptionPane.showMessageDialog(null, "Contrato generado correctamente");
 			}catch(Exception e) {
+				JOptionPane.showMessageDialog(null, "Hubo un error al generar el contrato");
 			}
 		}
 	}

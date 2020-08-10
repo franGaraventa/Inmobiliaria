@@ -22,19 +22,18 @@ import utils.TableModels;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
-
 
 public class vInfoContrato extends JFrame {
 
@@ -333,11 +332,13 @@ public class vInfoContrato extends JFrame {
 	}
 	
 	private void cargarVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vMain.class.getResource("/Imagenes/icon_infoContrato.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 596, 554);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		super.setTitle("CONTRATO: "+contrato.getId());
 		contentPane.setLayout(null);
 		
 		setLocationRelativeTo(null);
@@ -356,8 +357,6 @@ public class vInfoContrato extends JFrame {
 		Tablas.actualizarTPagos(table,contrato.getId());
 		
 		txtEstadoInmueble = new JTextPane();
-		//txtEstadoInmueble.setBounds(359, 41, 211, 225);
-		//contentPane.add(txtEstadoInmueble);
 		JScrollPane scroll2 = new JScrollPane(txtEstadoInmueble);
 		scroll2.setBounds(359, 41, 211, 225);
 		contentPane.add(scroll2);
@@ -369,6 +368,7 @@ public class vInfoContrato extends JFrame {
 		
 	}
 	
+	/*VENTANA INFO CONTRATO DESDE VENTANA vVerContratos*/
 	public vInfoContrato(Contrato c,JTable table) {
 		tabla = table;
 		contrato = c;
@@ -380,6 +380,7 @@ public class vInfoContrato extends JFrame {
 		}
 	}
 	
+	/*VENTANA INFO CONTRATO DESDE VENTANA vMain*/
 	public vInfoContrato(Contrato c) {
 		tabla = table;
 		contrato = c;

@@ -28,6 +28,8 @@ public class EstadoInmueble {
 	@Column(name="dato")
 	private String dato;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public EstadoInmueble() {
 	}
 
@@ -36,7 +38,10 @@ public class EstadoInmueble {
 		this.clave = clave;
 		this.dato = dato;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return id;
 	}
@@ -68,6 +73,6 @@ public class EstadoInmueble {
 	public void setDato(String dato) {
 		this.dato = dato;
 	}
-	
+	/*----------------------------------------------------------------------------------------------*/
 	
 }

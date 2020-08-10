@@ -9,6 +9,8 @@ public class ImagenPropiedad {
 	private String path;
 	private ImageIcon imagen;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public ImagenPropiedad(int id,String path,ImageIcon imagen) {
 		this.id = id;
 		this.imagen = imagen;
@@ -20,7 +22,10 @@ public class ImagenPropiedad {
 		this.imagen = imagen;
 		this.path = path;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public String getPath() {
 		return path;
 	}
@@ -48,5 +53,5 @@ public class ImagenPropiedad {
 	public boolean isDefault() {
 		return (this.id == IDDEFAULT);
 	}
-	
+	/*-----------------------------------------------------------------------------------------------*/
 }

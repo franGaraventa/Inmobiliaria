@@ -110,7 +110,7 @@ public class Tablas {
 		modelo.fireTableDataChanged();
 		if (!contratos.isEmpty()){
 			for (Contrato c : contratos) {
-				modelo.addRow(new Object[] {c.getId(),c.getPlazo(),c.getFechaFirma(),c.getFechaInicio(),c.getFechaFinalizacion(),c.getLocador(),c.getFechaMaxPago()});
+				modelo.addRow(new Object[] {c.getId(),c.getPlazo(),c.getFechaFirma(),c.getFechaInicio(),c.getFechaFinalizacion(),c.getLocador().getApellido(),c.getFechaMaxPago()});
 			}
 		}
 		tabla.setModel(modelo);

@@ -36,6 +36,8 @@ public class Pagos implements java.io.Serializable {
 	@Column(name="recargo")
 	private double recargo;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Pagos() {
 	}
 
@@ -46,6 +48,8 @@ public class Pagos implements java.io.Serializable {
 		this.recargo = recargo;
 	}
 
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -85,7 +89,5 @@ public class Pagos implements java.io.Serializable {
 	public void setRecargo(double recargo) {
 		this.recargo = recargo;
 	}
-
-	
-	
+	/*-----------------------------------------------------------------------------------------------*/
 }

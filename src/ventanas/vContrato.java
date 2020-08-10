@@ -35,6 +35,7 @@ import interfaces.DAOTipoPrecioImpl;
 import utils.TableModels;
 import utils.ValidadorCampos;
 import java.awt.Panel;
+import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -500,6 +501,10 @@ public class vContrato extends JFrame {
 				if (camposEstadoVacios()) {
 					String estado = txtEstado.getText()+"-"+txtDescripcion.getText();
 					listModel.addElement(estado);
+					txtEstado.setBorder(ValidadorCampos.getGRBorder());
+					txtDescripcion.setBorder(ValidadorCampos.getGRBorder());
+					txtEstado.setText("");
+					txtDescripcion.setText("");
 				}
 			}
 		});
@@ -523,12 +528,14 @@ public class vContrato extends JFrame {
 	}
 	
 	private void cargarVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vContrato.class.getResource("/Imagenes/icon_contrato.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 843, 628);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		super.setTitle("NUEVO CONTRATO");
 		setLocationRelativeTo(null);
 		cargarComponentes();
 		cargarLabels();

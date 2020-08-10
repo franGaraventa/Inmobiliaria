@@ -42,6 +42,7 @@ import Filtros.FContrato;
 
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Toolkit;
 
 public class vVerContratos extends JFrame {
 
@@ -275,15 +276,19 @@ public class vVerContratos extends JFrame {
 		JButton btnBuscar = new JButton("BUSCAR");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DAOContrato icontrato = new DAOContratoImpl();
-				List<Contrato> contratos = icontrato.getContratos();
-				List<Contrato> fcontratos = new ArrayList<Contrato>();
-				for(Contrato c: contratos) {
-					if (c.cumple(filtro)) {
-						fcontratos.add(c);
+				if (filtro != null) {
+					DAOContrato icontrato = new DAOContratoImpl();
+					List<Contrato> contratos = icontrato.getContratos();
+					List<Contrato> fcontratos = new ArrayList<Contrato>();
+					for(Contrato c: contratos) {
+						if (c.cumple(filtro)) {
+							fcontratos.add(c);
+						}
 					}
+					Tablas.actualizarTContratos(table, fcontratos);
+				}else {
+					JOptionPane.showMessageDialog(null,"No ha ingresado busqueda");
 				}
-				Tablas.actualizarTContratos(table, fcontratos);
 			}
 		});
 		btnBuscar.setBounds(608, 132, 118, 23);
@@ -312,12 +317,14 @@ public class vVerContratos extends JFrame {
 	}
 	
 	private void cargarVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vVerContratos.class.getResource("/Imagenes/icon_contratoInfo.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 772, 551);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLocationRelativeTo(null);
 		setContentPane(contentPane);
+		super.setTitle("INFORMACION CONTRATOS");
 		contentPane.setLayout(null);
 		
 		table = new JTable();

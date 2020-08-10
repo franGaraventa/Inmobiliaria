@@ -13,6 +13,8 @@ public class PrecioCompleto extends TipoPrecio implements java.io.Serializable {
 	@Column(name="cantMesesContrato")
 	private Integer cantMesesContrato;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public PrecioCompleto() {
 	}
 
@@ -21,6 +23,8 @@ public class PrecioCompleto extends TipoPrecio implements java.io.Serializable {
 		this.cantMesesContrato = cantMesesContrato;
 	}
 
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	@Override
 	public double getPrecio() {
 		return (this.getPrecioBase()/this.cantMesesContrato)+this.getExpensas();
@@ -33,5 +37,5 @@ public class PrecioCompleto extends TipoPrecio implements java.io.Serializable {
 	public void setCantMesesContrato(Integer cantMesesContrato) {
 		this.cantMesesContrato = cantMesesContrato;
 	}
-	
+	/*-----------------------------------------------------------------------------------------------*/
 }

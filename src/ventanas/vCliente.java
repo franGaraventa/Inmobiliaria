@@ -13,6 +13,8 @@ import utils.ValidadorCampos;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -216,6 +218,8 @@ public class vCliente extends JFrame {
 	/*CONTRUCTOR PARA NUEVO CLIENTE*/
 	public vCliente() {
 		definirVentana();
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vCliente.class.getResource("/Imagenes/icon_nuevoCliente.png")));
+		super.setTitle("NUEVO CLIENTE");
 		/*ACTIVO LOS BOTONES NECESARIOS*/
 		btnGuardar.setVisible(true);
 		btnModificar.setVisible(false);
@@ -224,6 +228,7 @@ public class vCliente extends JFrame {
 	/*CONTRUCTOR PARA MODIFICAR CLIENTE*/
 	public vCliente(Persona p,JTable tabla) {
 		persona = p;
+		super.setTitle("INFORMACION: "+persona.getNombre()+","+persona.getApellido());
 		definirVentana();
 		cargarText(p);
 		txtDNI.setEnabled(false);
@@ -233,18 +238,10 @@ public class vCliente extends JFrame {
 		btnModificar.setVisible(true);
 	}
 	
-	public vCliente(Persona p) {
-		definirVentana();
-		cargarText(p);
-		txtDNI.setEnabled(false);
-		table = null;
-		/*ACTIVO LOS BOTONES NECESARIOS*/
-		btnGuardar.setVisible(false);
-		btnModificar.setVisible(true);
-	}
-	
 	public vCliente(Persona p,boolean visible) {
 		definirVentana();
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vCliente.class.getResource("/Imagenes/icon_locatarioContrato.png")));
+		super.setTitle("CLIENTE: "+p.getNombre()+","+p.getApellido());
 		cargarText(p);
 		deshabilitarTexts(visible);
 		table = null;

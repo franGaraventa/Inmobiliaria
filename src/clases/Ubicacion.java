@@ -34,6 +34,8 @@ public class Ubicacion implements java.io.Serializable {
 	@PrimaryKeyJoinColumn
 	private Propiedad propiedad;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Ubicacion() {
 	}
 
@@ -44,7 +46,10 @@ public class Ubicacion implements java.io.Serializable {
 		this.ciudad = ciudad;
 		this.direccion = direccion;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -92,4 +97,5 @@ public class Ubicacion implements java.io.Serializable {
 	public void setPropiedad(Propiedad p) {
 		this.propiedad = p;
 	}
+	/*-----------------------------------------------------------------------------------------------*/
 }

@@ -28,6 +28,8 @@ public class Locador extends Persona implements java.io.Serializable {
 	@Column(name="cbu")
 	private String cbu;
 
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Locador() {
 	}
 
@@ -42,7 +44,10 @@ public class Locador extends Persona implements java.io.Serializable {
 		this.validadorCuit = validadorCuit;
 		this.cbu = cbu;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public String getNrocuenta() {
 		return this.nrocuenta;
 	}
@@ -95,5 +100,5 @@ public class Locador extends Persona implements java.io.Serializable {
 	public CuentaBancaria getCuentaBancaria() {
 		return new CuentaBancaria(nrocuenta,banco,tipoCuit,docempCuit,validadorCuit,cbu);
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
 }

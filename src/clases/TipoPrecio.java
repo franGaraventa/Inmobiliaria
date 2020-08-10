@@ -27,6 +27,8 @@ public abstract class TipoPrecio implements java.io.Serializable {
 	@Column(name="expensas")
 	private double expensas;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public TipoPrecio() {
 	}
 
@@ -35,10 +37,10 @@ public abstract class TipoPrecio implements java.io.Serializable {
 		this.precio_base = precio_base;
 		this.expensas = expensas;
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
 	
 	/*GETTERS y SETTERS*/
-	/*-----------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -62,8 +64,7 @@ public abstract class TipoPrecio implements java.io.Serializable {
 	public void setExpensas(double expensas) {
 		this.expensas = expensas;
 	}
-
-	/*-----------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------*/
 	
 	public abstract double getPrecio();
 }

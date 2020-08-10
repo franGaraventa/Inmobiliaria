@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 public class vVerLocadores extends JFrame {
@@ -32,12 +33,14 @@ public class vVerLocadores extends JFrame {
 	private DefaultTableModel modelo;
 	
 	private void cargarVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vVerContratos.class.getResource("/Imagenes/icon_locadorInfo.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 536, 322);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		super.setTitle("INFORMACION LOCADORES");
 		setLocationRelativeTo(null);
 		
 		table = new JTable();

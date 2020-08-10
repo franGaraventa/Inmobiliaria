@@ -51,6 +51,8 @@ public class Propiedad implements java.io.Serializable {
 	@JoinColumn(name="propiedadId")
 	private List<Imagen> imagenes;
 	
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Propiedad() {
 	}
 
@@ -63,7 +65,10 @@ public class Propiedad implements java.io.Serializable {
 		this.amoblado = amoblado;
 		this.imagenes = new ArrayList<Imagen>();
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public Integer getId() {
 		return this.id;
 	}
@@ -127,6 +132,8 @@ public class Propiedad implements java.io.Serializable {
 	public void setImagenes(List<Imagen> imagenes) {
 		this.imagenes = imagenes;
 	}
+	
+	/*-----------------------------------------------------------------------------------------------*/
 	
 	public boolean cumple(FPropiedad filtro) {
 		return (filtro.cumple(this));

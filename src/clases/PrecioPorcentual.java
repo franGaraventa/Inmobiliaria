@@ -19,6 +19,8 @@ public class PrecioPorcentual extends TipoPrecio implements java.io.Serializable
 	@OneToMany(mappedBy="ppid",cascade= CascadeType.ALL,fetch=FetchType.EAGER)
 	private List<FechaPautada> fechas;
 
+	/*CONSTRUCTORES*/
+	/*-----------------------------------------------------------------------------------------------*/
 	public PrecioPorcentual() {
 	}
 
@@ -26,29 +28,22 @@ public class PrecioPorcentual extends TipoPrecio implements java.io.Serializable
 		super(id,precio_base,expensas);
 		this.fechas = new ArrayList<FechaPautada>();
 	}
-
+	/*-----------------------------------------------------------------------------------------------*/
+	
+	/*GETTERS Y SETTERS*/
+	/*-----------------------------------------------------------------------------------------------*/
 	@Override
 	public double getPrecio() {
 		double porcentaje = getPorcentaje();
 		return (this.getPrecioBase()+this.getExpensas()+(this.getPrecioBase()*porcentaje));
 	}
 
-	private boolean existeFecha(FechaPautada fp) {
-		if (fechas.size() == 0) {
-			return false;
-		}else {
-			for (FechaPautada fp2: fechas) {
-				if (fp2.getFecha().equals(fp.getFecha()))
-					return true;
-			}
-			return false;
-		}
+	public List<FechaPautada> getFechaspautadas() {
+		return fechas;
 	}
-	
-	public void addFecha(FechaPautada fp) {
-		if (!existeFecha(fp)) {
-			fechas.add(fp);
-		}
+
+	public void setFechaspautadas(List<FechaPautada> fechas) {
+		this.fechas = fechas;
 	}
 	
 	private double getPorcentaje() {
@@ -73,13 +68,24 @@ public class PrecioPorcentual extends TipoPrecio implements java.io.Serializable
 		}
 		return 0;
 	}
+	/*-----------------------------------------------------------------------------------------------*/
 	
-	public List<FechaPautada> getFechaspautadas() {
-		return fechas;
+	private boolean existeFecha(FechaPautada fp) {
+		if (fechas.size() == 0) {
+			return false;
+		}else {
+			for (FechaPautada fp2: fechas) {
+				if (fp2.getFecha().equals(fp.getFecha()))
+					return true;
+			}
+			return false;
+		}
 	}
-
-	public void setFechaspautadas(List<FechaPautada> fechas) {
-		this.fechas = fechas;
+	
+	public void addFecha(FechaPautada fp) {
+		if (!existeFecha(fp)) {
+			fechas.add(fp);
+		}
 	}
 	
 }

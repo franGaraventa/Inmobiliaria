@@ -1,6 +1,8 @@
 package ventanas;
 
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -280,6 +282,7 @@ public class vLocador extends JFrame {
 	}
 	
 	private void definirVentana() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(vLocador.class.getResource("/Imagenes/icon_locador.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 383, 473);
 		setLocationRelativeTo(null);
@@ -294,6 +297,7 @@ public class vLocador extends JFrame {
 	
 	public vLocador(boolean editar) {
 		definirVentana();
+		super.setTitle("NUEVO LOCADOR");
 		/*HABILITAR BOTONES*/
 		editable = editar;
 		btnModificar.setVisible(false);
@@ -304,6 +308,7 @@ public class vLocador extends JFrame {
 		cargarCampos(l);
 		locador = l;
 		table = tabla;
+		super.setTitle("LOCADOR: "+locador.getNombre()+","+locador.getApellido());
 		habilitarCampos(false);
 		/*HABILITAR BOTONES*/
 		editable = editar;

@@ -12,6 +12,7 @@ public class ValidadorCampos {
 	private static String[] comparadores = {"=",">=","<=","<",">"};
 	private static Border rborder = BorderFactory.createLineBorder(Color.RED, 2);
 	private static Border gborder = BorderFactory.createLineBorder(Color.GREEN, 2);
+	private static Border grborder = BorderFactory.createLineBorder(Color.GRAY, 1);
 	
 	private static boolean esSoloLetras(String cadena){
 		for (int i = 0; i < cadena.length(); i++){
@@ -30,7 +31,6 @@ public class ValidadorCampos {
 			return false;
 		}
 	}
-	
 	
 	public static boolean campoNumeros(JTextField txt,int length) {
 		if ((!txt.getText().isEmpty()) && (isNumeric(txt.getText()))) {
@@ -100,7 +100,6 @@ public class ValidadorCampos {
 		return false;
 	}
 	
-
 	public static boolean campoLetras(JTextField txt,int length) {
 		if ((!txt.getText().isEmpty()) && (esSoloLetras(txt.getText()))) {
 			if ((txt.getText().length() <= length)) {
@@ -119,7 +118,11 @@ public class ValidadorCampos {
 		return rborder;
 	}
 	
-	public static Border getRGorder() {
+	public static Border getGBorder() {
 		return gborder;
+	}
+	
+	public static Border getGRBorder() {
+		return grborder;
 	}
 }
